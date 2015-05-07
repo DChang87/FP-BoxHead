@@ -6,12 +6,12 @@ import java.awt.Image;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-public class MenuScreen extends JPanel implements MouseMotionListener, MouseListener{
+public class StartScreen extends JPanel implements MouseMotionListener, MouseListener{
 	private static int mouseX,mouseY;
 	private Image background = new ImageIcon("StartScreen.jpg").getImage();
 	private boolean down=false;
 	BoxHead mainFrame;
-	public MenuScreen(BoxHead b){
+	public StartScreen(BoxHead b){
 		//load the images for the start button
 		
 		mainFrame=b;
