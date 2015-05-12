@@ -32,5 +32,10 @@ class MainCharacter {
 	public void setName(String n){
 		name = n;
 	}
-	
+	public int getLength(){
+		return 70;
+	}
+	public int getWidth(){
+		return 30;
+	}
 }
