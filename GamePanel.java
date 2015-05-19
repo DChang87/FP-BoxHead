@@ -29,21 +29,10 @@ public class GamePanel extends JPanel implements KeyListener{
     	keys[e.getKeyCode()]=false;
     }
     public void addNotify(){
-    	super.addNotify();requestFocus();
+    	super.addNotify();
+    	requestFocus();
     	BH.start();
     }
-	public ArrayList<PosPair> moveFireBalls(ArrayList<PosPair> fireballs){
-		//move fireballs in the direction that they should be moving toward 
-		for (int i=0;i<fireballs.size();i++){
-			//fireballs.set(i, element) do something move the fireball
-			//check if the fireall hit the mainchracter:
-			if (checkCollision(fireballs.get(i).getX(),fireballs.get(i).getY(),BH.mc.getX(),BH.mc.getY())){
-				//decrease health by 15 points per fireball
-				BH.mc.setHealth(BH.mc.getHealth()-15);
-			}
-		}
-		return fireballs;
-	}
 	public boolean checkCollision(int fx,int fy,int mcx,int mcy){
 		//check if the fireball is on the character
 		return (fx>=mcx && fx <=mcx+BH.mc.getWidth() && fy>=mcy && fy<=mcy+BH.mc.getLength());
@@ -97,6 +86,20 @@ public class GamePanel extends JPanel implements KeyListener{
 			BH.activeBullets.get(i).setPos(xx+10*Math.cos(ANG),yy+10*Math.sin(ANG));
 		}
 	}
+	public void moveFireballs()
+	{
+		for (int i=0;i<BH.fireballs.size();i++)
+		{
+			PosPair temp = BH.fireballs.get(i);
+			final int ANG = temp.getANGLE();
+			double xx = temp.getDX(), yy = temp.getDY();
+			BH.fireballs.get(i).setPos(xx+10*Math.cos(ANG),yy+10*Math.sin(ANG));
+			if (checkCollision(BH.fireballs.get(i).getX(),BH.fireballs.get(i).getY(),BH.mc.getX(),BH.mc.getY())){
+				//decrease health by 15 points per fireball
+				BH.mc.setHealth(BH.mc.getHealth()-15);
+			}
+		}
+	}
 	public void paintComponent(Graphics g){
 		Font Sfont = new Font("Calisto MT", Font.BOLD, 30);
 		g.setFont(Sfont);
@@ -106,11 +109,15 @@ public class GamePanel extends JPanel implements KeyListener{
 		//figure out the colouring of the bar ugh
 		//g.drawRect(BH.mc.getX()-5,BH.mc.getY()-3,calculateHealth(),5); //filling of the bar
 		//g.drawRect(BH.mc.getX()-5, BH.mc.getY()-3, 20, 5); //drawing the outline
+		
 		for (int i=0;i<BH.activeBullets.size();i++){
 			//we need to get bulllet sprites
 			///g.drawImage(BH.bulletSprites.get(BH.activeBullets.get(i).getTYPE()),BH.activeBullets.get(i).getX(),BH.activeBullets.get(i).getY(),this);
 			g.drawOval(BH.activeBullets.get(i).getX(), BH.activeBullets.get(i).getY(), 100, 100);
 			//we need to move the bullets...either call a function here or call it from the BoxHead class
+		}
+		for (int i=0;i<BH.fireballs.size();i++){
+			g.drawOval(BH.fireballs.get(i).getX(), BH.fireballs.get(i).getY(), 100, 100);
 		}
 		g.setColor(new Color (255,0,0));
 		g.drawRect(BH.mc.getX(),BH.mc.getY(),30,70);
