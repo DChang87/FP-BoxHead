@@ -13,7 +13,10 @@ public class BoxHead extends JFrame implements ActionListener{
 	private ArrayList<Zombie> allZombies = new ArrayList<Zombie>(); //this stores all of the zombies that are currently in the game
 	private ArrayList<Devil> allDevils = new ArrayList<Devil>(); //this stores all of the devils that are currently running around in the game
 	private ArrayList<PosPair> fireballs = new ArrayList<PosPair>(); //this stores all of the fireballs that are currently in the game
-	//make an arraylist of active bullets that save the info about th bullet including the type of gun
+	//make an arraylist of active bullets that save the info about the bullet including the type of gun
+	public ArrayList<PosPair> activeBullets = new ArrayList<PosPair>(); //private?
+	public ArrayList<Image> bulletSprites=new ArrayList<Image>();
+	private int cweapon=0; //0 is pistol
 	MainCharacter mc;
 	StartScreen startS;
 	public BoxHead(){
@@ -40,6 +43,12 @@ public class BoxHead extends JFrame implements ActionListener{
 		game.addNotify();
 		start();
 	}
+	public void addBullet(PosPair pp){
+		activeBullets.add(pp);
+	}
+	public int getWeapon(){
+		return cweapon;
+	}
 	public void start(){
 		//start the timers
 		fireTimer.start();
@@ -56,6 +65,8 @@ public class BoxHead extends JFrame implements ActionListener{
 				//move zombies
 				game.moveMC();
 				game.MCshoot();
+				game.checkBulletCollision();
+				game.moveBullets();
 			}
 			if (source==fireTimer){
 				fireballs = game.moveFireBalls(fireballs);
