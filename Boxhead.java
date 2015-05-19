@@ -16,7 +16,6 @@ public class BoxHead extends JFrame implements ActionListener{
 	//make an arraylist of active bullets that save the info about the bullet including the type of gun
 	public ArrayList<PosPair> activeBullets = new ArrayList<PosPair>(); //private?
 	public ArrayList<Image> bulletSprites=new ArrayList<Image>();
-	private int cweapon=0; //0 is pistol
 	MainCharacter mc;
 	StartScreen startS;
 	public BoxHead(){
@@ -28,7 +27,7 @@ public class BoxHead extends JFrame implements ActionListener{
 		game = new GamePanel(this);
 		fireTimer = new Timer(100,this); //timer used to increase the timeCount on the fireball for the devil
 		myTimer = new Timer(20,this); //myTimer is used to record the time for general movements in the game
-		mc = new MainCharacter("damn it leo");
+		mc = new MainCharacter("damn it leo", 200, 200);
 		startS = new StartScreen(this);
 		startS.setLocation(0,0);
 		startS.setSize(800,640);
@@ -46,9 +45,6 @@ public class BoxHead extends JFrame implements ActionListener{
 	public void addBullet(PosPair pp){
 		activeBullets.add(pp);
 	}
-	public int getWeapon(){
-		return cweapon;
-	}
 	public void start(){
 		//start the timers
 		fireTimer.start();
@@ -57,6 +53,7 @@ public class BoxHead extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent evt) {
 		Object source = evt.getSource();
 		if (state==START){
+			System.out.println("ASDLNASDNLK");
 			startS.repaint();
 		}
 		else if (state==GAME){
