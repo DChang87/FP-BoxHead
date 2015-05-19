@@ -50,7 +50,9 @@ public class GamePanel extends JPanel implements KeyListener{
 	}
 	public void MCshoot(){
 		if (keys[KeyEvent.VK_SPACE]){
-			
+			//if the user shoots, add a bullet into the arraylist keeping track of flying bullets
+			//BH.addBullet(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.getWeapon()));
+			BH.activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.getWeapon()));
 		}
 	}
 	public void moveMC(){
@@ -72,6 +74,25 @@ public class GamePanel extends JPanel implements KeyListener{
 		//full health is at 100
 		return (int)(BH.mc.getHealth()/100*20);
 	}
+	public boolean checkOutside(int x,int y){
+		return x<0||x>800||y<0||y>640;
+	}
+	public void checkBulletCollision(){
+		for (int i=0;i<BH.activeBullets.size();i++){
+			if (checkCollision(BH.activeBullets.get(i).getX(),BH.activeBullets.get(i).getY(),BH.mc.getX(),BH.mc.getY())){
+				BH.mc.setHealth(BH.mc.getHealth()-10); //change this to the actual value later;
+				BH.activeBullets.remove(i);
+			}
+			else if (checkOutside(BH.activeBullets.get(i).getX(),BH.activeBullets.get(i).getY())){
+				BH.activeBullets.remove(i);
+			}
+		}
+	}
+	public void moveBullets(){
+		for (int i=0;i<BH.activeBullets.size();i++){
+			//do some real trig sht here pls leo its too much math for me LOL
+		}
+	}
 	public void paintComponent(Graphics g){
 		Font Sfont = new Font("Calisto MT", Font.BOLD, 30);
 		g.setFont(Sfont);
@@ -81,6 +102,12 @@ public class GamePanel extends JPanel implements KeyListener{
 		//figure out the colouring of the bar ugh
 		//g.drawRect(BH.mc.getX()-5,BH.mc.getY()-3,calculateHealth(),5); //filling of the bar
 		//g.drawRect(BH.mc.getX()-5, BH.mc.getY()-3, 20, 5); //drawing the outline
+		for (int i=0;i<BH.activeBullets.size();i++){
+			//we need to get bulllet sprites
+			///g.drawImage(BH.bulletSprites.get(BH.activeBullets.get(i).getTYPE()),BH.activeBullets.get(i).getX(),BH.activeBullets.get(i).getY(),this);
+			g.drawOval(BH.activeBullets.get(i).getX(), BH.activeBullets.get(i).getY(), 1, 1);
+			//we need to move the bullets...either call a function here or call it from the BoxHead class
+		}
 		g.setColor(new Color (255,0,0));
 		g.drawRect(BH.mc.getX(),BH.mc.getY(),30,70);
 	}
