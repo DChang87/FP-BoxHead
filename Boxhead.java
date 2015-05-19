@@ -12,7 +12,7 @@ public class BoxHead extends JFrame implements ActionListener{
 	GamePanel game;
 	private ArrayList<Zombie> allZombies = new ArrayList<Zombie>(); //this stores all of the zombies that are currently in the game
 	private ArrayList<Devil> allDevils = new ArrayList<Devil>(); //this stores all of the devils that are currently running around in the game
-	private ArrayList<PosPair> fireballs = new ArrayList<PosPair>(); //this stores all of the fireballs that are currently in the game
+	public ArrayList<PosPair> fireballs = new ArrayList<PosPair>(); //this stores all of the fireballs that are currently in the game
 	//make an arraylist of active bullets that save the info about the bullet including the type of gun
 	public ArrayList<PosPair> activeBullets = new ArrayList<PosPair>(); //private?
 	public ArrayList<Image> bulletSprites=new ArrayList<Image>();
@@ -22,7 +22,8 @@ public class BoxHead extends JFrame implements ActionListener{
 		super("BoxHead Zombies");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(800,640);
-		
+		//activeBullets.add(new PosPair(100,100,0,100));
+		fireballs.add(new PosPair(100,100,0,100));
 		setLayout(new BorderLayout());
 		game = new GamePanel(this);
 		fireTimer = new Timer(100,this); //timer used to increase the timeCount on the fireball for the devil
@@ -42,9 +43,6 @@ public class BoxHead extends JFrame implements ActionListener{
 		game.addNotify();
 		start();
 	}
-	public void addBullet(PosPair pp){
-		activeBullets.add(pp);
-	}
 	public void start(){
 		//start the timers
 		fireTimer.start();
@@ -53,7 +51,6 @@ public class BoxHead extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent evt) {
 		Object source = evt.getSource();
 		if (state==START){
-			System.out.println("ASDLNASDNLK");
 			startS.repaint();
 		}
 		else if (state==GAME){
@@ -66,7 +63,7 @@ public class BoxHead extends JFrame implements ActionListener{
 				game.moveBullets();
 			}
 			if (source==fireTimer){
-				fireballs = game.moveFireBalls(fireballs);
+				game.moveFireballs();
 				//check if there are devil
 				//if there are, add on to the timer counter for each devil
 			}
