@@ -91,7 +91,10 @@ public class GamePanel extends JPanel implements KeyListener{
 	public void moveBullets(){
 		for (int i=0;i<BH.activeBullets.size();i++)
 		{
-			
+			PosPair temp = BH.activeBullets.get(i);
+			final int ANG = temp.getANGLE();
+			double xx = temp.getDX(), yy = temp.getDY();
+			BH.activeBullets.get(i).setPos(xx+10*Math.cos(ANG),yy+10*Math.sin(ANG));
 		}
 	}
 	public void paintComponent(Graphics g){
@@ -106,7 +109,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (int i=0;i<BH.activeBullets.size();i++){
 			//we need to get bulllet sprites
 			///g.drawImage(BH.bulletSprites.get(BH.activeBullets.get(i).getTYPE()),BH.activeBullets.get(i).getX(),BH.activeBullets.get(i).getY(),this);
-			g.drawOval(BH.activeBullets.get(i).getX(), BH.activeBullets.get(i).getY(), 1, 1);
+			g.drawOval(BH.activeBullets.get(i).getX(), BH.activeBullets.get(i).getY(), 100, 100);
 			//we need to move the bullets...either call a function here or call it from the BoxHead class
 		}
 		g.setColor(new Color (255,0,0));
