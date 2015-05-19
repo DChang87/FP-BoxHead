@@ -1,23 +1,32 @@
 import java.util.*;
 class MainCharacter {
-	private int health;
+	private int health, ANGLE,sx = 70, sy = 30;
 	private String name;
-	private int posx,posy;
+	private int cweapon = 1000;
+	public double posx, posy;
 	private final int NUMOFWEAPONS = 5;
 	private int[] weapons = new int[NUMOFWEAPONS];
-	public MainCharacter(String n){
+	public MainCharacter(String n, int px, int py){
 		name = n;
+		posx = px;
+		posy = py;
 	}
 	public int getX(){
-		return posx;
+		return (int)posx;
 	}
 	public int getY(){
+		return (int)posy;
+	}
+	public double getDX(){
+		return posx;
+	}
+	public double getDY(){
 		return posy;
 	}
-	public void setX(int x){
+	public void setX(double x){
 		posx = x;
 	}
-	public void setY(int y){
+	public void setY(double y){
 		posy = y;
 	}
 	public void setHealth(int h){
@@ -33,9 +42,15 @@ class MainCharacter {
 		name = n;
 	}
 	public int getLength(){
-		return 70;
+		return sx;
 	}
 	public int getWidth(){
-		return 30;
+		return sy;
+	}
+	public int getANGLE(){
+		return ANGLE;
+	}
+	public int getWeapon(){
+		return cweapon;
 	}
 }
