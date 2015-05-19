@@ -52,7 +52,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		if (keys[KeyEvent.VK_SPACE]){
 			//if the user shoots, add a bullet into the arraylist keeping track of flying bullets
 			//BH.addBullet(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.getWeapon()));
-			BH.activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.getWeapon()));
+			BH.activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.mc.getWeapon()));
 		}
 	}
 	public void moveMC(){
@@ -89,8 +89,9 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void moveBullets(){
-		for (int i=0;i<BH.activeBullets.size();i++){
-			//do some real trig sht here pls leo its too much math for me LOL
+		for (int i=0;i<BH.activeBullets.size();i++)
+		{
+			
 		}
 	}
 	public void paintComponent(Graphics g){
