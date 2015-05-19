@@ -1,5 +1,6 @@
 public class PosPair{
-    private final int X,Y,ANGLE, Type;
+    private final int ANGLE, Type;
+    private double X,Y;
     public PosPair(int x,int y,int deg,int type)
     {
         X=x;
@@ -8,9 +9,15 @@ public class PosPair{
         Type = type;
     }
     public int getX(){
-    	return X;
+    	return (int)X;
     }
     public int getY(){
+    	return (int)Y;
+    }
+    public double getDX(){
+    	return X;
+    }
+    public double getDY(){
     	return Y;
     }
     public int getANGLE(){
@@ -18,5 +25,9 @@ public class PosPair{
     }
     public int getTYPE(){
     	return Type;
+    }
+    public void setPos(double x, double y){
+    	X = x;
+    	Y = y;
     }
 }
