@@ -38,7 +38,9 @@ public class GamePanel extends JPanel implements KeyListener{
 		return (fx>=mcx && fx <=mcx+BH.mc.getWidth() && fy>=mcy && fy<=mcy+BH.mc.getLength());
 	}
 	public void MCshoot(){
+		System.out.println("MCshoot");
 		if (keys[KeyEvent.VK_SPACE]){
+			System.out.println("SPACE");
 			//if the user shoots, add a bullet into the arraylist keeping track of flying bullets
 			//BH.addBullet(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.getWeapon()));
 			BH.activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.mc.getWeapon()));
@@ -106,7 +108,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void paintComponent(Graphics g){
-		Font Sfont = new Font("Calisto MT", Font.BOLD, 30);
+		Font Sfont = new Font("Calisto MT", Font.BOLD, 20);
 		g.setFont(Sfont);
 		g.drawImage(background, 0, 0, this);
 		g.drawString(BH.mc.getName(), BH.mc.getX()-5, BH.mc.getY()-10); //maybe do the string formatting with this later if we have time
@@ -118,11 +120,11 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (int i=0;i<BH.activeBullets.size();i++){
 			//we need to get bulllet sprites
 			///g.drawImage(BH.bulletSprites.get(BH.activeBullets.get(i).getTYPE()),BH.activeBullets.get(i).getX(),BH.activeBullets.get(i).getY(),this);
-			g.drawOval(BH.activeBullets.get(i).getX(), BH.activeBullets.get(i).getY(), 100, 100);
+			g.drawOval(BH.activeBullets.get(i).getX(), BH.activeBullets.get(i).getY(), 20, 20);
 			//we need to move the bullets...either call a function here or call it from the BoxHead class
 		}
 		for (int i=0;i<BH.fireballs.size();i++){
-			g.drawOval(BH.fireballs.get(i).getX(), BH.fireballs.get(i).getY(), 100, 100);
+			g.drawOval(BH.fireballs.get(i).getX(), BH.fireballs.get(i).getY(), 50, 50);
 		}
 		g.setColor(new Color (255,0,0));
 		g.drawRect(BH.mc.getX(),BH.mc.getY(),30,70);
