@@ -1,7 +1,11 @@
 import java.util.*;
 class Zombie {
-	private int health = 5;
-	private int posx,posy;
+	private int Health = 2000;
+	private int posx,posy, sx = 30, sy = 70;
+	public Zombie(int x, int y){
+		posx = x;
+		posy = y;
+	}
 	public int getX(){
 		return posx;
 	}
@@ -18,5 +22,20 @@ class Zombie {
 		if (Leo.getX()==posx && Leo.getY()==posy){
 			Leo.setHealth(Leo.getHealth()-5);
 		}
+	}
+	public int getHealth(){
+		return Health;
+	}
+	public void setHealth(int hp){
+		Health = hp;
+	}
+	public boolean getCollide(int x, int y){
+		return (posx >= x && x <= posx+sx && posy >= y && y <= posy+sy);
+	}
+	public int getsx(){
+		return sx;
+	}
+	public int getsy(){
+		return sy;
 	}
 }
