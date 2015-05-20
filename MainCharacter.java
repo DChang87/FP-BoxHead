@@ -1,6 +1,6 @@
 import java.util.*;
 class MainCharacter {
-	private int health, ANGLE,sx = 70, sy = 30;
+	private int health, ANGLE,sx = 30, sy = 70;
 	private String name;
 	private int cweapon = 1000;
 	public double posx, posy;
@@ -50,7 +50,16 @@ class MainCharacter {
 	public int getANGLE(){
 		return ANGLE;
 	}
+	public void setAngle(int ang){
+		ANGLE = ang;
+	}
 	public int getWeapon(){
 		return cweapon;
+	}
+	public int getsx(){
+		return sx;
+	}
+	public int getsy(){
+		return sy;
 	}
 }
