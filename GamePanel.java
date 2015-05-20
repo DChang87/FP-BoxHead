@@ -67,14 +67,19 @@ public class GamePanel extends JPanel implements KeyListener{
 		return x<0||x>800||y<0||y>640;
 	}
 	public void checkBulletCollision(){
+		ArrayList<PosPair> toRemove = new ArrayList<PosPair>();
 		for (int i=0;i<BH.activeBullets.size();i++){
 			if (checkCollision(BH.activeBullets.get(i).getX(),BH.activeBullets.get(i).getY(),BH.mc.getX(),BH.mc.getY())){
 				BH.mc.setHealth(BH.mc.getHealth()-10); //change this to the actual value later;
-				BH.activeBullets.remove(i);
+				toRemove.add(BH.activeBullets.get(i));
 			}
 			else if (checkOutside(BH.activeBullets.get(i).getX(),BH.activeBullets.get(i).getY())){
 				BH.activeBullets.remove(i);
+				toRemove.add(BH.activeBullets.get(i));
 			}
+		}
+		for (PosPair pair:toRemove){
+			BH.activeBullets.remove(pair);
 		}
 	}
 	public void moveBullets(){
