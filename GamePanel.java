@@ -45,54 +45,78 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void moveMC(){
+		int speed = BH.mc.getspeed();
 		//arent we moving the character around a section of the map
 		//so our boundary thing rn doesnt work LOL
 		//how do you do this HELP
 		//SHOOTING OF BULLETS IS ALSO WEIRD LOL
 		if (keys[KeyEvent.VK_LEFT] && keys[KeyEvent.VK_UP]){
-			BH.mc.setAngle(135);
-			BH.mc.setX(Math.max(BH.mc.getX()-5*Math.sqrt(2),0)); //MOVE DIAGONALLY LEFT & UP
-			BH.mc.setY(Math.max(BH.mc.getY()-5*Math.sqrt(2),0)); //MOVE DIAGONALLY LEFT & UP
+			BH.mc.setAngle(225);
+			BH.mc.setX(Math.max(BH.mc.getX()-speed/2*Math.sqrt(2),0)); //MOVE DIAGONALLY LEFT & UP
+			BH.mc.setY(Math.max(BH.mc.getY()-speed/2*Math.sqrt(2),0)); //MOVE DIAGONALLY LEFT & UP
 		}
 		else if (keys[KeyEvent.VK_LEFT] && keys[KeyEvent.VK_DOWN]){
-			BH.mc.setAngle(225);
-			BH.mc.setX(Math.max(BH.mc.getX()-5*Math.sqrt(2),0)); 
-			BH.mc.setY(Math.min(BH.mc.getY()+5*Math.sqrt(2),640));
+			BH.mc.setAngle(135);
+			BH.mc.setX(Math.max(BH.mc.getX()-speed/2*Math.sqrt(2),0)); 
+			BH.mc.setY(Math.min(BH.mc.getY()+speed/2*Math.sqrt(2),640));
 		}
 		else if (keys[KeyEvent.VK_RIGHT] && keys[KeyEvent.VK_DOWN]){
 			BH.mc.setAngle(45);
-			BH.mc.setX(Math.min(BH.mc.getX()+5*Math.sqrt(2),800)); 
-			BH.mc.setY(Math.min(BH.mc.getY()+5*Math.sqrt(2),640)); 
+			BH.mc.setX(Math.min(BH.mc.getX()+speed/2*Math.sqrt(2),800)); 
+			BH.mc.setY(Math.min(BH.mc.getY()+speed/2*Math.sqrt(2),640)); 
 		}
 		else if (keys[KeyEvent.VK_RIGHT] && keys[KeyEvent.VK_UP]){
 			BH.mc.setAngle(315);
-			BH.mc.setX(Math.min(BH.mc.getX()+5*Math.sqrt(2),800)); 
-			BH.mc.setY(Math.max(BH.mc.getY()-5*Math.sqrt(2),0)); 
+			BH.mc.setX(Math.min(BH.mc.getX()+speed/2*Math.sqrt(2),800)); 
+			BH.mc.setY(Math.max(BH.mc.getY()-speed/2*Math.sqrt(2),0)); 
 		}
 		else if (keys[KeyEvent.VK_LEFT]){
 			//maybe set the direction lol
 			BH.mc.setAngle(180);
-			BH.mc.setX(Math.max(0, BH.mc.getX()-5));
+			BH.mc.setX(Math.max(0, BH.mc.getX()-speed));
 		}
 		else if (keys[KeyEvent.VK_RIGHT]){
-			BH.mc.setX(Math.min(800-BH.mc.getWidth(), BH.mc.getX()+5));
+			BH.mc.setX(Math.min(800-BH.mc.getWidth(), BH.mc.getX()+speed));
 			BH.mc.setAngle(0);
 		}
 		else if (keys[KeyEvent.VK_UP]){
-			BH.mc.setY(Math.max(0, BH.mc.getY()-5));
+			BH.mc.setY(Math.max(0, BH.mc.getY()-speed));
 			BH.mc.setAngle(270);
 		}
 		else if (keys[KeyEvent.VK_DOWN]){
-			BH.mc.setY(Math.min(640-BH.mc.getLength(),BH.mc.getY()+5));
+			BH.mc.setY(Math.min(640-BH.mc.getLength(),BH.mc.getY()+speed));
 			BH.mc.setAngle(90);
 		}
 	}
+	public void moveEnemy(){
+		for (int i=0; i< BH.allZombies.size(); i++){
+			Zombie temp = BH.allZombies.get(i);
+			double ManhatX = Math.abs(temp.getX() - BH.mc.getX()), ManhatY = Math.abs(temp.getY() - BH.mc.getY()), speed = temp.getspeed();
+			double moveX = ManhatX/(ManhatX+ManhatY)*speed, moveY = ManhatY/(ManhatX+ManhatY)*speed;
+			if (temp.getX() <= BH.mc.getX()){
+				temp.setX(temp.getX()+moveX);
+			}
+			else{
+				temp.setX(temp.getX()-moveX);
+			}
+			if (temp.getY() <= BH.mc.getY()){
+				temp.setY(temp.getY()+moveY);
+			}
+			else{
+				temp.setY(temp.getY()-moveY);
+			}
+			
+		}
+	}
+	
+	
 	public boolean enemyCollision(int x, int y){
 		ArrayList<Zombie> toRemove = new ArrayList<Zombie>();
 		boolean flag = false;
 		for (int i=0; i<BH.allZombies.size(); i++){
 			if (BH.allZombies.get(i).getCollide(x,y)){
 				flag = true;
+				System.out.println("COLLIDE");
 				BH.allZombies.get(i).setHealth(BH.allZombies.get(i).getHealth() - 10);
 			}
 			if (BH.allZombies.get(i).getHealth() <= 0){
@@ -179,6 +203,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (int i=0;i<BH.allZombies.size();i++){
 			Zombie a = BH.allZombies.get(i);
 			g.drawRect(a.getX(),a.getY(),a.getsx(), a.getsy());
+			System.out.println(a.getX() + " " + a.getY());
 		}
 		
 		g.setColor(new Color (255,0,0));
