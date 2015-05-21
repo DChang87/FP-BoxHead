@@ -45,7 +45,31 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void moveMC(){
-		if (keys[KeyEvent.VK_LEFT]){
+		//arent we moving the character around a section of the map
+		//so our boundary thing rn doesnt work LOL
+		//how do you do this HELP
+		//SHOOTING OF BULLETS IS ALSO WEIRD LOL
+		if (keys[KeyEvent.VK_LEFT] && keys[KeyEvent.VK_UP]){
+			BH.mc.setAngle(135);
+			BH.mc.setX(Math.max(BH.mc.getX()-5*Math.sqrt(2),0)); //MOVE DIAGONALLY LEFT & UP
+			BH.mc.setY(Math.max(BH.mc.getY()-5*Math.sqrt(2),0)); //MOVE DIAGONALLY LEFT & UP
+		}
+		else if (keys[KeyEvent.VK_LEFT] && keys[KeyEvent.VK_DOWN]){
+			BH.mc.setAngle(225);
+			BH.mc.setX(Math.max(BH.mc.getX()-5*Math.sqrt(2),0)); 
+			BH.mc.setY(Math.min(BH.mc.getY()+5*Math.sqrt(2),640));
+		}
+		else if (keys[KeyEvent.VK_RIGHT] && keys[KeyEvent.VK_DOWN]){
+			BH.mc.setAngle(45);
+			BH.mc.setX(Math.min(BH.mc.getX()+5*Math.sqrt(2),800)); 
+			BH.mc.setY(Math.min(BH.mc.getY()+5*Math.sqrt(2),640)); 
+		}
+		else if (keys[KeyEvent.VK_RIGHT] && keys[KeyEvent.VK_UP]){
+			BH.mc.setAngle(315);
+			BH.mc.setX(Math.min(BH.mc.getX()+5*Math.sqrt(2),800)); 
+			BH.mc.setY(Math.max(BH.mc.getY()-5*Math.sqrt(2),0)); 
+		}
+		else if (keys[KeyEvent.VK_LEFT]){
 			//maybe set the direction lol
 			BH.mc.setAngle(180);
 			BH.mc.setX(Math.max(0, BH.mc.getX()-5));
@@ -91,10 +115,10 @@ public class GamePanel extends JPanel implements KeyListener{
 		ArrayList<PosPair> toRemove = new ArrayList<PosPair>();
 		for (int i=0;i<BH.activeBullets.size();i++){
 			if (enemyCollision(BH.activeBullets.get(i).getX(),BH.activeBullets.get(i).getY())){
+				//REMOVE THE ENEMIES
 				toRemove.add(BH.activeBullets.get(i));
 			}
 			else if (checkOutside(BH.activeBullets.get(i).getX(),BH.activeBullets.get(i).getY())){
-				BH.activeBullets.remove(i);
 				toRemove.add(BH.activeBullets.get(i));
 			}
 		}
@@ -140,8 +164,8 @@ public class GamePanel extends JPanel implements KeyListener{
 		g.drawString(BH.mc.getName(), BH.mc.getX()-5, BH.mc.getY()-10); //maybe do the string formatting with this later if we have time
 		//drawing the health bar
 		//figure out the colouring of the bar ugh
-		//g.drawRect(BH.mc.getX()-5,BH.mc.getY()-3,calculateHealth(),5); //filling of the bar
-		//g.drawRect(BH.mc.getX()-5, BH.mc.getY()-3, 20, 5); //drawing the outline
+		g.drawRect(BH.mc.getX()-5,BH.mc.getY()-3,calculateHealth(),5); //filling of the bar
+		g.drawRect(BH.mc.getX()-5, BH.mc.getY()-3, 20, 5); //drawing the outline
 		
 		for (int i=0;i<BH.activeBullets.size();i++){
 			//we need to get bulllet sprites
