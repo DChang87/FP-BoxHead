@@ -1,35 +1,61 @@
 import java.util.*;
 class Devil {
-	private int health = 5;
-	private int posx,posy,angle; //angle is the angle in which the character is facing
+	private int Health = 100;
+	private int angle; //angle is the angle in which the character is facing
 	//-> is 0
 	//<- is 180
+	private double posx, posy;
 	private int timeCount=0; //counter to see when to shoot a fireball
 	private final int timeCountLim = 20;
+	public Devil(int x, int y, int ang){
+		posx = x;
+		posy = y;
+		angle = ang;
+	}
 	public int getX(){
-		return posx;
+		return (int)posx;
 	}
 	public int getY(){
-		return posy;
+		return (int)posy;
 	}
-	public void setX(int x){
+	public int getspeed(){
+		return sp;
+	}
+	public int getangle({
+		return angle;
+	}
+	public void setX(double x){
 		posx = x;
 	}
-	public void setY(int y){
+	public void setY(double y){
 		posy = y;
 	}
-	public void shoot(ArrayList<PosPair> fireballs){
-		//this method is called if timeCounter is at a certain limit by the addTime() method;
-		fireballs.add(new PosPair(posx,posy,angle)); 
-		//will need another method to move the fireball, probably in the main method
-		//will need to adjust the starting position of the fireball so it doesn't start on the devil (instead, a little bit ahead of him)
+	public void inContact(MainCharacter Leo){
+		if (Leo.getX()==posx && Leo.getY()==posy){
+			Leo.setHealth(Leo.getHealth()-5);
+		}
 	}
-	public void addTime(ArrayList<PosPair> fireballs){
+	public int getHealth(){
+		return Health;
+	}
+	public void setHealth(int hp){
+		Health = hp;
+	}
+	public boolean getCollide(int x, int y){
+		return (x >= posx && x <= posx+sx && y >= posy && y <= posy+sy);
+	}
+	public int getsx(){
+		return sx;
+	}
+	public int getsy(){
+		return sy;
+	}
+	public void addTime(){
 		//call this method during the main method with a timer to call it at regular intervals
 		timeCount++;
 		if (timeCount==timeCountLim){
 			timeCount=0;
-			shoot(fireballs);
+			BH.mc.fireballs.add(new PosPair(posx,posy,angle)); 
 		}
 	}
 }
