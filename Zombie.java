@@ -1,21 +1,25 @@
 import java.util.*;
 class Zombie {
-	private int Health = 2000;
-	private int posx,posy, sx = 30, sy = 70;
+	private int Health = 100;
+	private int sx = 30, sy = 70, sp = 5;
+	private double posx, posy;
 	public Zombie(int x, int y){
 		posx = x;
 		posy = y;
 	}
 	public int getX(){
-		return posx;
+		return (int)posx;
 	}
 	public int getY(){
-		return posy;
+		return (int)posy;
 	}
-	public void setX(int x){
+	public int getspeed(){
+		return sp;
+	}
+	public void setX(double x){
 		posx = x;
 	}
-	public void setY(int y){
+	public void setY(double y){
 		posy = y;
 	}
 	public void inContact(MainCharacter Leo){
@@ -30,7 +34,7 @@ class Zombie {
 		Health = hp;
 	}
 	public boolean getCollide(int x, int y){
-		return (posx >= x && x <= posx+sx && posy >= y && y <= posy+sy);
+		return (x >= posx && x <= posx+sx && y >= posy && y <= posy+sy);
 	}
 	public int getsx(){
 		return sx;
