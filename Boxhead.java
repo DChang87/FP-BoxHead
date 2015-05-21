@@ -11,7 +11,7 @@ public class BoxHead extends JFrame implements ActionListener{
 	public int state=GAME;
 	GamePanel game;
 	public ArrayList<Zombie> allZombies = new ArrayList<Zombie>(); //this stores all of the zombies that are currently in the game
-	private ArrayList<Devil> allDevils = new ArrayList<Devil>(); //this stores all of the devils that are currently running around in the game
+	public ArrayList<Devil> allDevils = new ArrayList<Devil>(); //this stores all of the devils that are currently running around in the game
 	public ArrayList<PosPair> fireballs = new ArrayList<PosPair>(); //this stores all of the fireballs that are currently in the game
 	//make an arraylist of active bullets that save the info about the bullet including the type of gun
 	public ArrayList<PosPair> activeBullets = new ArrayList<PosPair>(); //private?
@@ -22,7 +22,7 @@ public class BoxHead extends JFrame implements ActionListener{
 		super("BoxHead Zombies");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(800,640);
-		//activeBullets.add(new PosPair(100,100,0,100));
+		allZombies.add(new Zombie(400,400));
 		fireballs.add(new PosPair(100,100,0,100));
 		setLayout(new BorderLayout());
 		game = new GamePanel(this);
@@ -59,9 +59,10 @@ public class BoxHead extends JFrame implements ActionListener{
 			if (source==myTimer){
 				//move character
 				//move zombies
-				game.moveMC();				
-				game.checkBulletCollision();
+				game.moveMC();
+				game.moveEnemy();
 				game.moveBullets();
+				game.checkBulletCollision();
 			}
 			if (source == shootTimer){
 				game.MCshoot();
