@@ -1,6 +1,6 @@
 import java.util.*;
 class MainCharacter {
-	private int health, ANGLE,sx = 30, sy = 70;
+	private int health, ANGLE,sx = 30, sy = 70, sp=10;
 	private String name;
 	private int cweapon = 1000;
 	public double posx, posy;
@@ -16,6 +16,9 @@ class MainCharacter {
 	}
 	public int getY(){
 		return (int)posy;
+	}
+	public int getspeed(){
+		return sp;
 	}
 	public double getDX(){
 		return posx;
