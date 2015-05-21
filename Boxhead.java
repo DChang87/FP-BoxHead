@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 public class BoxHead extends JFrame implements ActionListener{
-	Timer fireTimer,myTimer;
+	Timer fireTimer,myTimer,shootTimer;
 	public final int START=0,GAME = 1;
 	public int state=GAME;
 	GamePanel game;
-	private ArrayList<Zombie> allZombies = new ArrayList<Zombie>(); //this stores all of the zombies that are currently in the game
+	public ArrayList<Zombie> allZombies = new ArrayList<Zombie>(); //this stores all of the zombies that are currently in the game
 	private ArrayList<Devil> allDevils = new ArrayList<Devil>(); //this stores all of the devils that are currently running around in the game
 	public ArrayList<PosPair> fireballs = new ArrayList<PosPair>(); //this stores all of the fireballs that are currently in the game
 	//make an arraylist of active bullets that save the info about the bullet including the type of gun
@@ -26,6 +26,7 @@ public class BoxHead extends JFrame implements ActionListener{
 		fireballs.add(new PosPair(100,100,0,100));
 		setLayout(new BorderLayout());
 		game = new GamePanel(this);
+		shootTimer = new Timer(200,this);
 		fireTimer = new Timer(100,this); //timer used to increase the timeCount on the fireball for the devil
 		myTimer = new Timer(20,this); //myTimer is used to record the time for general movements in the game
 		mc = new MainCharacter("damn it leo", 200, 200);
@@ -46,6 +47,7 @@ public class BoxHead extends JFrame implements ActionListener{
 	public void start(){
 		//start the timers
 		fireTimer.start();
+		shootTimer.start();
 		myTimer.start();
     }
 	public void actionPerformed(ActionEvent evt) {
@@ -57,10 +59,12 @@ public class BoxHead extends JFrame implements ActionListener{
 			if (source==myTimer){
 				//move character
 				//move zombies
-				game.moveMC();
-				game.MCshoot();
+				game.moveMC();				
 				game.checkBulletCollision();
 				game.moveBullets();
+			}
+			if (source == shootTimer){
+				game.MCshoot();
 			}
 			if (source==fireTimer){
 				game.moveFireballs();
