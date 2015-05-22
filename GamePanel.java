@@ -14,10 +14,17 @@ public class GamePanel extends JPanel implements KeyListener{
 	private BoxHead BH;
 	private boolean[] keys; 
 	private Image background = new ImageIcon("background.jpg").getImage();
+	private Image[][] charSprites = new Image[8][3];
+	private int spriteCounter = 0;
 	public GamePanel(BoxHead bh){
 		BH=bh;
 		keys = new boolean[65535];
 		addKeyListener(this);
+		for (int i=0;i<8;i++){
+			for (int k=0;k<3;k++){
+				charSprites[i][k]=new ImageIcon("guy0"+i+k+".png").getImage();
+			}
+		}
 	}
 	public void keyTyped(KeyEvent e){
 		
@@ -54,38 +61,46 @@ public class GamePanel extends JPanel implements KeyListener{
 			BH.mc.setAngle(225);
 			BH.mc.setX(Math.max(BH.mc.getX()-speed/2*Math.sqrt(2),0)); //MOVE DIAGONALLY LEFT & UP
 			BH.mc.setY(Math.max(BH.mc.getY()-speed/2*Math.sqrt(2),0)); //MOVE DIAGONALLY LEFT & UP
+			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_LEFT] && keys[KeyEvent.VK_DOWN]){
 			BH.mc.setAngle(135);
 			BH.mc.setX(Math.max(BH.mc.getX()-speed/2*Math.sqrt(2),0)); 
 			BH.mc.setY(Math.min(BH.mc.getY()+speed/2*Math.sqrt(2),640));
+			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_RIGHT] && keys[KeyEvent.VK_DOWN]){
 			BH.mc.setAngle(45);
 			BH.mc.setX(Math.min(BH.mc.getX()+speed/2*Math.sqrt(2),800)); 
 			BH.mc.setY(Math.min(BH.mc.getY()+speed/2*Math.sqrt(2),640)); 
+			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_RIGHT] && keys[KeyEvent.VK_UP]){
 			BH.mc.setAngle(315);
 			BH.mc.setX(Math.min(BH.mc.getX()+speed/2*Math.sqrt(2),800)); 
 			BH.mc.setY(Math.max(BH.mc.getY()-speed/2*Math.sqrt(2),0)); 
+			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_LEFT]){
 			//maybe set the direction lol
 			BH.mc.setAngle(180);
 			BH.mc.setX(Math.max(0, BH.mc.getX()-speed));
+			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_RIGHT]){
 			BH.mc.setX(Math.min(800-BH.mc.getWidth(), BH.mc.getX()+speed));
 			BH.mc.setAngle(0);
+			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_UP]){
 			BH.mc.setY(Math.max(0, BH.mc.getY()-speed));
 			BH.mc.setAngle(270);
+			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_DOWN]){
 			BH.mc.setY(Math.min(640-BH.mc.getLength(),BH.mc.getY()+speed));
 			BH.mc.setAngle(90);
+			spriteCounter++;
 		}
 	}
 	public void moveEnemy(){
@@ -207,6 +222,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		
 		g.setColor(new Color (255,0,0));
-		g.drawRect(BH.mc.getX(),BH.mc.getY(),BH.mc.getsx(),BH.mc.getsy());
+		g.drawImage(charSprites[BH.mc.getANGLE()/45][spriteCounter%3],BH.mc.getX(),BH.mc.getY(),this);
+		//g.drawRect(BH.mc.getX(),BH.mc.getY(),BH.mc.getsx(),BH.mc.getsy());
 	}
 }
