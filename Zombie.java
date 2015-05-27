@@ -3,9 +3,12 @@ class Zombie {
 	private int Health = 100;
 	private int sx = 30, sy = 70, sp = 5;
 	private double posx, posy;
-	public Zombie(int x, int y){
+	private int spriteCounter=0;
+	private int ANG;
+	public Zombie(int x, int y, int ang){
 		posx = x;
 		posy = y;
+		ANG=ang;
 	}
 	public int getX(){
 		return (int)posx;
@@ -15,6 +18,18 @@ class Zombie {
 	}
 	public int getspeed(){
 		return sp;
+	}
+	public int getANG(){
+		return ANG;
+	}
+	public void addToCounter(){
+		spriteCounter++;
+	}
+	public int returnSpriteCounter(){
+		return spriteCounter;
+	}
+	public void setANG(int n){
+		ANG = n;
 	}
 	public void setX(double x){
 		posx = x;
