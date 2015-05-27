@@ -15,6 +15,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	private boolean[] keys; 
 	private Image background = new ImageIcon("background.jpg").getImage();
 	private Image[][] charSprites = new Image[8][3];
+	private Image[][] zombieSprites = new Image[8][8];
 	private int spriteCounter = 0;
 	public GamePanel(BoxHead bh){
 		BH=bh;
@@ -23,6 +24,11 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (int i=0;i<8;i++){
 			for (int k=0;k<3;k++){
 				charSprites[i][k]=new ImageIcon("guy0"+i+k+".png").getImage();
+			}
+		}
+		for (int i=0;i<8;i++){
+			for (int k=0;k<8;k++){
+				zombieSprites[i][k]=new ImageIcon("zombie"+i+k+".png").getImage();
 			}
 		}
 	}
@@ -165,6 +171,11 @@ public class GamePanel extends JPanel implements KeyListener{
 			BH.activeBullets.remove(pair);
 		}
 	}
+	public void addZombieCounter(){
+		for (int i=0;i<BH.allZombies.size();i++){
+			BH.allZombies.get(i).addToCounter();
+		}
+	}
 	public void moveBullets(){
 		for (int i=0;i<BH.activeBullets.size();i++)
 		{
@@ -223,6 +234,10 @@ public class GamePanel extends JPanel implements KeyListener{
 		
 		g.setColor(new Color (255,0,0));
 		g.drawImage(charSprites[BH.mc.getANGLE()/45][spriteCounter%3],BH.mc.getX(),BH.mc.getY(),this);
+		for (int i=0;i<BH.allZombies.size();i++){
+			Zombie a = BH.allZombies.get(i);
+			g.drawImage(zombieSprites[a.getANG()/45][a.returnSpriteCounter()%8], a.getX(),a.getY(),this);
+		}
 		//g.drawRect(BH.mc.getX(),BH.mc.getY(),BH.mc.getsx(),BH.mc.getsy());
 	}
 }
