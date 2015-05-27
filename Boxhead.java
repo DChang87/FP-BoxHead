@@ -22,7 +22,7 @@ public class BoxHead extends JFrame implements ActionListener{
 		super("BoxHead Zombies");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(800,640);
-		allZombies.add(new Zombie(400,400));
+		allZombies.add(new Zombie(400,400,0));
 		fireballs.add(new PosPair(100,100,0,100));
 		setLayout(new BorderLayout());
 		game = new GamePanel(this);
@@ -63,9 +63,11 @@ public class BoxHead extends JFrame implements ActionListener{
 				game.moveEnemy();
 				game.moveBullets();
 				game.checkBulletCollision();
+				
 			}
 			if (source == shootTimer){
 				game.MCshoot();
+				game.addZombieCounter();
 			}
 			if (source==fireTimer){
 				game.moveFireballs();
