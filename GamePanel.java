@@ -57,6 +57,17 @@ public class GamePanel extends JPanel implements KeyListener{
 			BH.activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.mc.getWeapon()));
 		}
 	}
+	public void checkPause(){
+		//display another pause screen
+		if (keys[KeyEvent.VK_P]){
+			BH.state=BH.PAUSE;
+		}
+	}
+	public void checkUnPause(){
+		if (keys[KeyEvent.VK_P]){
+			BH.state=BH.GAME;
+		}
+	}
 	public void moveMC(){
 		int speed = BH.mc.getspeed();
 		//arent we moving the character around a section of the map
@@ -132,7 +143,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	
 	
 	public boolean enemyCollision(int x, int y){
-		ArrayList<Zombie> toRemove = new ArrayList<Zombie>();
+		ArrayList<Zombie> toRemoveZ = new ArrayList<Zombie>();
 		boolean flag = false;
 		for (int i=0; i<BH.allZombies.size(); i++){
 			if (BH.allZombies.get(i).getCollide(x,y)){
@@ -141,12 +152,30 @@ public class GamePanel extends JPanel implements KeyListener{
 				BH.allZombies.get(i).setHealth(BH.allZombies.get(i).getHealth() - 10);
 			}
 			if (BH.allZombies.get(i).getHealth() <= 0){
-				toRemove.add(BH.allZombies.get(i));
+				toRemoveZ.add(BH.allZombies.get(i));
 			}
 		}
-		for (Zombie zzh8829:toRemove){
+
+		for (Zombie zzh8829:toRemoveZ){
+			BH.score+=200;
 			BH.allZombies.remove(zzh8829);
 		}
+		ArrayList<Devil> toRemoveD = new ArrayList<Devil>();
+		for (int i=0;i<BH.allDevils.size();i++){
+			if (BH.allDevils.get(i).getCollide(x,y)){
+				flag = true;
+				System.out.println("COLLIDE DEVILS");
+				BH.allDevils.get(i).setHealth(BH.allDevils.get(i).getHealth() - 10);
+			}
+			if (BH.allDevils.get(i).getHealth() <= 0){
+				toRemoveD.add(BH.allDevils.get(i));
+			}
+		}
+		for (Devil zzh8829:toRemoveD){
+			BH.score+=200;
+			BH.allDevils.remove(zzh8829);
+		}
+		//remember to check the devils to
 		return flag;
 	}
 	public int calculateHealth(){
