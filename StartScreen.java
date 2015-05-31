@@ -51,24 +51,12 @@ public class StartScreen extends JPanel implements MouseMotionListener, MouseLis
     public void paintComponent(Graphics g){
     	//draw the background and the button (According to the situation)
     	g.drawImage(background,0,0,this);
-    	/*
-    	if (down && collide(startX,startY,startImages[0].getWidth(null),startImages[0].getHeight(null))){
-    		//if the user clicks on the button
-    		//change the state of the game and change the focus
-    		g.drawImage(startImages[2],startX,startY,this);
+    	if (down){
     		mainFrame.state=mainFrame.GAME;
     		setFocusable(false);
     		mainFrame.game.requestFocus();
+    		
     	}
-    	else if (collide(startX,startY,startImages[0].getWidth(null),startImages[0].getHeight(null))){
-    		//if the mouse hovers over the button
-    		g.drawImage(startImages[1],startX,startY,this);
-    	}
-    	else{
-    		//normal state of the button (no hovering, no clicking)
-    		g.drawImage(startImages[0],startX,startY,this);
-    	}
-    	*/
     }
 	    
 }
