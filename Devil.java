@@ -4,8 +4,11 @@ class Devil {
 	private int angle; //angle is the angle in which the character is facing
 	//-> is 0
 	//<- is 180
-	private double posx, posy;
+	private final int FIREBALL=0;
+	private int posx, posy;
+	private int sx=30,sy=70;
 	private int timeCount=0; //counter to see when to shoot a fireball
+	private int sp=3;
 	private final int timeCountLim = 20;
 	public Devil(int x, int y, int ang){
 		posx = x;
@@ -21,13 +24,13 @@ class Devil {
 	public int getspeed(){
 		return sp;
 	}
-	public int getangle({
+	public int getangle(){
 		return angle;
 	}
-	public void setX(double x){
+	public void setX(int x){
 		posx = x;
 	}
-	public void setY(double y){
+	public void setY(int y){
 		posy = y;
 	}
 	public void inContact(MainCharacter Leo){
@@ -50,12 +53,12 @@ class Devil {
 	public int getsy(){
 		return sy;
 	}
-	public void addTime(){
+	public void addTime(BoxHead BH){
 		//call this method during the main method with a timer to call it at regular intervals
 		timeCount++;
 		if (timeCount==timeCountLim){
 			timeCount=0;
-			BH.mc.fireballs.add(new PosPair(posx,posy,angle)); 
+			BH.fireballs.add(new PosPair(posx,posy,angle,FIREBALL)); 
 		}
 	}
 }
