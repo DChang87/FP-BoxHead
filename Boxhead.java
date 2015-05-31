@@ -7,8 +7,9 @@ import javax.swing.JFrame;
 import javax.swing.Timer;
 public class BoxHead extends JFrame implements ActionListener{
 	Timer fireTimer,myTimer,shootTimer;
-	public final int START=0,GAME = 1;
+	public final int START=0,GAME = 1,PAUSE=2;
 	public int state=GAME;
+	public int score = 0;
 	GamePanel game;
 	public ArrayList<Zombie> allZombies = new ArrayList<Zombie>(); //this stores all of the zombies that are currently in the game
 	public ArrayList<Devil> allDevils = new ArrayList<Devil>(); //this stores all of the devils that are currently running around in the game
@@ -37,12 +38,12 @@ public class BoxHead extends JFrame implements ActionListener{
 		game.setLocation(0,0);
 		game.setSize(800,640);
 		add(game);
-		game.setFocusable(true);
-		game.setVisible(true);
+		//game.setFocusable(true);
+		//game.setVisible(true);
 		setResizable(false);
 		setVisible(true);
-		game.addNotify();
-		start();
+		//game.addNotify();
+		
 	}
 	public void start(){
 		//start the timers
@@ -63,7 +64,7 @@ public class BoxHead extends JFrame implements ActionListener{
 				game.moveEnemy();
 				game.moveBullets();
 				game.checkBulletCollision();
-				
+				game.checkPause();
 			}
 			if (source == shootTimer){
 				game.MCshoot();
@@ -75,6 +76,11 @@ public class BoxHead extends JFrame implements ActionListener{
 				//if there are, add on to the timer counter for each devil
 			}
 			game.repaint();
+		}
+		else if (state==PAUSE){
+			if (source==myTimer){
+				game.checkUnPause();
+			}
 		}
 	}
 	public static void main(String[] args){
