@@ -11,23 +11,8 @@ public class BoxHead extends JFrame implements ActionListener{
 	public int state=START;
 	public int score = 0;
 	GamePanel game;
-	public ArrayList<Zombie> allZombies = new ArrayList<Zombie>(); //this stores all of the zombies that are currently in the game
-	public ArrayList<Devil> allDevils = new ArrayList<Devil>(); //this stores all of the devils that are currently running around in the game
-	public ArrayList<PosPair> fireballs = new ArrayList<PosPair>(); //this stores all of the fireballs that are currently in the game
-	//make an arraylist of active bullets that save the info about the bullet including the type of gun
-	public ArrayList<PosPair> activeBullets = new ArrayList<PosPair>(); //private?
-	public ArrayList<MagicalBox> allBoxes = new ArrayList<MagicalBox>();
-	public ArrayList<Image> bulletSprites=new ArrayList<Image>();
 	
-	
-	
-	
-	public int ZombiesThisLevel=10, DevilsThisLevel=3;
 	//need an arraylist to store these values and assign them as levels go
-	
-	
-	
-	
 	MainCharacter mc;
 	StartScreen startS;
 	//add this
@@ -52,7 +37,6 @@ public class BoxHead extends JFrame implements ActionListener{
 		myTimer = new Timer(20,this); //myTimer is used to record the time for general movements in the game
 		mc = new MainCharacter("damn it leo", 200, 200);
 		//allDevils.add(new Devil(300,300,0,mc));
-		allZombies.add(new Zombie(300,200,0,mc));
 		startS = new StartScreen(this);
 		startS.setLocation(0,0);
 		startS.setSize(800,640);
