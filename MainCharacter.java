@@ -1,6 +1,6 @@
 import java.util.*;
 class MainCharacter {
-	private int health, ANGLE,sx = 30, sy = 70, sp=10;
+	private int health=1000, ANGLE,sx = 30, sy = 70, sp=10;
 	private String name;
 	private int cweapon = 1000;
 	public double posx, posy;
@@ -64,5 +64,8 @@ class MainCharacter {
 	}
 	public int getsy(){
 		return sy;
+	}
+	public int calculateHealth(){
+		return (int)(health/100*20);
 	}
 }
