@@ -19,6 +19,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	private Image[][] zombieSprites = new Image[8][8];
 	private int spriteCounter = 0;
 	private int[] weapondist = new int[30];
+	private int rectsx = 30, rectsy = 70;
 	
 	public GamePanel(BoxHead bh){
 		BH=bh;
@@ -37,11 +38,11 @@ public class GamePanel extends JPanel implements KeyListener{
 		updateweapon();
 	}
 	public void updateweapon(){
+		//we keep track of how far the weapon can travel
 		weapondist[1] = 400;
 		weapondist[2] = 500;
 		
 	}
-	
 	public void keyTyped(KeyEvent e){
 		
 	}
@@ -134,59 +135,87 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		BH.mc.setX(nx);
 		BH.mc.setY(ny);
+		
 	}
 	public void moveZombie(){
 		for (int i=0; i< BH.allZombies.size(); i++){
 			Zombie temp = BH.allZombies.get(i);
 			double ManhatX = Math.abs(temp.getDX() - BH.mc.getDX()), ManhatY = Math.abs(temp.getDY() - BH.mc.getDY()), speed = temp.getspeed();
-			double moveX = ManhatX/(ManhatX+ManhatY)*speed, moveY = ManhatY/(ManhatX+ManhatY)*speed;
+			double moveX = ManhatX/(ManhatX+ManhatY)*speed, moveY = ManhatY/(ManhatX+ManhatY)*speed,		nx, ny;
 			temp.setAngle(Math.toDegrees(3.14159265358+Math.atan2(temp.getDY() - BH.mc.getDY(),temp.getDX() - BH.mc.getDX())));
 			if (temp.getDX() <= BH.mc.getDX()){
-				temp.setX(temp.getDX()+moveX);
+				nx = temp.getDX()+moveX;
 			}
 			else{
-				temp.setX(temp.getDX()-moveX);
+				nx = temp.getDX()-moveX;
 			}
 			if (temp.getDY() <= BH.mc.getDY()){
-				temp.setY(temp.getY()+moveY);
+				ny = temp.getY()+moveY;
 			}
 			else{
-				temp.setY(temp.getY()-moveY);
+				ny = temp.getY()-moveY;
 			}
-			
+			if (numbercollisions((int)nx, (int)ny) <= 1){
+				temp.setX(nx);
+				temp.setY(ny);
+			}
 		}
 	}
 	public void moveDevil(){
 		for (int i=0; i< BH.allDevils.size(); i++){
 			Devil temp = BH.allDevils.get(i);
 			double ManhatX = Math.abs(temp.getDX() - BH.mc.getDX()), ManhatY = Math.abs(temp.getDY() - BH.mc.getDY()), speed = temp.getspeed();
-			double moveX = ManhatX/(ManhatX+ManhatY)*speed, moveY = ManhatY/(ManhatX+ManhatY)*speed;
-			temp.setAngle(Math.toDegrees(3.14159265358+Math.atan2(temp.getDY() - BH.mc.getDY(),temp.getDX() - BH.mc.getDX())));
+			double moveX = ManhatX/(ManhatX+ManhatY)*speed, moveY = ManhatY/(ManhatX+ManhatY)*speed,		nx, ny;
+			temp.setAngle(Math.toDegrees(Math.PI+Math.atan2(temp.getDY() - BH.mc.getDY(),temp.getDX() - BH.mc.getDX())));
 			temp.addTime(BH);
 			if (temp.getDX() <= BH.mc.getDX()){
-				temp.setX(temp.getDX()+moveX);
+				nx = temp.getDX()+moveX;
 			}
 			else{
-				temp.setX(temp.getDX()-moveX);
+				nx = temp.getDX()-moveX;
 			}
 			if (temp.getDY() <= BH.mc.getDY()){
-				temp.setY(temp.getDY()+moveY);
+				ny = temp.getY()+moveY;
 			}
 			else{
-				temp.setY(temp.getDY()-moveY);
+				ny = temp.getY()-moveY;
 			}
-			
+			if (numbercollisions((int)nx, (int)ny) <= 1){
+				temp.setX(nx);
+				temp.setY(ny);
+			}
 		}
 		
 	}
-	
+	public int numbercollisions(int x, int y){
+		int ncollision = 0;
+		if (rectcollision(x,y,BH.mc.getX(),BH.mc.getY())){
+			ncollision++;
+		}
+		for (Zombie z : BH.allZombies){
+			if (rectcollision(x,y,z.getX(),z.getY())){
+				ncollision++;
+			}
+		}
+		for (Devil d : BH.allDevils){
+			if (rectcollision(x,y,d.getX(),d.getY())){
+				ncollision++;
+			}
+		}
+		System.out.println(ncollision);
+		return ncollision;
+	}
+	public boolean rectcollision(int x1, int y1, int x2, int y2){
+		if (x1+rectsx < x2 || x1 > x2 + rectsx || y1 + rectsy < y2 || y1 > y2 + rectsy)
+			return false;
+		return true;
+	}
 	
 	public boolean enemyCollision(int x, int y){
 		//this method is called to see if the character's bullets damage the enemies
 		ArrayList<Zombie> toRemoveZ = new ArrayList<Zombie>();
 		boolean flag = false;
 		for (int i=0; i<BH.allZombies.size(); i++){
-			System.out.println("ZOMBIE"+i);
 			if (BH.allZombies.get(i).getCollide(x,y)){
 				flag = true;
 				BH.allZombies.get(i).setHealth(BH.allZombies.get(i).getHealth() - 10);
