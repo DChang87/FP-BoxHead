@@ -133,9 +133,12 @@ public class GamePanel extends JPanel implements KeyListener{
 			BH.mc.setAngle(90);
 			spriteCounter++;
 		}
-		BH.mc.setX(nx);
-		BH.mc.setY(ny);
-		
+		if (numbercollisions((int)nx, BH.mc.getY()) <= 1){
+			BH.mc.setX(nx);
+		}
+		if (numbercollisions(BH.mc.getX(), (int)ny) <= 1){
+			BH.mc.setY(ny);
+		}
 	}
 	public void moveZombie(){
 		for (int i=0; i< BH.allZombies.size(); i++){
@@ -155,8 +158,10 @@ public class GamePanel extends JPanel implements KeyListener{
 			else{
 				ny = temp.getY()-moveY;
 			}
-			if (numbercollisions((int)nx, (int)ny) <= 1){
+			if (numbercollisions((int)nx, temp.getY()) <= 1){
 				temp.setX(nx);
+			}
+			if (numbercollisions(temp.getX(), (int)ny) <= 1){
 				temp.setY(ny);
 			}
 		}
@@ -180,14 +185,17 @@ public class GamePanel extends JPanel implements KeyListener{
 			else{
 				ny = temp.getY()-moveY;
 			}
-			if (numbercollisions((int)nx, (int)ny) <= 1){
+			if (numbercollisions((int)nx, temp.getY()) <= 1){
 				temp.setX(nx);
+			}
+			if (numbercollisions(temp.getX(), (int)ny) <= 1){
 				temp.setY(ny);
 			}
 		}
 		
 	}
 	public int numbercollisions(int x, int y){
+		//collisions should max 1 (itself)
 		int ncollision = 0;
 		if (rectcollision(x,y,BH.mc.getX(),BH.mc.getY())){
 			ncollision++;
@@ -202,12 +210,12 @@ public class GamePanel extends JPanel implements KeyListener{
 				ncollision++;
 			}
 		}
-		System.out.println(ncollision);
 		return ncollision;
 	}
 	public boolean rectcollision(int x1, int y1, int x2, int y2){
-		if (x1+rectsx < x2 || x1 > x2 + rectsx || y1 + rectsy < y2 || y1 > y2 + rectsy)
+		if (x1+rectsx < x2 || x1 > x2 + rectsx || y1 + rectsy < y2 || y1 > y2 + rectsy){
 			return false;
+		}
 		return true;
 	}
 	
