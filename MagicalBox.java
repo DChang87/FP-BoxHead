@@ -6,10 +6,20 @@ class MagicalBox {
 	//UZIP = UZI rapid fire, 2.1
 	//UZIPP = UZI double ammo, 2.2
 	int count=0;
+	int X,Y;
 	public MagicalBox(int x, int y){
 		generateItem();
+		X=x;
+		Y=y;
 	}
 	public void generateItem(){
 		ITEM=count;
 	}
+	public int getX(){
+		return X;
+	}
+	public int getY(){
+		return Y;
+	}
+	//generate the item AFTER the box has been collected
 }
