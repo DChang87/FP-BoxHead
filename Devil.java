@@ -8,7 +8,7 @@ class Devil {
 	private double posx, posy;
 	private int sx=30,sy=70;
 	private int timeCount=0; //counter to see when to shoot a fireball
-	private int sp=5, spriteCounter=0;
+	private int sp=2, spriteCounter=0;
 	MainCharacter mc;
 	private final int timeCountLim = 100;
 	public Devil(int x, int y, int ang, MainCharacter mccc){
@@ -22,6 +22,12 @@ class Devil {
 	}
 	public int getY(){
 		return (int)posy;
+	}
+	public double getDX(){
+		return posx;
+	}
+	public double getDY(){
+		return posy;
 	}
 	public int getspeed(){
 		return sp;
@@ -63,6 +69,7 @@ class Devil {
 	public boolean getCollide(int x, int y){
 		return (x >= posx && x <= posx+sx && y >= posy && y <= posy+sy);
 	}
+	
 	public int getsx(){
 		return sx;
 	}
@@ -72,7 +79,8 @@ class Devil {
 	public void addTime(BoxHead BH){
 		//call this method during the main method with a timer to call it at regular intervals
 		timeCount++;
-		System.out.println(timeCount+ " " + timeCountLim);
+		System.out.println(angle);
+		//System.out.println(timeCount+ " " + timeCountLim);
 		if (timeCount==timeCountLim){
 			timeCount=0;
 			BH.fireballs.add(new PosPair((int)posx,(int)posy,angle,FIREBALL)); 
