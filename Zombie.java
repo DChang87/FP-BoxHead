@@ -57,7 +57,7 @@ class Zombie {
 		Health = hp;
 	}
 	public boolean collideMC(){
-		if (posx > mc.getX() + mc.getsx() || posx + sx < mc.getX() || posy > mc.getY()+mc.getsy() || posy + sy < mc.getY())
+		if (posx > mc.getX() + mc.getsx()+3 || posx + sx+3 < mc.getX() || posy > mc.getY()+mc.getsy()+3 || posy + sy+3 < mc.getY())
 			return false;
 		//System.out.println("AWRAF");
 		
