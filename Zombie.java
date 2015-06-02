@@ -1,14 +1,16 @@
 import java.util.*;
 class Zombie {
+	MainCharacter mc;
 	private int Health = 100;
-	private int sx = 30, sy = 70, sp = 5;
+	private int sx = 30, sy = 70, sp = 6;
 	private double posx, posy;
 	private int spriteCounter=0;
 	private int ANG;
-	public Zombie(int x, int y, int ang){
+	public Zombie(int x, int y, int ang, MainCharacter mccc){
 		posx = x;
 		posy = y;
 		ANG=ang;
+		mc = mccc;
 	}
 	public int getX(){
 		return (int)posx;
@@ -19,7 +21,7 @@ class Zombie {
 	public int getspeed(){
 		return sp;
 	}
-	public int getANG(){
+	public int getAngle(){
 		return ANG;
 	}
 	public void addToCounter(){
@@ -28,8 +30,8 @@ class Zombie {
 	public int returnSpriteCounter(){
 		return spriteCounter;
 	}
-	public void setANG(int n){
-		ANG = n;
+	public void setAngle(double n){
+		ANG = (int)n;
 	}
 	public void setX(double x){
 		posx = x;
@@ -47,6 +49,13 @@ class Zombie {
 	}
 	public void setHealth(int hp){
 		Health = hp;
+	}
+	public boolean collideMC(){
+		if (posx > mc.getX() + mc.getsx() || posx + sx < mc.getX() || posy > mc.getY()+mc.getsy() || posy + sy < mc.getY())
+			return false;
+		System.out.println("AWRAF");
+		
+		return true;
 	}
 	public boolean getCollide(int x, int y){
 		return (x >= posx && x <= posx+sx && y >= posy && y <= posy+sy);
