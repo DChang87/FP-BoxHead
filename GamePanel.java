@@ -18,6 +18,8 @@ public class GamePanel extends JPanel implements KeyListener{
 	private Image[][] charSprites = new Image[8][3];
 	private Image[][] zombieSprites = new Image[8][8];
 	private int spriteCounter = 0;
+	private int[] weapondist = new int[30];
+	
 	public GamePanel(BoxHead bh){
 		BH=bh;
 		keys = new boolean[65535];
@@ -32,7 +34,14 @@ public class GamePanel extends JPanel implements KeyListener{
 				zombieSprites[i][k]=new ImageIcon("zombie"+i+k+".png").getImage();
 			}
 		}
+		updateweapon();
 	}
+	public void updateweapon(){
+		weapondist[1] = 400;
+		weapondist[2] = 500;
+		
+	}
+	
 	public void keyTyped(KeyEvent e){
 		
 	}
@@ -132,7 +141,6 @@ public class GamePanel extends JPanel implements KeyListener{
 			double ManhatX = Math.abs(temp.getDX() - BH.mc.getDX()), ManhatY = Math.abs(temp.getDY() - BH.mc.getDY()), speed = temp.getspeed();
 			double moveX = ManhatX/(ManhatX+ManhatY)*speed, moveY = ManhatY/(ManhatX+ManhatY)*speed;
 			temp.setAngle(Math.toDegrees(3.14159265358+Math.atan2(temp.getDY() - BH.mc.getDY(),temp.getDX() - BH.mc.getDX())));
-			System.out.println(temp.getDX() + "  " + temp.getDY());
 			if (temp.getDX() <= BH.mc.getDX()){
 				temp.setX(temp.getDX()+moveX);
 			}
@@ -145,8 +153,6 @@ public class GamePanel extends JPanel implements KeyListener{
 			else{
 				temp.setY(temp.getY()-moveY);
 			}
-			System.out.println(moveX + "  " + moveY);
-			System.out.println(temp.getDX() + "  " + temp.getDY());
 			
 		}
 	}
@@ -235,6 +241,21 @@ public class GamePanel extends JPanel implements KeyListener{
 			BH.activeBullets.remove(pair);
 		}
 	}
+	public void checkBulletDistance(){
+		//checks how far the bullet travels and if it needs to be removed
+		ArrayList<PosPair> toRemove = new ArrayList<PosPair>();
+		for (PosPair a: BH.activeBullets){
+			if ((a.getX()-a.getorigX())*(a.getX()-a.getorigX()) + (a.getY()-a.getorigY())*(a.getY()-a.getorigY()) > weapondist[a.getTYPE()]*weapondist[a.getTYPE()]){
+				toRemove.add(a);	
+			}
+		}
+		for (PosPair pair:toRemove){
+			BH.activeBullets.remove(pair);
+		}
+		
+	}
+	
+	
 	public void addZombieCounter(){
 		for (int i=0;i<BH.allZombies.size();i++){
 			BH.allZombies.get(i).addToCounter();
