@@ -1,8 +1,8 @@
 import java.util.*;
 class Zombie {
 	MainCharacter mc;
-	private int Health = 100;
-	private int sx = 30, sy = 70, sp = 6;
+	private int Health = 20;
+	private int sx = 30, sy = 70, sp = 2;
 	private double posx, posy;
 	private int spriteCounter=0;
 	private int ANG;
@@ -17,6 +17,12 @@ class Zombie {
 	}
 	public int getY(){
 		return (int)posy;
+	}
+	public double getDX(){
+		return posx;
+	}
+	public double getDY(){
+		return posy;
 	}
 	public int getspeed(){
 		return sp;
@@ -53,7 +59,7 @@ class Zombie {
 	public boolean collideMC(){
 		if (posx > mc.getX() + mc.getsx() || posx + sx < mc.getX() || posy > mc.getY()+mc.getsy() || posy + sy < mc.getY())
 			return false;
-		System.out.println("AWRAF");
+		//System.out.println("AWRAF");
 		
 		return true;
 	}
