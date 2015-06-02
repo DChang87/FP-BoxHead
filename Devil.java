@@ -9,11 +9,13 @@ class Devil {
 	private int sx=30,sy=70;
 	private int timeCount=0; //counter to see when to shoot a fireball
 	private int sp=3;
+	MainCharacter mc;
 	private final int timeCountLim = 20;
-	public Devil(int x, int y, int ang){
+	public Devil(int x, int y, int ang, MainCharacter mccc){
 		posx = x;
 		posy = y;
 		angle = ang;
+		mc = mccc;
 	}
 	public int getX(){
 		return (int)posx;
@@ -52,6 +54,11 @@ class Devil {
 	}
 	public int getsy(){
 		return sy;
+	}
+	public boolean collideMC(){
+		if (posx > mc.getX() + mc.getsx() || posx + sx < mc.getX() || posy < mc.getY()+mc.getsy() || posy + sy < mc.getY())
+			return false;
+		return true;
 	}
 	public void addTime(BoxHead BH){
 		//call this method during the main method with a timer to call it at regular intervals
