@@ -60,12 +60,11 @@ public class GamePanel extends JPanel implements KeyListener{
 	public void checkPause(){
 		//display another pause screen
 		if (keys[KeyEvent.VK_P]){
+			System.out.println("CHECKPAUSE");
 			BH.state=BH.PAUSE;
-		}
-	}
-	public void checkUnPause(){
-		if (keys[KeyEvent.VK_P]){
-			BH.state=BH.GAME;
+			setFocusable(false);
+    		BH.sm.requestFocus();
+    		keys[KeyEvent.VK_P]=false;
 		}
 	}
 	public void moveMC(){
