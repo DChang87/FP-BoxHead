@@ -20,7 +20,11 @@ public class GamePanel extends JPanel implements KeyListener{
 	private int spriteCounter = 0;
 	private int[] weapondist = new int[30];
 	private int rectsx = 30, rectsy = 70;
-	
+	//add this
+	private String[] weaponNames = new String[10];
+	//private int gs1x=72,gs1y=1273,gs2x=905,gs2y=73,ang1=90,ang2=180; //generation spot 1, generation spot 2
+	private int gs1x=100,gs1y=100,gs2x=600,gs2y=600,ang1=90,ang2=180;
+	//stop this
 	public GamePanel(BoxHead bh){
 		BH=bh;
 		keys = new boolean[65535];
@@ -345,7 +349,58 @@ public class GamePanel extends JPanel implements KeyListener{
 			}
 		}
 	}
+	//add this
+	public void generateEnemy(){
+		//level 1 (1-3)
+		//level 2 (2-5)
+		//level 3 (3-7)
+		//level 4 (4-9)
+		//level 5 (5-11)
+		int maxZ=1,minZ=3,maxD=0,minD=1;
+		int generateZ,generateD; //the number of zombies and devils generated at this time
+		int pos1Z,pos2Z,pos1D,pos2D;
+		if (BH.ZombiesThisLevel>0){
+			generateZ = (int)Math.random()*(Math.min(BH.ZombiesThisLevel-minZ, maxZ-minZ))+minZ;
+			//randomly generate the number of Zombies needed based on the maximum Zombie generation allowed for this level and the the remaining allowance of zombie for the level
+			//add on the minimum zombie generatoin allowed to ensure that enough zombies are generated
+			BH.ZombiesThisLevel-=generateZ;
+			pos1Z = generateZ/2;
+			pos2Z = generateZ-pos1Z;
+			for (int i=0;i<pos1Z;i++){
+				BH.allZombies.add(new Zombie(gs1x+(int)Math.random()*40-20,gs1y+(int)Math.random()*40-20,ang1,BH.mc));
+			}
+			//the number of zombies and devils required for each spot
+			for (int i=0;i<pos2Z;i++){
+				BH.allZombies.add(new Zombie(gs2x+(int)Math.random()*40-20,gs2y+(int)Math.random()*40-20,ang2,BH.mc));
+			}
+
+		}
+		if (BH.DevilsThisLevel>0){
+			generateD = (int)Math.random()*(Math.min(BH.DevilsThisLevel-minD, maxD-minD))+minD;
+			BH.DevilsThisLevel-=generateD;
+			pos1D = generateD/2;
+			pos2D = generateD-pos1D;
+			for (int i=0;i<pos1D;i++){
+				BH.allDevils.add(new Devil(gs1x+(int)Math.random()*40-20,gs1y+(int)Math.random()*40-20,ang1,BH.mc));
+			}
+			for (int i=0;i<pos2D;i++){
+				BH.allDevils.add(new Devil(gs2x+(int)Math.random()*40-20,gs2y+(int)Math.random()*40-20,ang2,BH.mc));
+			}
+		}		
+	}
 	
+	public void checkBoxCollision(){
+		int sizex=28,sizey=28;
+		for (int i=0;i<BH.allBoxes.size();i++){
+			MagicalBox box = BH.allBoxes.get(i);
+			//if (x1+rectsx < x2 || x1 > x2 + rectsx || y1 + rectsy < y2 || y1 > y2 + rectsy)
+			if (BH.mc.getX()+BH.mc.getWidth()<box.getX()||BH.mc.getX()>box.getX()+sizex||BH.mc.getY()+BH.mc.getLength()<box.getY()||BH.mc.getY()>box.getY()+sizey){
+				//if they do collide
+			}
+		}
+		
+	}
+	//stop	
 	public void paintComponent(Graphics g){
 		Font Sfont = new Font("Calisto MT", Font.BOLD, 20);
 		g.setFont(Sfont);
