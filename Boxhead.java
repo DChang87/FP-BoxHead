@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 public class BoxHead extends JFrame implements ActionListener{
-	Timer fireTimer,myTimer,shootTimer,zombieTimer;
+	Timer fireTimer,myTimer,shootTimer,zombieTimer,enemyGenerationTimer;
 	public final int START=0,GAME = 1,PAUSE=2;
 	public int state=START;
 	public int score = 0;
@@ -18,6 +18,16 @@ public class BoxHead extends JFrame implements ActionListener{
 	public ArrayList<PosPair> activeBullets = new ArrayList<PosPair>(); //private?
 	public ArrayList<MagicalBox> allBoxes = new ArrayList<MagicalBox>();
 	public ArrayList<Image> bulletSprites=new ArrayList<Image>();
+	
+	
+	
+	
+	public int ZombiesThisLevel=10, DevilsThisLevel=3;
+	//need an arraylist to store these values and assign them as levels go
+	
+	
+	
+	
 	MainCharacter mc;
 	StartScreen startS;
 	//add this
@@ -30,11 +40,19 @@ public class BoxHead extends JFrame implements ActionListener{
 		setLayout(new BorderLayout());
 		shootTimer = new Timer(100,this);
 		zombieTimer = new Timer(200,this);
+		
+		
+		
+		enemyGenerationTimer = new Timer(20000,this);
+		
+		
+		
+		
 		fireTimer = new Timer(100,this); //timer used to increase the timeCount on the fireball for the devil
 		myTimer = new Timer(20,this); //myTimer is used to record the time for general movements in the game
 		mc = new MainCharacter("damn it leo", 200, 200);
-		allZombies.add(new Zombie(400,400,0,mc));
 		//allDevils.add(new Devil(300,300,0,mc));
+		allZombies.add(new Zombie(300,200,0,mc));
 		startS = new StartScreen(this);
 		startS.setLocation(0,0);
 		startS.setSize(800,640);
@@ -62,6 +80,7 @@ public class BoxHead extends JFrame implements ActionListener{
 		shootTimer.start();
 		myTimer.start();
 		zombieTimer.start();
+		enemyGenerationTimer.start();
     }
 	public void actionPerformed(ActionEvent evt) {
 		Object source = evt.getSource();
@@ -77,13 +96,15 @@ public class BoxHead extends JFrame implements ActionListener{
 				game.moveMC();
 				game.moveBullets();
 				game.checkBulletCollision();
-				//*********************************************
-				game.checkBulletDistance();
-				//*********************************************
 				game.checkMC();
 				game.checkPause();
+				
+				game.checkBoxCollision();
+				
+				
 			}
 			if (source == zombieTimer){
+				
 				game.addZombieCounter();
 			}
 			if (source==shootTimer){
@@ -93,6 +114,9 @@ public class BoxHead extends JFrame implements ActionListener{
 				game.moveFireballs();
 				//check if there are devil
 				//if there are, add on to the timer counter for each devil
+			}
+			if (source==enemyGenerationTimer){
+				game.generateEnemy();
 			}
 			game.repaint();
 		}
