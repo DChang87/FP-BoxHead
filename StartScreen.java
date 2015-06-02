@@ -8,7 +8,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 public class StartScreen extends JPanel implements MouseMotionListener, MouseListener{
 	private static int mouseX,mouseY;
-	private Image background = new ImageIcon("StartScreen.jpg").getImage();
+	private Image background = new ImageIcon("tempbackground.jpg").getImage();
 	private boolean down=false;
 	BoxHead mainFrame;
 	public StartScreen(BoxHead b){
@@ -52,6 +52,7 @@ public class StartScreen extends JPanel implements MouseMotionListener, MouseLis
     	//draw the background and the button (According to the situation)
     	g.drawImage(background,0,0,this);
     	if (down){
+    		System.out.println("down");
     		mainFrame.state=mainFrame.GAME;
     		setFocusable(false);
     		mainFrame.game.requestFocus();
