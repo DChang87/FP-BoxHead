@@ -1,10 +1,14 @@
 public class PosPair{
     private final int ANGLE, Type;
-    private double X,Y;
+    private double X,Y, origX, origY;
+    private int[] typedist = new int[30];
+    
     public PosPair(int x,int y,int deg,int type)
     {
         X=x;
         Y=y;
+        origX = x;
+        origY = y;
         ANGLE = deg;
         Type = type;
     }
@@ -13,6 +17,12 @@ public class PosPair{
     }
     public int getY(){
     	return (int)Y;
+    }
+    public int getorigX(){
+    	return (int)origX;
+    }
+    public int getorigY(){
+    	return (int)origY;
     }
     public double getDX(){
     	return X;
