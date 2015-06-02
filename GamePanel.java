@@ -120,11 +120,13 @@ public class GamePanel extends JPanel implements KeyListener{
 			spriteCounter++;
 		}
 	}
-	public void moveEnemy(){
+	public void moveZombie(){
 		for (int i=0; i< BH.allZombies.size(); i++){
 			Zombie temp = BH.allZombies.get(i);
 			double ManhatX = Math.abs(temp.getX() - BH.mc.getX()), ManhatY = Math.abs(temp.getY() - BH.mc.getY()), speed = temp.getspeed();
 			double moveX = ManhatX/(ManhatX+ManhatY)*speed, moveY = ManhatY/(ManhatX+ManhatY)*speed;
+			temp.setAngle(Math.toDegrees(3.14159265358+Math.atan2(temp.getY() - BH.mc.getY(),temp.getX() - BH.mc.getX())));
+			
 			if (temp.getX() <= BH.mc.getX()){
 				temp.setX(temp.getX()+moveX);
 			}
@@ -177,10 +179,6 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		//remember to check the devils to
 		return flag;
-	}
-	public int calculateHealth(){
-		//full health is at 100
-		return (int)(BH.mc.getHealth()/100*20);
 	}
 	public boolean checkOutside(int x,int y){
 		return x<0||x>800||y<0||y>640;
@@ -236,6 +234,23 @@ public class GamePanel extends JPanel implements KeyListener{
 			BH.fireballs.remove(pair);
 		}
 	}
+	public void checkMC(){
+		for (Zombie a:BH.allZombies)
+		{
+			if (a.collideMC())
+			{
+				BH.mc.setHealth(BH.mc.getHealth()-10);
+			}
+		}
+		for (Devil a:BH.allDevils)
+		{
+			if (a.collideMC())
+			{
+				BH.mc.setHealth(BH.mc.getHealth()-10);
+			}
+		}
+	}
+	
 	public void paintComponent(Graphics g){
 		Font Sfont = new Font("Calisto MT", Font.BOLD, 20);
 		g.setFont(Sfont);
@@ -243,7 +258,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		g.drawString(BH.mc.getName(), BH.mc.getX()-5, BH.mc.getY()-10); //maybe do the string formatting with this later if we have time
 		//drawing the health bar
 		//figure out the colouring of the bar ugh
-		g.drawRect(BH.mc.getX()-5,BH.mc.getY()-3,calculateHealth(),5); //filling of the bar
+		g.drawRect(BH.mc.getX()-5,BH.mc.getY()-3,BH.mc.calculateHealth(),5); //filling of the bar
 		g.drawRect(BH.mc.getX()-5, BH.mc.getY()-3, 20, 5); //drawing the outline
 		
 		for (int i=0;i<BH.activeBullets.size();i++){
@@ -265,7 +280,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		g.drawImage(charSprites[BH.mc.getANGLE()/45][spriteCounter%3],BH.mc.getX(),BH.mc.getY(),this);
 		for (int i=0;i<BH.allZombies.size();i++){
 			Zombie a = BH.allZombies.get(i);
-			g.drawImage(zombieSprites[a.getANG()/45][a.returnSpriteCounter()%8], a.getX(),a.getY(),this);
+			g.drawImage(zombieSprites[a.getAngle()/45][a.returnSpriteCounter()%8], a.getX(),a.getY(),this);
 		}
 		//g.drawRect(BH.mc.getX(),BH.mc.getY(),BH.mc.getsx(),BH.mc.getsy());
 	}
