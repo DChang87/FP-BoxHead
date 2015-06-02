@@ -48,7 +48,7 @@ public class GamePanel extends JPanel implements KeyListener{
     }
 	public boolean checkCollision(int fx,int fy,int mcx,int mcy){
 		//check if the fireball is on the character
-		return (fx>=mcx && fx <=mcx+BH.mc.getWidth() && fy>=mcy && fy<=mcy+BH.mc.getLength());
+		return (fx+10>=mcx && fx+10 <=mcx+BH.mc.getWidth() && fy+10>=mcy && fy+10<=mcy+BH.mc.getLength());
 	}
 	public void MCshoot(){
 		if (keys[KeyEvent.VK_SPACE]){
@@ -142,6 +142,29 @@ public class GamePanel extends JPanel implements KeyListener{
 			
 		}
 	}
+	public void moveDevil(){
+		for (int i=0; i< BH.allDevils.size(); i++){
+			Devil temp = BH.allDevils.get(i);
+			double ManhatX = Math.abs(temp.getX() - BH.mc.getX()), ManhatY = Math.abs(temp.getY() - BH.mc.getY()), speed = temp.getspeed();
+			double moveX = ManhatX/(ManhatX+ManhatY)*speed, moveY = ManhatY/(ManhatX+ManhatY)*speed;
+			temp.setAngle(Math.toDegrees(3.14159265358+Math.atan2(temp.getY() - BH.mc.getY(),temp.getX() - BH.mc.getX())));
+			temp.addTime(BH);
+			if (temp.getX() <= BH.mc.getX()){
+				temp.setX(temp.getX()+moveX);
+			}
+			else{
+				temp.setX(temp.getX()-moveX);
+			}
+			if (temp.getY() <= BH.mc.getY()){
+				temp.setY(temp.getY()+moveY);
+			}
+			else{
+				temp.setY(temp.getY()-moveY);
+			}
+			
+		}
+		
+	}
 	
 	
 	public boolean enemyCollision(int x, int y){
@@ -150,7 +173,6 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (int i=0; i<BH.allZombies.size(); i++){
 			if (BH.allZombies.get(i).getCollide(x,y)){
 				flag = true;
-				System.out.println("COLLIDE");
 				BH.allZombies.get(i).setHealth(BH.allZombies.get(i).getHealth() - 10);
 			}
 			if (BH.allZombies.get(i).getHealth() <= 0){
@@ -166,7 +188,6 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (int i=0;i<BH.allDevils.size();i++){
 			if (BH.allDevils.get(i).getCollide(x,y)){
 				flag = true;
-				System.out.println("COLLIDE DEVILS");
 				BH.allDevils.get(i).setHealth(BH.allDevils.get(i).getHealth() - 10);
 			}
 			if (BH.allDevils.get(i).getHealth() <= 0){
@@ -220,7 +241,7 @@ public class GamePanel extends JPanel implements KeyListener{
 			PosPair temp = BH.fireballs.get(i);
 			final int ANG = temp.getANGLE();
 			double xx = temp.getDX(), yy = temp.getDY();
-			BH.fireballs.get(i).setPos(xx+10*Math.cos(ANG),yy+10*Math.sin(ANG));
+			BH.fireballs.get(i).setPos(xx+20*Math.cos(ANG),yy+20*Math.sin(ANG));
 			if (checkCollision(BH.fireballs.get(i).getX(),BH.fireballs.get(i).getY(),BH.mc.getX(),BH.mc.getY())){
 				//decrease health by 15 points per fireball
 				BH.mc.setHealth(BH.mc.getHealth()-15);
@@ -268,18 +289,24 @@ public class GamePanel extends JPanel implements KeyListener{
 			//we need to move the bullets...either call a function here or call it from the BoxHead class
 		}
 		for (int i=0;i<BH.fireballs.size();i++){
-			g.drawOval(BH.fireballs.get(i).getX(), BH.fireballs.get(i).getY(), 50, 50);
+			g.drawOval(BH.fireballs.get(i).getX(), BH.fireballs.get(i).getY(), 20, 20);
 		}
 		for (int i=0;i<BH.allZombies.size();i++){
 			Zombie a = BH.allZombies.get(i);
 			g.drawRect(a.getX(),a.getY(),a.getsx(), a.getsy());
-			System.out.println(a.getX() + " " + a.getY());
+		}
+		for (int i=0;i<BH.allDevils.size();i++){
+			Devil a = BH.allDevils.get(i);
+			g.drawRect(a.getX(),a.getY(),a.getsx(), a.getsy());
 		}
 		
 		g.setColor(new Color (255,0,0));
 		g.drawImage(charSprites[BH.mc.getANGLE()/45][spriteCounter%3],BH.mc.getX(),BH.mc.getY(),this);
 		for (int i=0;i<BH.allZombies.size();i++){
 			Zombie a = BH.allZombies.get(i);
+			g.drawImage(zombieSprites[a.getAngle()/45][a.returnSpriteCounter()%8], a.getX(),a.getY(),this);
+		}
+		for (Devil a : BH.allDevils){
 			g.drawImage(zombieSprites[a.getAngle()/45][a.returnSpriteCounter()%8], a.getX(),a.getY(),this);
 		}
 		//g.drawRect(BH.mc.getX(),BH.mc.getY(),BH.mc.getsx(),BH.mc.getsy());
