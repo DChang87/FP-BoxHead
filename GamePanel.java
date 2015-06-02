@@ -180,6 +180,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 
 		for (Zombie zzh8829:toRemoveZ){
+			BH.allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY()));
 			BH.score+=200;
 			BH.allZombies.remove(zzh8829);
 		}
