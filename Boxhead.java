@@ -16,6 +16,7 @@ public class BoxHead extends JFrame implements ActionListener{
 	public ArrayList<PosPair> fireballs = new ArrayList<PosPair>(); //this stores all of the fireballs that are currently in the game
 	//make an arraylist of active bullets that save the info about the bullet including the type of gun
 	public ArrayList<PosPair> activeBullets = new ArrayList<PosPair>(); //private?
+	public ArrayList<MagicalBox> allBoxes = new ArrayList<MagicalBox>();
 	public ArrayList<Image> bulletSprites=new ArrayList<Image>();
 	MainCharacter mc;
 	StartScreen startS;
