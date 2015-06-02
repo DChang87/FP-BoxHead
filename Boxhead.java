@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 public class BoxHead extends JFrame implements ActionListener{
-	Timer fireTimer,myTimer,shootTimer;
+	Timer fireTimer,myTimer,shootTimer,zombieTimer;
 	public final int START=0,GAME = 1,PAUSE=2;
 	public int state=START;
 	public int score = 0;
@@ -28,12 +28,13 @@ public class BoxHead extends JFrame implements ActionListener{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(800,640);
 		setLayout(new BorderLayout());
-		
-		shootTimer = new Timer(200,this);
+		shootTimer = new Timer(100,this);
+		zombieTimer = new Timer(200,this);
 		fireTimer = new Timer(100,this); //timer used to increase the timeCount on the fireball for the devil
 		myTimer = new Timer(20,this); //myTimer is used to record the time for general movements in the game
 		mc = new MainCharacter("damn it leo", 200, 200);
-		allDevils.add(new Devil(300,300,0,mc));
+		allZombies.add(new Zombie(400,400,0,mc));
+		//allDevils.add(new Devil(300,300,0,mc));
 		startS = new StartScreen(this);
 		startS.setLocation(0,0);
 		startS.setSize(800,640);
@@ -60,6 +61,7 @@ public class BoxHead extends JFrame implements ActionListener{
 		fireTimer.start();
 		shootTimer.start();
 		myTimer.start();
+		zombieTimer.start();
     }
 	public void actionPerformed(ActionEvent evt) {
 		Object source = evt.getSource();
@@ -75,12 +77,17 @@ public class BoxHead extends JFrame implements ActionListener{
 				game.moveMC();
 				game.moveBullets();
 				game.checkBulletCollision();
+				//*********************************************
+				game.checkBulletDistance();
+				//*********************************************
 				game.checkMC();
 				game.checkPause();
 			}
-			if (source == shootTimer){
-				game.MCshoot();
+			if (source == zombieTimer){
 				game.addZombieCounter();
+			}
+			if (source==shootTimer){
+				game.MCshoot();
 			}
 			if (source==fireTimer){
 				game.moveFireballs();
@@ -90,7 +97,7 @@ public class BoxHead extends JFrame implements ActionListener{
 			game.repaint();
 		}
 		else if (state==PAUSE){
-			System.out.println("PAUSE");
+			//System.out.println("PAUSE");
 			if (source==myTimer){
 				sm.checkUnPause();
 			}
