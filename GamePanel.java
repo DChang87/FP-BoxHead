@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-// Paul Krishnamurthy 
+// Paul Krishnamurthy
 
 
 public class GamePanel extends JPanel implements KeyListener{
@@ -58,6 +58,9 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		generateEnemy();
 		updateweapon();
+		weaponNames[1]="pistol";
+		weaponNames[2]="UZI";
+		weaponNames[3]="shotgun";
 	}
 	public void updateweapon(){
 		//we keep track of how far the weapon can travel
@@ -87,6 +90,7 @@ public class GamePanel extends JPanel implements KeyListener{
 			//if the user shoots, add a bullet into the arraylist keeping track of flying bullets
 			//BH.addBullet(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.getWeapon()));
 			activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.mc.getWeapon()));
+			BH.mc.useAmmo(BH.mc.getWeapon());
 		}
 	}
 	public void checkPause(){
@@ -366,6 +370,21 @@ public class GamePanel extends JPanel implements KeyListener{
 			}
 		}
 	}
+	public void switchWeapon(){
+		if (keys[KeyEvent.VK_1]){
+			BH.mc.setWeapon(1);
+		}
+		else if (keys[KeyEvent.VK_2]){
+			if (BH.mc.getAmmo(2)>0){
+				BH.mc.setWeapon(2);
+			}
+		}
+		else if (keys[KeyEvent.VK_3]){
+			if (BH.mc.getAmmo(3)>0){
+				BH.mc.setWeapon(3);
+			}
+		}
+	}
 	//add this
 	public void generateEnemy(){
 		//level 1 (1-3)
@@ -377,31 +396,31 @@ public class GamePanel extends JPanel implements KeyListener{
 		int generateZ,generateD; //the number of zombies and devils generated at this time
 		int pos1Z,pos2Z,pos1D,pos2D;
 		if (ZombiesThisLevel>0){
-			generateZ = (int)Math.random()*(Math.min(ZombiesThisLevel-minZ, maxZ-minZ))+minZ;
+			generateZ = (int)(Math.random()*(Math.min(ZombiesThisLevel-minZ, maxZ-minZ))+minZ);
 			//randomly generate the number of Zombies needed based on the maximum Zombie generation allowed for this level and the the remaining allowance of zombie for the level
 			//add on the minimum zombie generatoin allowed to ensure that enough zombies are generated
 			ZombiesThisLevel-=generateZ;
 			pos1Z = generateZ/2;
 			pos2Z = generateZ-pos1Z;
 			for (int i=0;i<pos1Z;i++){
-				allZombies.add(new Zombie(gs1x+(int)Math.random()*40-20,gs1y+(int)Math.random()*40-20,ang1,BH.mc));
+				allZombies.add(new Zombie(gs1x+(int)(Math.random()*60-30),gs1y+(int)(Math.random()*60-30),ang1,BH.mc));
 			}
 			//the number of zombies and devils required for each spot
 			for (int i=0;i<pos2Z;i++){
-				allZombies.add(new Zombie(gs2x+(int)Math.random()*40-20,gs2y+(int)Math.random()*40-20,ang2,BH.mc));
+				allZombies.add(new Zombie(gs2x+(int)(Math.random()*60-30),gs2y+(int)(Math.random()*60-30),ang2,BH.mc));
 			}
 
 		}
 		if (DevilsThisLevel>0){
-			generateD = (int)Math.random()*(Math.min(DevilsThisLevel-minD, maxD-minD))+minD;
+			generateD = (int)(Math.random()*(Math.min(DevilsThisLevel-minD, maxD-minD))+minD);
 			DevilsThisLevel-=generateD;
 			pos1D = generateD/2;
 			pos2D = generateD-pos1D;
 			for (int i=0;i<pos1D;i++){
-				allDevils.add(new Devil(gs1x+(int)Math.random()*40-20,gs1y+(int)Math.random()*40-20,ang1,BH.mc));
+				allDevils.add(new Devil(gs1x+(int)(Math.random()*60-30),gs1y+(int)(Math.random()*60-30),ang1,BH.mc));
 			}
 			for (int i=0;i<pos2D;i++){
-				allDevils.add(new Devil(gs2x+(int)Math.random()*40-20,gs2y+(int)Math.random()*40-20,ang2,BH.mc));
+				allDevils.add(new Devil(gs2x+(int)(Math.random()*60-30),gs2y+(int)(Math.random()*60-30),ang2,BH.mc));
 			}
 		}		
 	}
@@ -486,7 +505,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		Font Sfont = new Font("Calisto MT", Font.BOLD, 20);
 		g.setFont(Sfont);
 		g.drawImage(background, -mapx, -mapy, this);
-		g.drawString(BH.mc.getName(), BH.mc.getX()-5, BH.mc.getY()-10); //maybe do the string formatting with this later if we have time
+		g.drawString(weaponNames[BH.mc.getWeapon()], BH.mc.getX()-5, BH.mc.getY()-10); //maybe do the string formatting with this later if we have time
 		//drawing the health bar
 		//figure out the colouring of the bar ugh
 		g.drawRect(BH.mc.getX()-5,BH.mc.getY()-3,BH.mc.calculateHealth(),5); //filling of the bar
