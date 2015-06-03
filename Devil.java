@@ -83,7 +83,7 @@ class Devil {
 		//System.out.println(timeCount+ " " + timeCountLim);
 		if (timeCount==timeCountLim){
 			timeCount=0;
-			BH.fireballs.add(new PosPair((int)posx,(int)posy,angle,FIREBALL)); 
+			BH.game.fireballs.add(new PosPair((int)posx,(int)posy,angle,FIREBALL)); 
 		}
 	}
 }
