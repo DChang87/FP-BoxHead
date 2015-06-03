@@ -2,9 +2,9 @@ import java.util.*;
 class MainCharacter {
 	private int health=1000, ANGLE,sx = 30, sy = 70, sp=10;
 	private String name;
-	private int cweapon = 1000;
+	private int cweapon = 1;
 	public double posx, posy;
-	private final int NUMOFWEAPONS = 5;
+	private final int NUMOFWEAPONS = 7;
 	private int[] weapons = new int[NUMOFWEAPONS];
 	public MainCharacter(String n, int px, int py){
 		name = n;
@@ -67,5 +67,8 @@ class MainCharacter {
 	}
 	public int calculateHealth(){
 		return (int)(health/100*20);
+	}
+	public void addAmmo(int n){
+		weapons[n]=100;
 	}
 }
