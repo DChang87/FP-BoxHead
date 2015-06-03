@@ -20,7 +20,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	private int spriteCounter = 0;
 	private int[] weapondist = new int[30];
 	private int rectsx = 30, rectsy = 70;
-	
+	final int HEALTH=0,PISTOL=1,UZI=2,PISTOLP=11,SHOTGUN=3,UZIP=21,BARREL = 4,UZIPP=22,GRENADE= 5, FAKEWALLS=6;
 	private ArrayList<Zombie> allZombies = new ArrayList<Zombie>(); //this stores all of the zombies that are currently in the game
 	private ArrayList<Devil> allDevils = new ArrayList<Devil>(); //this stores all of the devils that are currently running around in the game
 	public ArrayList<PosPair> fireballs = new ArrayList<PosPair>(); //this stores all of the fireballs that are currently in the game
@@ -402,10 +402,17 @@ public class GamePanel extends JPanel implements KeyListener{
 		int sizex=28,sizey=28;
 		for (int i=0;i<allBoxes.size();i++){
 			MagicalBox box = allBoxes.get(i);
-			//if (x1+rectsx < x2 || x1 > x2 + rectsx || y1 + rectsy < y2 || y1 > y2 + rectsy)
+			//if (x1+rectsx1 < x2 || x1 > x2 + rectsx2 || y1 + rectsy1 < y2 || y1 > y2 + rectsy2)
 			if (BH.mc.getX()+BH.mc.getWidth()<box.getX()||BH.mc.getX()>box.getX()+sizex||BH.mc.getY()+BH.mc.getLength()<box.getY()||BH.mc.getY()>box.getY()+sizey){
 				//if they do collide
+				addItem(box.generateItem());
 			}
+		}
+		
+	}
+	public void addItem(int item){
+		if (item==HEALTH){
+			BH.mc.setHealth(1000);
 		}
 		
 	}
