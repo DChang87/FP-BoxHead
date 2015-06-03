@@ -82,9 +82,9 @@ public class BoxHead extends JFrame implements ActionListener{
 				game.checkBulletCollision();
 				game.checkMC();
 				game.checkPause();
-				
+				game.moveMap();
 				game.checkBoxCollision();
-				
+				game.updateposition();
 				
 			}
 			if (source == zombieTimer){
