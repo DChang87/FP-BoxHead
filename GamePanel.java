@@ -9,11 +9,13 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+// Paul Krishnamurthy 
+
 
 public class GamePanel extends JPanel implements KeyListener{
 	private BoxHead BH;
 	private boolean[] keys; 
-	private Image background = new ImageIcon("map.jpg").getImage();
+	private Image background = new ImageIcon("forestmap.jpg").getImage();
 	private Image boxSprite = new ImageIcon("box.png").getImage();
 	private Image[][] charSprites = new Image[8][3];
 	private Image[][] zombieSprites = new Image[8][8];
@@ -29,13 +31,16 @@ public class GamePanel extends JPanel implements KeyListener{
 	private ArrayList<MagicalBox> allBoxes = new ArrayList<MagicalBox>();
 	private ArrayList<Image> bulletSprites=new ArrayList<Image>();
 	private int ZombiesThisLevel=10, DevilsThisLevel=3;
+
+	private int mapx=0, mapy=0, mapsx = 2000, mapsy = 2000, bx1 = 100, bx2 = 670, by1 = 100, by2 = 510;
+	private int screensx = 800, screensy = 640;
 	
-	
+	private int shiftx = 0, shifty = 0;
 	
 	//add this
 	private String[] weaponNames = new String[10];
 	//private int gs1x=72,gs1y=1273,gs2x=905,gs2y=73,ang1=90,ang2=180; //generation spot 1, generation spot 2
-	private int gs1x=100,gs1y=100,gs2x=600,gs2y=600,ang1=90,ang2=180;
+	private int gs1x=100,gs1y=100,gs2x=500,gs2y=500,ang1=0,ang2=270;
 	//stop this
 	public GamePanel(BoxHead bh){
 		BH=bh;
@@ -51,13 +56,13 @@ public class GamePanel extends JPanel implements KeyListener{
 				zombieSprites[i][k]=new ImageIcon("zombie"+i+k+".png").getImage();
 			}
 		}
+		generateEnemy();
 		updateweapon();
 	}
 	public void updateweapon(){
 		//we keep track of how far the weapon can travel
 		weapondist[1] = 400;
-		weapondist[2] = 500;
-		
+		weapondist[2] = 500;	
 	}
 	public void keyTyped(KeyEvent e){
 		
@@ -252,6 +257,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (Zombie zzh8829:toRemoveZ){
 			//for every zombie that dies, add onto the score, remove the zombie and add a magical box to the screen
 			allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY()));
+			
 			BH.score+=200;
 			allZombies.remove(zzh8829);
 		}
@@ -268,8 +274,10 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (Devil zzh8829:toRemoveD){
 			BH.score+=200;
 			allDevils.remove(zzh8829);
+			allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY()));
 		}
 		//remember to check the devils to
+		System.out.println("Boxes"+allBoxes.size());
 		return flag;
 	}
 	public boolean checkOutside(int x,int y){
@@ -400,29 +408,84 @@ public class GamePanel extends JPanel implements KeyListener{
 	
 	public void checkBoxCollision(){
 		int sizex=28,sizey=28;
+		//System.out.println("BOX"+allBoxes.size());
+		ArrayList<MagicalBox> toRemove = new ArrayList<MagicalBox>();
 		for (int i=0;i<allBoxes.size();i++){
 			MagicalBox box = allBoxes.get(i);
 			//if (x1+rectsx1 < x2 || x1 > x2 + rectsx2 || y1 + rectsy1 < y2 || y1 > y2 + rectsy2)
-			if (BH.mc.getX()+BH.mc.getWidth()<box.getX()||BH.mc.getX()>box.getX()+sizex||BH.mc.getY()+BH.mc.getLength()<box.getY()||BH.mc.getY()>box.getY()+sizey){
+			//if (BH.mc.getX()+BH.mc.getWidth()<box.getX()||BH.mc.getX()>box.getX()+sizex||BH.mc.getY()+BH.mc.getLength()<box.getY()||BH.mc.getY()>box.getY()+sizey){
 				//if they do collide
+				//System.out.println("Collisionnnn"+BH.mc.getHealth());
+				//addItem(box.generateItem());
+				//toRemove.add(box);
+			//}
+			if (Math.abs(BH.mc.getX()-box.getX())<=5&&Math.abs(BH.mc.getY()-box.getY())<=5){
+				System.out.println("Collisionnnn"+BH.mc.getHealth());
 				addItem(box.generateItem());
+				toRemove.add(box);
 			}
+		}
+		for (MagicalBox box:toRemove){
+			System.out.println("REMOVE");
+			allBoxes.remove(box);
 		}
 		
 	}
 	public void addItem(int item){
+		System.out.println("ITEM ADDED");
 		if (item==HEALTH){
-			BH.mc.setHealth(1000);
+			BH.mc.setHealth(Math.min(BH.mc.getHealth()+500,1000));
 		}
 		else{
 			BH.mc.addAmmo(item);
+			System.out.println("AMMO ADDED");
 		}
 	}
+	public void moveMap()
+	{
+		shiftx = shifty = 0;
+		int mcx = BH.mc.getX(), mcy = BH.mc.getY(); //character position
+		if (mcx < bx1 && mapx!=0){ //checks if beyond boundarym and if need of shifiting
+			mapx = mapx - (bx1 - mcx);
+			shiftx =  - (bx1 - mcx);
+			mcx = bx1;
+		}
+		else if (mcx > bx2 && mapx!=mapsx-screensx){
+			mapx = mapx + (mcx - bx2);
+			shiftx = (mcx - bx2);
+			mcx = bx2;
+		}
+		if (mcy < by1 && mapy!=0){
+			mapy = mapy - (by1 - mcy);
+			shifty =  - (by1 - mcy);
+			mcy = by1;
+		}
+		else if (mcy > by2 && mapy!=mapsy-screensy){
+			mapy = mapy + (mcy - by2);
+			shifty = (mcy - by2);
+			mcy = by2;
+		}
+		BH.mc.setX(mcx);	//replace the coordinates with new ones
+		BH.mc.setY(mcy);
+		mapx = Math.max(0,Math.min(mapx,mapsx-screensx));
+		mapy = Math.max(0,Math.min(mapy,mapsy-screensy));
+	}
+	
+	public void updateposition(){
+		if (shiftx == 0 && shifty == 0){
+			return;
+		}
+		for (Zombie a: allZombies){
+			a.setX(a.getDX() - shiftx);
+			a.setY(a.getDY() - shifty);
+		}
+	}
+	
 	//stop	
 	public void paintComponent(Graphics g){
 		Font Sfont = new Font("Calisto MT", Font.BOLD, 20);
 		g.setFont(Sfont);
-		g.drawImage(background, 0, 0, this);
+		g.drawImage(background, -mapx, -mapy, this);
 		g.drawString(BH.mc.getName(), BH.mc.getX()-5, BH.mc.getY()-10); //maybe do the string formatting with this later if we have time
 		//drawing the health bar
 		//figure out the colouring of the bar ugh
@@ -459,6 +522,12 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (Devil a : allDevils){
 			g.drawImage(zombieSprites[(a.getAngle()+22)%360/45][a.returnSpriteCounter()%8], a.getX(),a.getY(),this);
 		}
-		//g.drawRect(BH.mc.getX(),BH.mc.getY(),BH.mc.getsx(),BH.mc.getsy());
+		//g.drawRect(BH.mc.getX(),BH.mc.getY(),BH.mc.getsx(),BH.mc.getsy())
+		for (MagicalBox box: allBoxes){
+			g.setColor(Color.BLUE);
+			//g.drawOval(box.getX(), box.getY(), 2, 2);
+			g.drawRect(box.getX()-5, box.getY()-5, 10, 10);
+		}
+		g.drawOval(BH.mc.getX(), BH.mc.getY(), 2, 2);
 	}
 }
