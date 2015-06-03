@@ -414,7 +414,9 @@ public class GamePanel extends JPanel implements KeyListener{
 		if (item==HEALTH){
 			BH.mc.setHealth(1000);
 		}
-		
+		else{
+			BH.mc.addAmmo(item);
+		}
 	}
 	//stop	
 	public void paintComponent(Graphics g){
