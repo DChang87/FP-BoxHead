@@ -6,10 +6,16 @@ class MainCharacter {
 	public double posx, posy;
 	private final int NUMOFWEAPONS = 7;
 	private int[] weapons = new int[NUMOFWEAPONS];
+	//this stores all the weapons available to the character
 	public MainCharacter(String n, int px, int py){
 		name = n;
 		posx = px;
 		posy = py;
+		for (int i=0;i<NUMOFWEAPONS;i++){
+			weapons[i]=0;
+			//all weapons have default at 0
+			//pistol is unlimited
+		}
 	}
 	public int getX(){
 		return (int)posx;
@@ -59,6 +65,9 @@ class MainCharacter {
 	public int getWeapon(){
 		return cweapon;
 	}
+	public void setWeapon(int w){
+		cweapon=w;
+	}
 	public int getsx(){
 		return sx;
 	}
@@ -66,9 +75,18 @@ class MainCharacter {
 		return sy;
 	}
 	public int calculateHealth(){
-		return (int)(health/100*20);
+		return (int)(health/1000*20);
 	}
 	public void addAmmo(int n){
 		weapons[n]=100;
+	}
+	public int getAmmo(int n){
+		return weapons[n];
+	}
+	public void useAmmo(int n){
+		weapons[n]-=1;
+		if (weapons[n]==0){
+			cweapon=1;
+		}
 	}
 }
