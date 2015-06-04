@@ -89,7 +89,7 @@ public class BoxHead extends JFrame implements ActionListener{
 				//add this
 				game.checkLevelOver();
 				//stop
-				
+				game.CountDown();
 				
 			}
 			if (source == zombieTimer){
@@ -106,6 +106,9 @@ public class BoxHead extends JFrame implements ActionListener{
 			}
 			if (source==enemyGenerationTimer){
 				game.generateEnemy();
+			}
+			else if (state==OVER){
+				go.repaint();
 			}
 			game.repaint();
 		}
