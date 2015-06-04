@@ -9,6 +9,8 @@ public class BoxHead extends JFrame implements ActionListener{
 	Timer fireTimer,myTimer,shootTimer,zombieTimer,enemyGenerationTimer;
 	public final int START=0,GAME = 1,PAUSE=2;
 	public int state=START;
+	public final int OVER=3;
+	GameOver go;
 	public int score = 0;
 	GamePanel game;
 	
@@ -56,7 +58,10 @@ public class BoxHead extends JFrame implements ActionListener{
 		setResizable(false);
 		setVisible(true);
 		//game.addNotify();
-		
+		go = new GameOver(this);
+		go.setLocation(0,0);
+		go.setSize(800,640);
+		add(go);
 	}
 	public void start(){
 		//start the timers
