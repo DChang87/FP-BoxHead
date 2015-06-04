@@ -40,6 +40,14 @@ public class GamePanel extends JPanel implements KeyListener{
 	private ArrayList<Image> bulletSprites=new ArrayList<Image>();
 	private int ZombiesThisLevel=10, DevilsThisLevel=3;
 
+	//add this
+	private int TotalLevelCount=5;
+	private int[] ZombiesEachLevel = new int[TotalLevelCount];
+	private int[] DevilsEachLevel = new int[TotalLevelCount];
+	private int displayLevelCounter=0; //this is the counter used to display the "+-+-+-+ Level 2 +-+-+-+"
+	private int currentLevel=0;
+	
+	//stop
 	private int mapx=0, mapy=0, mapsx = 2000, mapsy = 2000, bx1 = 100, bx2 = 670, by1 = 100, by2 = 510;
 	private int screensx = 800, screensy = 640;
 	
@@ -77,7 +85,18 @@ public class GamePanel extends JPanel implements KeyListener{
 			mask_background = ImageIO.read(file);
 		}
 		catch (IOException ex){}
-		
+		//add this
+		ZombiesThisLevel = ZombiesEachLevel[currentLevel];
+		DevilsThisLevel = DevilsEachLevel[currentLevel];
+		ZombiesEachLevel[1]=1;
+		DevilsEachLevel[1]=0;
+		ZombiesEachLevel[2]=15;
+		DevilsEachLevel[2]=5;
+		ZombiesEachLevel[3]=20;
+		DevilsEachLevel[3]=7;
+		ZombiesEachLevel[4]=25;
+		DevilsEachLevel[4]=10;
+		//stop
 	}
 	public void updateweapon(){
 		//we keep track of how far the weapon can travel
@@ -418,7 +437,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		//level 3 (3-7)
 		//level 4 (4-9)
 		//level 5 (5-11)
-		int maxZ=1,minZ=3,maxD=0,minD=1;
+		int maxZ=3,minZ=1,maxD=1,minD=0;
 		int generateZ,generateD; //the number of zombies and devils generated at this time
 		int pos1Z,pos2Z,pos1D,pos2D;
 		if (ZombiesThisLevel>0){
@@ -548,7 +567,25 @@ public class GamePanel extends JPanel implements KeyListener{
 	}
 	
 	
-	//stop	
+	public void checkLevelOver(){
+		if (ZombiesThisLevel==0 && DevilsThisLevel==0){
+			//this level is over
+			System.out.println("LEVEUP");
+			levelUp();
+		}
+	}
+	public void levelUp(){
+		System.out.println("leveUp()");
+		currentLevel++;
+		ZombiesThisLevel=ZombiesEachLevel[currentLevel];
+		DevilsThisLevel=DevilsEachLevel[currentLevel];
+		displayLevelCounter=1000;
+		//level goes up
+		//display text that says the new level
+		//re-add the enemies to the ZombiesThisLevel and DevilsThisLevel counts
+		//
+	}
+	//stop
 	public void paintComponent(Graphics g){
 		Font Sfont = new Font("Calisto MT", Font.BOLD, 20);
 		g.setFont(Sfont);
@@ -596,5 +633,11 @@ public class GamePanel extends JPanel implements KeyListener{
 			g.drawRect(box.getX()-5, box.getY()-5, 10, 10);
 		}
 		g.drawOval(BH.mc.getX(), BH.mc.getY(), 2, 2);
+		//add
+		if (displayLevelCounter>0){
+			displayLevelCounter--;
+			g.drawString("+-+-+-+ "+currentLevel+" +-+-+-+", 400, 600);
+		}
+		//stop
 	}
 }
