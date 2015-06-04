@@ -16,6 +16,7 @@ public class SelectionMenu extends JPanel implements MouseMotionListener, MouseL
 	private boolean[] keys;
 	public SelectionMenu(BoxHead b){
 		//load the images for the start button
+		System.out.println("Selection menu");
 		keys = new boolean[65535];
 		BH=b;
 		addMouseMotionListener(this);
@@ -65,21 +66,16 @@ public class SelectionMenu extends JPanel implements MouseMotionListener, MouseL
     	//System.out.println("checkunpause");
 		if (keys[KeyEvent.VK_P] || down){
 			BH.state=BH.GAME;
-			setFocusable(false);
-    		BH.game.requestFocus();
+			System.out.println("checkunpause");
+			//setFocusable(false);
+			//BH.game.setFocusable(true);
+			BH.game.requestFocus();
+			keys[KeyEvent.VK_P]=false;
 		}
 	}
     public void paintComponent(Graphics g){
     	//draw the background and the button (According to the situation)
-    	System.out.println("selection");
     	g.drawImage(background,0,0,this);
-    	if (down || keys[KeyEvent.VK_P]){
-    		//System.out.println("down selection menu");
-    		BH.state=BH.GAME;
-    		setFocusable(false);
-    		BH.game.requestFocus();
-    		
-    	}
     }
     
 	    
