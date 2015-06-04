@@ -76,10 +76,12 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		generateEnemy();
 		updateweapon();
-		weaponNames[1]="pistol";
+		weaponNames[1]="PISTOL";
 		weaponNames[2]="UZI";
-		weaponNames[3]="shotgun";
-		
+		weaponNames[3]="SHOTGUN";
+		weaponNames[4]="BARREL";
+		weaponNames[5]="GRENADE";
+		weaponNames[6]="BARRICADE";
 		try{
 			File file= new File("map.jpg");
 			mask_background = ImageIO.read(file);
@@ -101,7 +103,9 @@ public class GamePanel extends JPanel implements KeyListener{
 	public void updateweapon(){
 		//we keep track of how far the weapon can travel
 		weapondist[1] = 400;
-		weapondist[2] = 500;	
+		weapondist[2] = 500;
+		for (int i=3; i!=7; ++i)
+			weapondist[i] = 600;
 	}
 	public void keyTyped(KeyEvent e){
 		
@@ -427,6 +431,21 @@ public class GamePanel extends JPanel implements KeyListener{
 		else if (keys[KeyEvent.VK_3]){
 			if (BH.mc.getAmmo(3)>0){
 				BH.mc.setWeapon(3);
+			}
+		}
+		else if (keys[KeyEvent.VK_4]){
+			if (BH.mc.getAmmo(4)>0){
+				BH.mc.setWeapon(4);
+			}
+		}
+		else if (keys[KeyEvent.VK_5]){
+			if (BH.mc.getAmmo(5)>0){
+				BH.mc.setWeapon(5);
+			}
+		}
+		else if (keys[KeyEvent.VK_6]){
+			if (BH.mc.getAmmo(6)>0){
+				BH.mc.setWeapon(6);
 			}
 		}
 	}
