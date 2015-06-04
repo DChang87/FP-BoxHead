@@ -183,7 +183,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public boolean vMove(int inx, int iny){
-		if (validMove(inx,iny) && validMove(inx+rectsx,iny) && validMove(inx, iny+rectsy) && validMove(inx + rectsx, iny + rectsy)){
+		if (validMove(inx,iny) && validMove(inx, iny+rectsy)){
 			return true;
 		}
 		return false;
