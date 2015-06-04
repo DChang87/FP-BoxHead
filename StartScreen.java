@@ -10,11 +10,12 @@ public class StartScreen extends JPanel implements MouseMotionListener, MouseLis
 	private static int mouseX,mouseY;
 	private Image background = new ImageIcon("tempbackground.jpg").getImage();
 	private boolean down=false;
-	BoxHead mainFrame;
+	BoxHead BH;
+	private int counter=50;
 	public StartScreen(BoxHead b){
 		//load the images for the start button
-		
-		mainFrame=b;
+		System.out.println("public startscreen");
+		BH=b;
 		addMouseMotionListener(this);
 		addMouseListener(this);
 		setSize(800,640);
@@ -33,7 +34,8 @@ public class StartScreen extends JPanel implements MouseMotionListener, MouseLis
     }  
     	 
     public void mousePressed(MouseEvent e){
-		down=true;
+		System.out.println("mousepressed");
+    	down=true;
 	}
     	
     // ---------- MouseMotionListener ------------------------------------------
@@ -48,15 +50,26 @@ public class StartScreen extends JPanel implements MouseMotionListener, MouseLis
     	return x<=mouseX && mouseX<=x+width && y<=mouseY && mouseY<=y+height;
     }
     
+    public void checkDown(){
+    	if (down){
+    		System.out.println("start screen down");
+    		BH.state=BH.GAME;
+    		//setFocusable(false);
+    		BH.game.requestFocus();
+    	}
+    }
     public void paintComponent(Graphics g){
     	//draw the background and the button (According to the situation)
     	g.drawImage(background,0,0,this);
-    	if (down){
-    		System.out.println("down");
-    		mainFrame.state=mainFrame.GAME;
+    	//System.out.println("Start screen paint component");
+    	checkDown();
+    	counter--;
+    	System.out.println(counter+" counter");
+    	if (counter==0){
+    		System.out.println("start screen down");
+    		BH.state=BH.GAME;
     		setFocusable(false);
-    		mainFrame.game.requestFocus();
-    		
+    		BH.game.requestFocus();
     	}
     }
 	    
