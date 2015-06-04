@@ -8,7 +8,13 @@ class MagicalBox {
 	int allowance=2;//allowance for the current state (as the user kills more enemies, the allowance increases and increases the diversity
 	//of the items in the box
 	int X,Y;
-	final int ITEMCOUNT=5;
+	
+	
+	//change this
+	final int ITEMCOUNT=10;
+	//stop
+	
+	
 	public MagicalBox(int x, int y){
 		X=x;
 		Y=y;
@@ -19,6 +25,18 @@ class MagicalBox {
 		allItems[1]=2;//UZI
 		//no need for pistol since pistol is unlimited
 		allItems[2]=3; //shotgun
+
+		
+		
+		
+		//add this
+		allItems[3]=4; //barrels
+		allItems[4]=5;//grenade
+		allItems[5]=6;//fake walls
+		//stop
+		
+		
+		
 		ITEM=allItems[(int) (Math.random()*allowance)];
 		return ITEM;
 	}
