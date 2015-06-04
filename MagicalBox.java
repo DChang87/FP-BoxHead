@@ -11,7 +11,7 @@ class MagicalBox {
 	
 	
 	//change this
-	final int ITEMCOUNT=10;
+	final int ITEMCOUNT=10, bsx = 28, bsy = 28;
 	//stop
 	
 	
@@ -45,6 +45,12 @@ class MagicalBox {
 	}
 	public int getY(){
 		return Y;
+	}
+	public void setX(int x){
+		X = x;
+	}
+	public void setY(int y){
+		Y = y;
 	}
 	//generate the item AFTER the box has been collected
 }
