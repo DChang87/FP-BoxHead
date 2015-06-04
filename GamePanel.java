@@ -5,11 +5,12 @@ import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-// Paul Krishnamurthy
+// Paul Krishnamurthy is a noob
 
 
 public class GamePanel extends JPanel implements KeyListener{
@@ -36,6 +37,9 @@ public class GamePanel extends JPanel implements KeyListener{
 	private int screensx = 800, screensy = 640;
 	
 	private int shiftx = 0, shifty = 0;
+	//map shift
+	private BufferedImage bwmap;
+	
 	
 	//add this
 	private String[] weaponNames = new String[10];
@@ -426,7 +430,6 @@ public class GamePanel extends JPanel implements KeyListener{
 	}
 	
 	public void checkBoxCollision(){
-		int sizex=28,sizey=28;
 		//System.out.println("BOX"+allBoxes.size());
 		ArrayList<MagicalBox> toRemove = new ArrayList<MagicalBox>();
 		for (int i=0;i<allBoxes.size();i++){
@@ -438,11 +441,13 @@ public class GamePanel extends JPanel implements KeyListener{
 				//addItem(box.generateItem());
 				//toRemove.add(box);
 			//}
-			if (Math.abs(BH.mc.getX()-box.getX())<=5&&Math.abs(BH.mc.getY()-box.getY())<=5){
-				System.out.println("Collisionnnn"+BH.mc.getHealth());
-				addItem(box.generateItem());
-				toRemove.add(box);
+			int x = box.getX(), y = box.getY(), mcx = BH.mc.getX(), mcy = BH.mc.getY();
+			if (x + box.bsx < mcx || x > mcx + BH.mc.getsx() || y + box.bsy < mcy || y > mcy + BH.mc.getsy()){
+				continue;
 			}
+			System.out.println("Collisionnnn"+BH.mc.getHealth());
+			addItem(box.generateItem());
+			toRemove.add(box);
 		}
 		for (MagicalBox box:toRemove){
 			System.out.println("REMOVE");
@@ -494,12 +499,19 @@ public class GamePanel extends JPanel implements KeyListener{
 		if (shiftx == 0 && shifty == 0){
 			return;
 		}
-		for (Zombie a: allZombies){
+		for (Zombie a : allZombies){
 			a.setX(a.getDX() - shiftx);
 			a.setY(a.getDY() - shifty);
 		}
+		for (MagicalBox a : allBoxes){
+			a.setX(a.getX()-shiftx);
+			a.setY(a.getY()-shifty);
+		}
+		for (Devil a : allDevils){
+			a.setX(a.getX()-shiftx);
+			a.setY(a.getY()-shifty);
+		}
 	}
-	
 	//stop	
 	public void paintComponent(Graphics g){
 		Font Sfont = new Font("Calisto MT", Font.BOLD, 20);
