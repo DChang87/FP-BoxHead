@@ -1,16 +1,23 @@
 
 public class Barricade {
 	final private int sx = 20, sy = 50;
-	private int posX, posY, Health;
+	private double posX, posY;
+	private int Health;
 	Barricade(int x, int y){
 		posX = x;
 		posY = y;
 	}
 	public int getX(){
-		return posX;
+		return (int)posX;
 	}
 	public int getY(){
-		return posY;
+		return (int)posY;
+	}
+	public void setX(double x){
+		posX = x;
+	}
+	public void setY(double y){
+		posY = y;
 	}
 	public int getsx(){
 		return sx;
