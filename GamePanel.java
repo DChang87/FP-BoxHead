@@ -45,7 +45,6 @@ public class GamePanel extends JPanel implements KeyListener{
 	
 	private int shiftx = 0, shifty = 0;
 	//map shift
-	private BufferedImage bwmap;
 	
 	
 	//add this
@@ -176,21 +175,22 @@ public class GamePanel extends JPanel implements KeyListener{
 			BH.mc.setAngle(90);
 			spriteCounter++;
 		}
+		int inx = (int)nx, iny = (int)ny;
 		//there is something wrong with the pixels
-		int clr=  mask_background.getRGB((int)nx,(int)ny);
-		int  red   = (clr & 0x00ff0000) >> 16;
-		int  green = (clr & 0x0000ff00) >> 8;
-		int  blue  =  clr & 0x000000ff;
-		System.out.println(red+" "+green+" "+blue);
-		if (red==255 && green==255 && blue==255){
-			if (numbercollisions((int)nx, BH.mc.getY()) <= 1){
-				BH.mc.setX(nx);
-			}
-			if (numbercollisions(BH.mc.getX(), (int)ny) <= 1){
-				BH.mc.setY(ny);
-			}
+		if (vMove(inx,iny) && numbercollisions(inx,iny) <= 1){
+			BH.mc.setX(nx);
+			BH.mc.setY(ny);
 		}
 	}
+	public boolean vMove(int inx, int iny){
+		if (validMove(inx,iny) && validMove(inx+rectsx,iny) && validMove(inx, iny+rectsy) && validMove(inx + rectsx, iny + rectsy)){
+			return true;
+		}
+		return false;
+	}
+	
+	
+	
 	public void moveZombie(){
 		for (int i=0; i< allZombies.size(); i++){
 			Zombie temp = allZombies.get(i);
@@ -209,10 +209,10 @@ public class GamePanel extends JPanel implements KeyListener{
 			else{
 				ny = temp.getY()-moveY;
 			}
-			if (numbercollisions((int)nx, temp.getY()) <= 1){
+			if (numbercollisions((int)nx, temp.getY()) <= 1 && vMove((int)nx,temp.getY())){
 				temp.setX(nx);
 			}
-			if (numbercollisions(temp.getX(), (int)ny) <= 1){
+			if (numbercollisions(temp.getX(), (int)ny) <= 1 && vMove(temp.getX(),(int)ny)){
 				temp.setY(ny);
 			}
 		}
@@ -236,10 +236,10 @@ public class GamePanel extends JPanel implements KeyListener{
 			else{
 				ny = temp.getY()-moveY;
 			}
-			if (numbercollisions((int)nx, temp.getY()) <= 1){
+			if (numbercollisions((int)nx, temp.getY()) <= 1 && vMove((int)nx,temp.getY())){
 				temp.setX(nx);
 			}
-			if (numbercollisions(temp.getX(), (int)ny) <= 1){
+			if (numbercollisions(temp.getX(), (int)ny) <= 1 && vMove(temp.getX(),(int)ny)){
 				temp.setY(ny);
 			}
 		}
@@ -534,6 +534,20 @@ public class GamePanel extends JPanel implements KeyListener{
 			a.setY(a.getY()-shifty);
 		}
 	}
+	
+	public boolean validMove(int x, int y){
+		int clr=  mask_background.getRGB(mapx+x,mapy+y);
+		int  red   = (clr & 0x00ff0000) >> 16;
+		int  green = (clr & 0x0000ff00) >> 8;
+		int  blue  =  clr & 0x000000ff;
+		System.out.println(red+" "+green+" "+blue);
+		if (red == 255 && green == 255 && blue == 255){
+			return true;
+		}
+		return false;
+	}
+	
+	
 	//stop	
 	public void paintComponent(Graphics g){
 		Font Sfont = new Font("Calisto MT", Font.BOLD, 20);
