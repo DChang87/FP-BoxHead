@@ -54,7 +54,8 @@ public class GamePanel extends JPanel implements KeyListener{
 	
 	private int shiftx = 0, shifty = 0;
 	//map shift
-	
+	private int consecutiveKills=0;
+	private int consecutiveCountDown=0;
 	
 	//add this
 	private String[] weaponNames = new String[10];
@@ -297,6 +298,25 @@ public class GamePanel extends JPanel implements KeyListener{
 		return true;
 	}
 	
+	public void fullCountDown(){consecutiveCountDown=250;}
+	public void CountDown(){
+		if (consecutiveCountDown>0){
+			consecutiveCountDown--;
+			if (consecutiveCountDown==0 && consecutiveKills>0){
+				consecutiveKills--;
+				if (consecutiveKills>0){
+					fullCountDown();
+				}
+			}
+		}
+	}
+	public void checkDeath(){
+		if(BH.mc.getHealth()<=0){
+			BH.state=BH.OVER;
+			setFocusable(false);
+			BH.go.requestFocus();
+		}
+	}
 	public boolean enemyCollision(int x, int y){
 		//this method is called to see if the character's bullets damage the enemies
 		ArrayList<Zombie> toRemoveZ = new ArrayList<Zombie>();
@@ -317,6 +337,9 @@ public class GamePanel extends JPanel implements KeyListener{
 			
 			BH.score+=200;
 			allZombies.remove(zzh8829);
+			fullCountDown();
+			consecutiveKills++;
+			
 		}
 		ArrayList<Devil> toRemoveD = new ArrayList<Devil>();
 		for (int i=0;i<allDevils.size();i++){
@@ -332,6 +355,9 @@ public class GamePanel extends JPanel implements KeyListener{
 			BH.score+=200;
 			allDevils.remove(zzh8829);
 			allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY()));
+			fullCountDown();
+			consecutiveKills++;
+			
 		}
 		//remember to check the devils to
 		System.out.println("Boxes"+allBoxes.size());
@@ -412,16 +438,17 @@ public class GamePanel extends JPanel implements KeyListener{
 		{
 			if (a.collideMC())
 			{
-				BH.mc.setHealth(BH.mc.getHealth()-10);
+				BH.mc.setHealth(Math.max(BH.mc.getHealth()-10,0));
 			}
 		}
 		for (Devil a:allDevils)
 		{
 			if (a.collideMC())
 			{
-				BH.mc.setHealth(BH.mc.getHealth()-10);
+				BH.mc.setHealth(Math.max(BH.mc.getHealth()-10,0));
 			}
 		}
+		checkDeath();
 	}
 	public void switchWeapon(){
 		if (keys[KeyEvent.VK_1]){
@@ -670,5 +697,6 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		
 		//stop
+		g.drawString(consecutiveKills+" "+consecutiveCountDown,100,600);
 	}
 }
