@@ -37,7 +37,8 @@ public class GamePanel extends JPanel implements KeyListener{
 	//make an arraylist of active bullets that save the info about the bullet including the type of gun
 	private ArrayList<PosPair> activeBullets = new ArrayList<PosPair>(); //private?
 	private ArrayList<MagicalBox> allBoxes = new ArrayList<MagicalBox>();
-	private ArrayList<Image> bulletSprites=new ArrayList<Image>();
+	private ArrayList<Image> bulletSprites = new ArrayList<Image>();
+	private ArrayList<Barricade> allBarricades = new ArrayList<Barricade>();
 	private int ZombiesThisLevel=10, DevilsThisLevel=3;
 
 	//add this
@@ -57,8 +58,8 @@ public class GamePanel extends JPanel implements KeyListener{
 	
 	//add this
 	private String[] weaponNames = new String[10];
-	//private int gs1x=72,gs1y=1273,gs2x=905,gs2y=73,ang1=90,ang2=180; //generation spot 1, generation spot 2
-	private int gs1x=100,gs1y=100,gs2x=500,gs2y=500,ang1=0,ang2=270;
+	private int gs1x=72,gs1y=1273,gs2x=905,gs2y=73,ang1=90,ang2=180; //generation spot 1, generation spot 2
+	//private int gs1x=100,gs1y=100,gs2x=500,gs2y=500,ang1=0,ang2=270;
 	//stop this
 	public GamePanel(BoxHead bh){
 		BH=bh;
@@ -83,7 +84,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		weaponNames[5]="GRENADE";
 		weaponNames[6]="BARRICADE";
 		try{
-			File file= new File("map.jpg");
+			File file= new File("map2.jpg");
 			mask_background = ImageIO.read(file);
 		}
 		catch (IOException ex){}
@@ -129,8 +130,15 @@ public class GamePanel extends JPanel implements KeyListener{
 		if (keys[KeyEvent.VK_SPACE]){
 			//if the user shoots, add a bullet into the arraylist keeping track of flying bullets
 			//BH.addBullet(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.getWeapon()));
-			activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.mc.getWeapon()));
-			BH.mc.useAmmo(BH.mc.getWeapon());
+			if (BH.mc.getWeapon()!=6){
+				activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.mc.getWeapon()));
+				BH.mc.useAmmo(BH.mc.getWeapon());
+			}
+			else{
+				int nx = (int) (BH.mc.getcx() + 20*Math.cos(Math.toRadians(BH.mc.getANGLE())));
+				int ny = (int) (BH.mc.getcy() + 20*Math.sin(Math.toRadians(BH.mc.getANGLE())));
+				allBarricades.add(new Barricade(nx,ny));
+			}
 		}
 	}
 	public void checkPause(){
@@ -200,8 +208,10 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		int inx = (int)nx, iny = (int)ny;
 		//there is something wrong with the pixels
-		if (vMove(inx,iny) && numbercollisions(inx,iny) <= 1){
+		if (vMove(inx,BH.mc.getY()) && numbercollisions(inx,BH.mc.getY()) <= 1){
 			BH.mc.setX(nx);
+		}
+		if (vMove(BH.mc.getX(),iny) && numbercollisions(BH.mc.getX(),iny) <= 1){
 			BH.mc.setY(ny);
 		}
 	}
@@ -467,11 +477,11 @@ public class GamePanel extends JPanel implements KeyListener{
 			pos1Z = generateZ/2;
 			pos2Z = generateZ-pos1Z;
 			for (int i=0;i<pos1Z;i++){
-				allZombies.add(new Zombie(gs1x+(int)(Math.random()*60-30),gs1y+(int)(Math.random()*60-30),ang1,BH.mc));
+				allZombies.add(new Zombie(mapx+gs1x+(int)(Math.random()*60-30),mapy+gs1y+(int)(Math.random()*60-30),ang1,BH.mc));
 			}
 			//the number of zombies and devils required for each spot
 			for (int i=0;i<pos2Z;i++){
-				allZombies.add(new Zombie(gs2x+(int)(Math.random()*60-30),gs2y+(int)(Math.random()*60-30),ang2,BH.mc));
+				allZombies.add(new Zombie(mapx+gs2x+(int)(Math.random()*60-30),mapy+gs2y+(int)(Math.random()*60-30),ang2,BH.mc));
 			}
 
 		}
@@ -571,6 +581,10 @@ public class GamePanel extends JPanel implements KeyListener{
 			a.setX(a.getX()-shiftx);
 			a.setY(a.getY()-shifty);
 		}
+		for (Barricade a : allBarricades){
+			a.setX(a.getX()-shiftx);
+			a.setY(a.getY()-shifty);
+		}
 	}
 	
 	public boolean validMove(int x, int y){
@@ -657,6 +671,10 @@ public class GamePanel extends JPanel implements KeyListener{
 			displayLevelCounter--;
 			g.drawString("+-+-+-+ "+currentLevel+" +-+-+-+", 400, 600);
 		}
+		for (Barricade bar : allBarricades){
+			g.drawRect(bar.getX(), bar.getY()-10, 20, 20);
+		}
+		
 		//stop
 	}
 }
