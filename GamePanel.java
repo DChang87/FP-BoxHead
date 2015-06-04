@@ -65,6 +65,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	public GamePanel(BoxHead bh){
 		BH=bh;
 		keys = new boolean[65535];
+		System.out.println("public gamepanel");
 		addKeyListener(this);
 		for (int i=0;i<8;i++){
 			for (int k=0;k<3;k++){
@@ -85,7 +86,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		weaponNames[5]="GRENADE";
 		weaponNames[6]="BARRICADE";
 		try{
-			File file= new File("map.jpg");
+			File file= new File("mask_map.jpg");
 			mask_background = ImageIO.read(file);
 		}
 		catch (IOException ex){}
@@ -145,9 +146,9 @@ public class GamePanel extends JPanel implements KeyListener{
 	public void checkPause(){
 		//display another pause screen
 		if (keys[KeyEvent.VK_P]){
-			//System.out.println("CHECKPAUSE");
+			System.out.println("CHECKPAUSE");
 			BH.state=BH.PAUSE;
-			setFocusable(false);
+			//setFocusable(false);
     		BH.sm.requestFocus();
     		keys[KeyEvent.VK_P]=false;
 		}
@@ -313,7 +314,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	public void checkDeath(){
 		if(BH.mc.getHealth()<=0){
 			BH.state=BH.OVER;
-			setFocusable(false);
+			//setFocusable(false);
 			BH.go.requestFocus();
 		}
 	}
@@ -480,7 +481,6 @@ public class GamePanel extends JPanel implements KeyListener{
 			}
 		}
 	}
-	//add this
 	public void generateEnemy(){
 		//level 1 (1-3)
 		//level 2 (2-5)
@@ -498,11 +498,11 @@ public class GamePanel extends JPanel implements KeyListener{
 			pos1Z = generateZ/2;
 			pos2Z = generateZ-pos1Z;
 			for (int i=0;i<pos1Z;i++){
-				allZombies.add(new Zombie(mapx+gs1x+(int)(Math.random()*60-30),mapy+gs1y+(int)(Math.random()*60-30),ang1,BH.mc));
+				allZombies.add(new Zombie(-mapx+gs1x+(int)(Math.random()*60-30),-mapy+gs1y+(int)(Math.random()*60-30),ang1,BH.mc));
 			}
 			//the number of zombies and devils required for each spot
 			for (int i=0;i<pos2Z;i++){
-				allZombies.add(new Zombie(mapx+gs2x+(int)(Math.random()*60-30),mapy+gs2y+(int)(Math.random()*60-30),ang2,BH.mc));
+				allZombies.add(new Zombie(-mapx+gs2x+(int)(Math.random()*60-30),-mapy+gs2y+(int)(Math.random()*60-30),ang2,BH.mc));
 			}
 
 		}
@@ -512,26 +512,18 @@ public class GamePanel extends JPanel implements KeyListener{
 			pos1D = generateD/2;
 			pos2D = generateD-pos1D;
 			for (int i=0;i<pos1D;i++){
-				allDevils.add(new Devil(gs1x+(int)(Math.random()*60-30),gs1y+(int)(Math.random()*60-30),ang1,BH.mc));
+				allDevils.add(new Devil(-mapx+gs1x+(int)(Math.random()*60-30),-mapy+gs1y+(int)(Math.random()*60-30),ang1,BH.mc));
 			}
 			for (int i=0;i<pos2D;i++){
-				allDevils.add(new Devil(gs2x+(int)(Math.random()*60-30),gs2y+(int)(Math.random()*60-30),ang2,BH.mc));
+				allDevils.add(new Devil(-mapx+gs2x+(int)(Math.random()*60-30),-mapy+gs2y+(int)(Math.random()*60-30),ang2,BH.mc));
 			}
 		}		
 	}
 	
 	public void checkBoxCollision(){
-		//System.out.println("BOX"+allBoxes.size());
 		ArrayList<MagicalBox> toRemove = new ArrayList<MagicalBox>();
 		for (int i=0;i<allBoxes.size();i++){
 			MagicalBox box = allBoxes.get(i);
-			//if (x1+rectsx1 < x2 || x1 > x2 + rectsx2 || y1 + rectsy1 < y2 || y1 > y2 + rectsy2)
-			//if (BH.mc.getX()+BH.mc.getWidth()<box.getX()||BH.mc.getX()>box.getX()+sizex||BH.mc.getY()+BH.mc.getLength()<box.getY()||BH.mc.getY()>box.getY()+sizey){
-				//if they do collide
-				//System.out.println("Collisionnnn"+BH.mc.getHealth());
-				//addItem(box.generateItem());
-				//toRemove.add(box);
-			//}
 			int x = box.getX(), y = box.getY(), mcx = BH.mc.getX(), mcy = BH.mc.getY();
 			if (x + box.bsx < mcx || x > mcx + BH.mc.getsx() || y + box.bsy < mcy || y > mcy + BH.mc.getsy()){
 				continue;
@@ -613,7 +605,6 @@ public class GamePanel extends JPanel implements KeyListener{
 		int  red   = (clr & 0x00ff0000) >> 16;
 		int  green = (clr & 0x0000ff00) >> 8;
 		int  blue  =  clr & 0x000000ff;
-		System.out.println(red+" "+green+" "+blue);
 		if (red == 255 && green == 255 && blue == 255){
 			return true;
 		}
@@ -634,12 +625,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		ZombiesThisLevel=ZombiesEachLevel[currentLevel];
 		DevilsThisLevel=DevilsEachLevel[currentLevel];
 		displayLevelCounter=1000;
-		//level goes up
-		//display text that says the new level
-		//re-add the enemies to the ZombiesThisLevel and DevilsThisLevel counts
-		//
 	}
-	//stop
 	public void paintComponent(Graphics g){
 		Font Sfont = new Font("Calisto MT", Font.BOLD, 20);
 		g.setFont(Sfont);
