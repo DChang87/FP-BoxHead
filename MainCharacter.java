@@ -16,6 +16,8 @@ class MainCharacter {
 			//all weapons have default at 0
 			//pistol is unlimited
 		}
+		for (int i=0; i!=7; ++i)//temporary
+			weapons[i] = 100;
 	}
 	public int getX(){
 		return (int)posx;
