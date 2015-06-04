@@ -84,7 +84,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		weaponNames[5]="GRENADE";
 		weaponNames[6]="BARRICADE";
 		try{
-			File file= new File("map2.jpg");
+			File file= new File("map.jpg");
 			mask_background = ImageIO.read(file);
 		}
 		catch (IOException ex){}
@@ -208,18 +208,12 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		int inx = (int)nx, iny = (int)ny;
 		//there is something wrong with the pixels
-		if (vMove(inx,BH.mc.getY()) && numbercollisions(inx,BH.mc.getY()) <= 1){
+		if (validMove(inx,BH.mc.getY()) && numbercollisions(inx,BH.mc.getY()) <= 1){
 			BH.mc.setX(nx);
 		}
-		if (vMove(BH.mc.getX(),iny) && numbercollisions(BH.mc.getX(),iny) <= 1){
+		if (validMove(BH.mc.getX(),iny) && numbercollisions(BH.mc.getX(),iny) <= 1){
 			BH.mc.setY(ny);
 		}
-	}
-	public boolean vMove(int inx, int iny){
-		if (validMove(inx,iny) && validMove(inx, iny+rectsy)){
-			return true;
-		}
-		return false;
 	}
 	
 	
@@ -242,10 +236,10 @@ public class GamePanel extends JPanel implements KeyListener{
 			else{
 				ny = temp.getY()-moveY;
 			}
-			if (numbercollisions((int)nx, temp.getY()) <= 1 && vMove((int)nx,temp.getY())){
+			if (numbercollisions((int)nx, temp.getY()) <= 1 && validMove((int)nx,temp.getY())){
 				temp.setX(nx);
 			}
-			if (numbercollisions(temp.getX(), (int)ny) <= 1 && vMove(temp.getX(),(int)ny)){
+			if (numbercollisions(temp.getX(), (int)ny) <= 1 && validMove(temp.getX(),(int)ny)){
 				temp.setY(ny);
 			}
 		}
@@ -269,10 +263,10 @@ public class GamePanel extends JPanel implements KeyListener{
 			else{
 				ny = temp.getY()-moveY;
 			}
-			if (numbercollisions((int)nx, temp.getY()) <= 1 && vMove((int)nx,temp.getY())){
+			if (numbercollisions((int)nx, temp.getY()) <= 1 && validMove((int)nx,temp.getY())){
 				temp.setX(nx);
 			}
-			if (numbercollisions(temp.getX(), (int)ny) <= 1 && vMove(temp.getX(),(int)ny)){
+			if (numbercollisions(temp.getX(), (int)ny) <= 1 && validMove(temp.getX(),(int)ny)){
 				temp.setY(ny);
 			}
 		}
