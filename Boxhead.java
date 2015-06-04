@@ -27,41 +27,32 @@ public class BoxHead extends JFrame implements ActionListener{
 		setLayout(new BorderLayout());
 		shootTimer = new Timer(100,this);
 		zombieTimer = new Timer(200,this);
-		
-		
-		
 		enemyGenerationTimer = new Timer(20000,this);
-		
-		
-		
-		
 		fireTimer = new Timer(100,this); //timer used to increase the timeCount on the fireball for the devil
 		myTimer = new Timer(20,this); //myTimer is used to record the time for general movements in the game
-		mc = new MainCharacter("damn it leo", 200, 200);
+		mc = new MainCharacter("damn it leo", 100, 400);
 		//allDevils.add(new Devil(300,300,0,mc));
-		startS = new StartScreen(this);
-		startS.setLocation(0,0);
-		startS.setSize(800,640);
-		add(startS);
+		
 		game = new GamePanel(this);
 		game.setLocation(0,0);
 		game.setSize(800,640);
 		add(game);
-		//add this
 		sm = new SelectionMenu(this);
 		sm.setLocation(0,0);
 		sm.setSize(800,640);
 		add(sm);
-		//close add this
-		//game.setFocusable(true);
-		//game.setVisible(true);
-		setResizable(false);
-		setVisible(true);
-		//game.addNotify();
 		go = new GameOver(this);
 		go.setLocation(0,0);
 		go.setSize(800,640);
 		add(go);
+		
+		startS = new StartScreen(this);
+		startS.setLocation(0,0);
+		startS.setSize(800,640);
+		add(startS);
+		
+		setResizable(false);
+		setVisible(true);
 	}
 	public void start(){
 		//start the timers
@@ -78,8 +69,6 @@ public class BoxHead extends JFrame implements ActionListener{
 		}
 		else if (state==GAME){
 			if (source==myTimer){
-				//move character
-				//move zombies
 				game.moveZombie();
 				game.moveDevil();
 				game.moveMC();
@@ -91,14 +80,11 @@ public class BoxHead extends JFrame implements ActionListener{
 				game.checkBoxCollision();
 				game.updateposition();
 				game.switchWeapon();
-				//add this
 				game.checkLevelOver();
-				//stop
 				game.CountDown();
 				
 			}
-			if (source == zombieTimer){
-				
+			if (source == zombieTimer){	
 				game.addZombieCounter();
 			}
 			if (source==shootTimer){
@@ -112,17 +98,16 @@ public class BoxHead extends JFrame implements ActionListener{
 			if (source==enemyGenerationTimer){
 				game.generateEnemy();
 			}
-			else if (state==OVER){
-				go.repaint();
-			}
 			game.repaint();
 		}
 		else if (state==PAUSE){
-			//System.out.println("PAUSE");
 			if (source==myTimer){
 				sm.checkUnPause();
 			}
 			sm.repaint();
+		}
+		else if (state==OVER){
+			go.repaint();
 		}
 	}
 	public static void main(String[] args){
