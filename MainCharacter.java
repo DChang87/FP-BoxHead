@@ -76,6 +76,12 @@ class MainCharacter {
 	public int getsy(){
 		return sy;
 	}
+	public int getcx(){
+		return (int)posx + sx/2;
+	}
+	public int getcy(){
+		return (int)posy + sy/2;
+	}
 	public int calculateHealth(){
 		return (int)(health/1000*20);
 	}
