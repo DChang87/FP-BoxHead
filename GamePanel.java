@@ -5,6 +5,10 @@ import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
@@ -18,6 +22,9 @@ public class GamePanel extends JPanel implements KeyListener{
 	private boolean[] keys; 
 	private Image background = new ImageIcon("forestmap.jpg").getImage();
 	private Image boxSprite = new ImageIcon("box.png").getImage();
+	
+	private BufferedImage mask_background;
+	
 	private Image[][] charSprites = new Image[8][3];
 	private Image[][] zombieSprites = new Image[8][8];
 	private int spriteCounter = 0;
@@ -65,6 +72,13 @@ public class GamePanel extends JPanel implements KeyListener{
 		weaponNames[1]="pistol";
 		weaponNames[2]="UZI";
 		weaponNames[3]="shotgun";
+		
+		try{
+			File file= new File("map.jpg");
+			mask_background = ImageIO.read(file);
+		}
+		catch (IOException ex){}
+		
 	}
 	public void updateweapon(){
 		//we keep track of how far the weapon can travel
@@ -162,11 +176,19 @@ public class GamePanel extends JPanel implements KeyListener{
 			BH.mc.setAngle(90);
 			spriteCounter++;
 		}
-		if (numbercollisions((int)nx, BH.mc.getY()) <= 1){
-			BH.mc.setX(nx);
-		}
-		if (numbercollisions(BH.mc.getX(), (int)ny) <= 1){
-			BH.mc.setY(ny);
+		//there is something wrong with the pixels
+		int clr=  mask_background.getRGB((int)nx,(int)ny);
+		int  red   = (clr & 0x00ff0000) >> 16;
+		int  green = (clr & 0x0000ff00) >> 8;
+		int  blue  =  clr & 0x000000ff;
+		System.out.println(red+" "+green+" "+blue);
+		if (red==255 && green==255 && blue==255){
+			if (numbercollisions((int)nx, BH.mc.getY()) <= 1){
+				BH.mc.setX(nx);
+			}
+			if (numbercollisions(BH.mc.getX(), (int)ny) <= 1){
+				BH.mc.setY(ny);
+			}
 		}
 	}
 	public void moveZombie(){
