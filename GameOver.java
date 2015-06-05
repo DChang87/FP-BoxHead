@@ -1,4 +1,5 @@
 import java.awt.Graphics;
+import java.awt.TextField;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -10,14 +11,17 @@ public class GameOver extends JPanel implements MouseMotionListener, MouseListen
 	private static int mouseX,mouseY;
 	private Image background = new ImageIcon("gameOver.jpg").getImage();
 	private boolean down=false;
+	//public TextField nametext = new TextField("enter your name",20);
 	BoxHead BH;
 	public GameOver(BoxHead b){
 		//load the images for the start button
-		
+		//nametext.setBounds(350, 200, 100, 50);
+		System.out.println("public gameover");
 		BH=b;
 		addMouseMotionListener(this);
 		addMouseListener(this);
 		setSize(800,640);
+		//nametext.setVisible(true);
 	}
     public void addNotify() {
     	super.addNotify();
@@ -33,6 +37,7 @@ public class GameOver extends JPanel implements MouseMotionListener, MouseListen
     }  
     	 
     public void mousePressed(MouseEvent e){
+    	System.out.println("mousePressed");
 		down=true;
 	}
     	
@@ -51,10 +56,11 @@ public class GameOver extends JPanel implements MouseMotionListener, MouseListen
     public void paintComponent(Graphics g){
     	//draw the background and the button (According to the situation)
     	g.drawImage(background,0,0,this);
+    	System.out.println("paintComponent game over");
     	if (down){
-    		System.out.println("down");
+    		System.out.println("down game over");
     		BH.state=BH.GAME;
-    		setFocusable(false);
+    		//setFocusable(false);
     		BH.game.requestFocus();
     		
     	}
