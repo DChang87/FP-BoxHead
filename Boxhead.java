@@ -82,6 +82,7 @@ public class BoxHead extends JFrame implements ActionListener{
 				game.switchWeapon();
 				game.checkLevelOver();
 				game.CountDown();
+				game.checkBarricades();
 				
 			}
 			if (source == zombieTimer){	
