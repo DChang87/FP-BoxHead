@@ -4,9 +4,9 @@ class Devil {
 	private int angle; //angle is the angle in which the character is facing
 	//-> is 0
 	//<- is 180
-	private final int FIREBALL=0;
+	private final int FIREBALL=0, dmg = 15;
 	private double posx, posy;
-	private int sx=30,sy=70;
+	private int sx=34,sy=47;
 	private int timeCount=0; //counter to see when to shoot a fireball
 	private int sp=2, spriteCounter=0;
 	MainCharacter mc;
@@ -22,6 +22,9 @@ class Devil {
 	}
 	public int getY(){
 		return (int)posy;
+	}
+	public int getdmg(){
+		return dmg;
 	}
 	public double getDX(){
 		return posx;
@@ -79,7 +82,7 @@ class Devil {
 	public void addTime(BoxHead BH){
 		//call this method during the main method with a timer to call it at regular intervals
 		timeCount++;
-		System.out.println(angle);
+		//System.out.println(angle);
 		//System.out.println(timeCount+ " " + timeCountLim);
 		if (timeCount==timeCountLim){
 			timeCount=0;
