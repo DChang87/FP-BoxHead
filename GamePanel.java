@@ -29,7 +29,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	private Image[][] zombieSprites = new Image[8][8];
 	private int spriteCounter = 0;
 	private int[] weapondist = new int[30];
-	private int rectsx = 34, rectsy = 47, barricadesx = 20, barricadesy = 20;
+	private int rectsx = 34, rectsy = 47, barricadesx = 20, barricadesy = 20, barrelsx = 20, barrelsy = 50;
 	final int HEALTH=0,PISTOL=1,UZI=2,PISTOLP=11,SHOTGUN=3,UZIP=21,BARREL = 4,UZIPP=22,GRENADE= 5, FAKEWALLS=6;
 	private ArrayList<Zombie> allZombies = new ArrayList<Zombie>(); //this stores all of the zombies that are currently in the game
 	private ArrayList<Devil> allDevils = new ArrayList<Devil>(); //this stores all of the devils that are currently running around in the game
@@ -39,6 +39,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	private ArrayList<MagicalBox> allBoxes = new ArrayList<MagicalBox>();
 	private ArrayList<Image> bulletSprites = new ArrayList<Image>();
 	private ArrayList<Barricade> allBarricades = new ArrayList<Barricade>();
+	private ArrayList<Barrel> allBarrels = new ArrayList<Barrel>();
 	private int ZombiesThisLevel=10, DevilsThisLevel=3;
 
 	//add this
@@ -132,14 +133,17 @@ public class GamePanel extends JPanel implements KeyListener{
 		if (keys[KeyEvent.VK_SPACE]){
 			//if the user shoots, add a bullet into the arraylist keeping track of flying bullets
 			//BH.addBullet(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.getWeapon()));
-			if (BH.mc.getWeapon()!=6){
-				activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.mc.getWeapon()));
-				BH.mc.useAmmo(BH.mc.getWeapon());
+			int nx = (int) (BH.mc.getcx() + 37*Math.cos(Math.toRadians(BH.mc.getANGLE())));
+			int ny = (int) (BH.mc.getcy() + 37*Math.sin(Math.toRadians(BH.mc.getANGLE())));
+			if (BH.mc.getWeapon()==6){
+				allBarricades.add(new Barricade(nx-barricadesx/2,ny-barricadesy/2));
+			}
+			else if (BH.mc.getWeapon()==4){
+				allBarrels.add(new Barrel(nx - barrelsx/2, ny - barrelsy/2));
 			}
 			else{
-				int nx = (int) (BH.mc.getcx() + 37*Math.cos(Math.toRadians(BH.mc.getANGLE())));
-				int ny = (int) (BH.mc.getcy() + 37*Math.sin(Math.toRadians(BH.mc.getANGLE())));
-				allBarricades.add(new Barricade(nx-barricadesx/2,ny-barricadesy/2));
+				activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.mc.getWeapon()));
+				BH.mc.useAmmo(BH.mc.getWeapon());
 			}
 		}
 	}
@@ -430,18 +434,17 @@ public class GamePanel extends JPanel implements KeyListener{
 	public void moveFireballs()
 	{
 		ArrayList<PosPair> toRemove = new ArrayList<PosPair>();
-		for (int i=0;i<fireballs.size();i++)
+		for (PosPair temp : fireballs)
 		{
-			PosPair temp = fireballs.get(i);
 			final double ANG = Math.toRadians(temp.getANGLE());
 			double xx = temp.getDX(), yy = temp.getDY();
-			fireballs.get(i).setPos(xx+20*Math.cos(ANG),yy+20*Math.sin(ANG));
-			if (checkCollision(fireballs.get(i).getX(),fireballs.get(i).getY(),BH.mc.getX(),BH.mc.getY())){
+			temp.setPos(xx+20*Math.cos(ANG),yy+20*Math.sin(ANG));
+			if (checkCollision(temp.getX(),temp.getY(),BH.mc.getX(),BH.mc.getY())){
 				//decrease health by 15 points per fireball
-				BH.mc.setHealth(BH.mc.getHealth()-15);
+				BH.mc.setHealth(BH.mc.getHealth()-temp.getdmg());
 				toRemove.add(temp);
 			}
-			else if (checkOutside(fireballs.get(i).getX(),fireballs.get(i).getY())){
+			else if (checkOutside(temp.getX(),temp.getY())){
 				toRemove.add(temp);
 			}
 		}
@@ -454,14 +457,14 @@ public class GamePanel extends JPanel implements KeyListener{
 		{
 			if (a.collideMC())
 			{
-				BH.mc.setHealth(Math.max(BH.mc.getHealth()-10,0));
+				BH.mc.setHealth(Math.max(BH.mc.getHealth()-a.getdmg(),0));
 			}
 		}
 		for (Devil a:allDevils)
 		{
 			if (a.collideMC())
 			{
-				BH.mc.setHealth(Math.max(BH.mc.getHealth()-10,0));
+				BH.mc.setHealth(Math.max(BH.mc.getHealth()-a.getdmg(),0));
 			}
 		}
 		checkDeath();
@@ -556,6 +559,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	public void addItem(int item){
 		System.out.println("ITEM ADDED");
 		if (item==HEALTH){
+			System.out.println("HEALTH ADDED");
 			BH.mc.setHealth(Math.min(BH.mc.getHealth()+500,1000));
 		}
 		else{
@@ -567,7 +571,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	{
 		shiftx = shifty = 0;
 		int mcx = BH.mc.getX(), mcy = BH.mc.getY(); //character position
-		if (mcx < bx1 && mapx!=0){ //checks if beyond boundarym and if need of shifiting
+		if (mcx < bx1 && mapx!=0){ //checks if beyond boundary and if need of shifiting
 			mapx = mapx - (bx1 - mcx);
 			shiftx =  - (bx1 - mcx);
 			mcx = bx1;
