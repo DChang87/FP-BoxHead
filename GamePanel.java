@@ -29,7 +29,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	private Image[][] zombieSprites = new Image[8][8];
 	private int spriteCounter = 0;
 	private int[] weapondist = new int[30];
-	private int rectsx = 30, rectsy = 70;
+	private int rectsx = 34, rectsy = 47, barricadesx = 20, barricadesy = 20;
 	final int HEALTH=0,PISTOL=1,UZI=2,PISTOLP=11,SHOTGUN=3,UZIP=21,BARREL = 4,UZIPP=22,GRENADE= 5, FAKEWALLS=6;
 	private ArrayList<Zombie> allZombies = new ArrayList<Zombie>(); //this stores all of the zombies that are currently in the game
 	private ArrayList<Devil> allDevils = new ArrayList<Devil>(); //this stores all of the devils that are currently running around in the game
@@ -137,9 +137,9 @@ public class GamePanel extends JPanel implements KeyListener{
 				BH.mc.useAmmo(BH.mc.getWeapon());
 			}
 			else{
-				int nx = (int) (BH.mc.getcx() + 20*Math.cos(Math.toRadians(BH.mc.getANGLE())));
-				int ny = (int) (BH.mc.getcy() + 20*Math.sin(Math.toRadians(BH.mc.getANGLE())));
-				allBarricades.add(new Barricade(nx,ny));
+				int nx = (int) (BH.mc.getcx() + 37*Math.cos(Math.toRadians(BH.mc.getANGLE())));
+				int ny = (int) (BH.mc.getcy() + 37*Math.sin(Math.toRadians(BH.mc.getANGLE())));
+				allBarricades.add(new Barricade(nx-barricadesx/2,ny-barricadesy/2));
 			}
 		}
 	}
@@ -238,6 +238,11 @@ public class GamePanel extends JPanel implements KeyListener{
 			else{
 				ny = temp.getY()-moveY;
 			}
+			for (Barricade b : allBarricades){
+				if (b.rectcollision((int)nx,(int)ny)){
+					b.setHealth(b.getHealth()-temp.getdmg());
+				}
+			}
 			if (numbercollisions((int)nx, temp.getY()) <= 1 && validMove((int)nx,temp.getY())){
 				temp.setX(nx);
 			}
@@ -265,6 +270,11 @@ public class GamePanel extends JPanel implements KeyListener{
 			else{
 				ny = temp.getY()-moveY;
 			}
+			for (Barricade b : allBarricades){
+				if (b.rectcollision((int)nx,(int)ny)){
+					b.setHealth(b.getHealth()-temp.getdmg());
+				}
+			}
 			if (numbercollisions((int)nx, temp.getY()) <= 1 && validMove((int)nx,temp.getY())){
 				temp.setX(nx);
 			}
@@ -287,6 +297,11 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		for (Devil d : allDevils){
 			if (rectcollision(x,y,d.getX(),d.getY())){
+				ncollision++;
+			}
+		}
+		for (Barricade b : allBarricades){
+			if (b.rectcollision(x,y)){
 				ncollision++;
 			}
 		}
@@ -626,6 +641,18 @@ public class GamePanel extends JPanel implements KeyListener{
 		DevilsThisLevel=DevilsEachLevel[currentLevel];
 		displayLevelCounter=1000;
 	}
+	public void checkBarricades(){
+		ArrayList<Barricade> toRemove = new ArrayList<Barricade>();
+		for (Barricade b : allBarricades){
+			if (b.getHealth() <= 0){
+				toRemove.add(b);
+			}
+		}
+		for (Barricade b : toRemove){
+			allBarricades.remove(b);
+		}
+	}
+	
 	public void paintComponent(Graphics g){
 		Font Sfont = new Font("Calisto MT", Font.BOLD, 20);
 		g.setFont(Sfont);
