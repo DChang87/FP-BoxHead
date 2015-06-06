@@ -8,7 +8,7 @@ import java.awt.Image;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-public class SelectionMenu extends JPanel implements MouseMotionListener, MouseListener,KeyListener{
+public class SelectionMenu extends JPanel implements KeyListener{
 	private static int mouseX,mouseY;
 	private Image background = new ImageIcon("selectionBackground.jpg").getImage();
 	private boolean down=false;
@@ -19,40 +19,13 @@ public class SelectionMenu extends JPanel implements MouseMotionListener, MouseL
 		System.out.println("Selection menu");
 		keys = new boolean[65535];
 		BH=b;
-		addMouseMotionListener(this);
-		addMouseListener(this);
 		addKeyListener(this);
 		setSize(800,640);
 	}
-    public void addNotify() {
-    	super.addNotify();
-    	requestFocus();
-    }
-    // ------------ MouseListener ------------------------------------------
-    public void mouseEntered(MouseEvent e) {}
-    public void mouseExited(MouseEvent e) {}
-    public void mouseReleased(MouseEvent e) {
-    	down=false;
-    }    
-    public void mouseClicked(MouseEvent e){
-    }  
-    	 
-    public void mousePressed(MouseEvent e){
-		down=true;
-	}
-    	
-    // ---------- MouseMotionListener ------------------------------------------
-    public void mouseDragged(MouseEvent e){}
-    public void mouseMoved(MouseEvent e){
-    	mouseX=e.getX();
-    	mouseY = e.getY();
-    }
-    /*
-    public static boolean collide(int x,int y,int width, int height){
-    	//check if the mouse is colliding with the button
-    	return x<=mouseX && mouseX<=x+width && y<=mouseY && mouseY<=y+height;
-    }
-    */
+    //public void addNotify() {
+    	//super.addNotify();
+    	//requestFocus();
+    //}
     public void keyTyped(KeyEvent e){
 		
 	}
@@ -67,8 +40,6 @@ public class SelectionMenu extends JPanel implements MouseMotionListener, MouseL
 		if (keys[KeyEvent.VK_P] || down){
 			BH.state=BH.GAME;
 			System.out.println("checkunpause");
-			//setFocusable(false);
-			//BH.game.setFocusable(true);
 			BH.game.requestFocus();
 			keys[KeyEvent.VK_P]=false;
 		}
