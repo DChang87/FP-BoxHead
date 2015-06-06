@@ -508,7 +508,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		//level 4 (4-11)
 		//level 5 (5-13)
 		//System.out.println("generate"+ZombiesThisLevel);
-		int maxZ=4,minZ=1,maxD=1,minD=0;
+		int maxZ=4,minZ=1,maxD=1,minD=1;
 		int generateZ,generateD; //the number of zombies and devils generated at this time
 		int pos1Z,pos2Z,pos1D,pos2D;
 		if (ZombiesThisLevel>0){
@@ -532,7 +532,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		//System.out.println(ZombiesThisLevel+"this level");
 		if (DevilsThisLevel>0){
-			generateD = (int)(Math.random()*(Math.min(DevilsThisLevel-minD, maxD-minD))+minD);
+			generateD = (int)(Math.random()*(Math.min(DevilsThisLevel-minD, maxD-minD)))+minD;
 			DevilsThisLevel-=generateD;
 			pos1D = generateD/2;
 			pos2D = generateD-pos1D;
@@ -640,6 +640,8 @@ public class GamePanel extends JPanel implements KeyListener{
 		return (currentLevel-1)*3+2;
 	}
 	public void checkLevelOver(){
+		System.out.println(ZombiesDead+" "+getZombiesThisLevel());
+		System.out.println(DevilsDead+" "+getDevilsThisLevel());
 		if (ZombiesDead == getZombiesThisLevel() && DevilsDead == getDevilsThisLevel()){
 			//this level is over
 			System.out.println("LEVEUP");
