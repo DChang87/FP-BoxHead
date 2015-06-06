@@ -66,7 +66,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	public GamePanel(BoxHead bh){
 		BH=bh;
 		keys = new boolean[65535];
-		System.out.println("public gamepanel");
+		//System.out.println("public gamepanel");
 		addKeyListener(this);
 		for (int i=0;i<8;i++){
 			for (int k=0;k<3;k++){
@@ -380,7 +380,6 @@ public class GamePanel extends JPanel implements KeyListener{
 			
 		}
 		//remember to check the devils to
-		System.out.println("Boxes"+allBoxes.size());
 		return flag;
 	}
 	public boolean checkOutside(int x,int y){
@@ -546,7 +545,6 @@ public class GamePanel extends JPanel implements KeyListener{
 			if (x + box.bsx < mcx || x > mcx + BH.mc.getsx() || y + box.bsy < mcy || y > mcy + BH.mc.getsy()){
 				continue;
 			}
-			System.out.println("Collisionnnn"+BH.mc.getHealth());
 			addItem(box.generateItem());
 			toRemove.add(box);
 		}
@@ -557,14 +555,11 @@ public class GamePanel extends JPanel implements KeyListener{
 		
 	}
 	public void addItem(int item){
-		System.out.println("ITEM ADDED");
 		if (item==HEALTH){
-			System.out.println("HEALTH ADDED");
 			BH.mc.setHealth(Math.min(BH.mc.getHealth()+500,1000));
 		}
 		else{
 			BH.mc.addAmmo(item);
-			System.out.println("AMMO ADDED");
 		}
 	}
 	public void moveMap()
@@ -658,6 +653,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	}
 	
 	public void paintComponent(Graphics g){
+		System.out.println("why you do this sto me");
 		Font Sfont = new Font("Calisto MT", Font.BOLD, 20);
 		g.setFont(Sfont);
 		g.drawImage(background, -mapx, -mapy, this);
@@ -671,7 +667,6 @@ public class GamePanel extends JPanel implements KeyListener{
 			//we need to get bulllet sprites
 			///g.drawImage(BH.bulletSprites.get(BH.activeBullets.get(i).getTYPE()),BH.activeBullets.get(i).getX(),BH.activeBullets.get(i).getY(),this);
 			g.drawOval(activeBullets.get(i).getX(), activeBullets.get(i).getY(), 20, 20);
-			//we need to move the bullets...either call a function here or call it from the BoxHead class
 		}
 		for (int i=0;i<fireballs.size();i++){
 			g.drawOval(fireballs.get(i).getX(), fireballs.get(i).getY(), 20, 20);
@@ -697,14 +692,11 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (Devil a : allDevils){
 			g.drawImage(zombieSprites[(a.getAngle()+22)%360/45][a.returnSpriteCounter()%8], a.getX(),a.getY(),this);
 		}
-		//g.drawRect(BH.mc.getX(),BH.mc.getY(),BH.mc.getsx(),BH.mc.getsy())
 		for (MagicalBox box: allBoxes){
 			g.setColor(Color.BLUE);
-			//g.drawOval(box.getX(), box.getY(), 2, 2);
 			g.drawRect(box.getX()-5, box.getY()-5, 10, 10);
 		}
 		g.drawOval(BH.mc.getX(), BH.mc.getY(), 2, 2);
-		//add
 		if (displayLevelCounter>0){
 			displayLevelCounter--;
 			g.drawString("+-+-+-+ "+currentLevel+" +-+-+-+", 400, 600);
@@ -712,8 +704,6 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (Barricade bar : allBarricades){
 			g.drawRect(bar.getX(), bar.getY()-10, 20, 20);
 		}
-		
-		//stop
 		g.drawString(consecutiveKills+" "+consecutiveCountDown,100,600);
 	}
 }
