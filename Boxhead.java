@@ -3,6 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 public class BoxHead extends JFrame implements ActionListener{
@@ -13,26 +14,23 @@ public class BoxHead extends JFrame implements ActionListener{
 	GameOver go;
 	public int score = 0;
 	GamePanel game;
-	
+	JButton startB;
 	//need an arraylist to store these values and assign them as levels go
 	MainCharacter mc;
 	StartScreen startS;
-	//add this
 	SelectionMenu sm;
-	//clos add this
 	public BoxHead(){
 		super("BoxHead Zombies");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(800,640);
-		setLayout(new BorderLayout());
+		//setLayout(new BorderLayout());
+		setLayout(null);
 		shootTimer = new Timer(100,this);
 		zombieTimer = new Timer(200,this);
 		enemyGenerationTimer = new Timer(20000,this);
 		fireTimer = new Timer(100,this); //timer used to increase the timeCount on the fireball for the devil
 		myTimer = new Timer(20,this); //myTimer is used to record the time for general movements in the game
-		mc = new MainCharacter("damn it leo", 100, 400);
-		//allDevils.add(new Devil(300,300,0,mc));
-		
+		mc = new MainCharacter("damn it leo", 100, 400);		
 		game = new GamePanel(this);
 		game.setLocation(0,0);
 		game.setSize(800,640);
@@ -45,11 +43,18 @@ public class BoxHead extends JFrame implements ActionListener{
 		go.setLocation(0,0);
 		go.setSize(800,640);
 		add(go);
+		startB = new JButton("START");
+		startB.setLocation(350, 400);
+		startB.setSize(100, 50);
+		startB.addActionListener(this);
+		add(startB);
+		startB.setVisible(true);
 		
 		startS = new StartScreen(this);
 		startS.setLocation(0,0);
 		startS.setSize(800,640);
 		add(startS);
+		
 		
 		setResizable(false);
 		setVisible(true);
@@ -65,6 +70,13 @@ public class BoxHead extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent evt) {
 		Object source = evt.getSource();
 		if (state==START){
+			
+			startB.setVisible(true);
+			if (source==startB){
+				startB.setVisible(false);
+				state=GAME;
+	    		game.requestFocus();
+			}
 			startS.repaint();
 		}
 		else if (state==GAME){
@@ -93,8 +105,6 @@ public class BoxHead extends JFrame implements ActionListener{
 			}
 			if (source==fireTimer){
 				game.moveFireballs();
-				//check if there are devil
-				//if there are, add on to the timer counter for each devil
 			}
 			if (source==enemyGenerationTimer){
 				game.generateEnemy();
