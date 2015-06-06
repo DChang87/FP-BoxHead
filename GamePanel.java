@@ -43,13 +43,10 @@ public class GamePanel extends JPanel implements KeyListener{
 	private int ZombiesThisLevel=10, DevilsThisLevel=3;
 
 	//add this
-	private int TotalLevelCount=5;
-	private int[] ZombiesEachLevel = new int[TotalLevelCount];
-	private int[] DevilsEachLevel = new int[TotalLevelCount];
 	private int displayLevelCounter=0; //this is the counter used to display the "+-+-+-+ Level 2 +-+-+-+"
 	private int currentLevel=0;
 	
-	//stop
+	
 	private int mapx=0, mapy=0, mapsx = 2000, mapsy = 2000, bx1 = 100, bx2 = 670, by1 = 100, by2 = 510;
 	private int screensx = 800, screensy = 640;
 	
@@ -58,11 +55,18 @@ public class GamePanel extends JPanel implements KeyListener{
 	private int consecutiveKills=0;
 	private int consecutiveCountDown=0;
 	
-	//add this
+
 	private String[] weaponNames = new String[10];
 	private int gs1x=72,gs1y=1273,gs2x=905,gs2y=73,ang1=90,ang2=180; //generation spot 1, generation spot 2
 	//private int gs1x=100,gs1y=100,gs2x=500,gs2y=500,ang1=0,ang2=270;
-	//stop this
+
+	
+	
+	///add
+	private int ZombiesDead=0,DevilsDead=0;
+	//stop
+	
+	
 	public GamePanel(BoxHead bh){
 		BH=bh;
 		keys = new boolean[65535];
@@ -78,7 +82,7 @@ public class GamePanel extends JPanel implements KeyListener{
 				zombieSprites[i][k]=new ImageIcon("zombie"+i+k+".png").getImage();
 			}
 		}
-		generateEnemy();
+		
 		updateweapon();
 		weaponNames[1]="PISTOL";
 		weaponNames[2]="UZI";
@@ -92,17 +96,14 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		catch (IOException ex){}
 		//add this
-		ZombiesThisLevel = ZombiesEachLevel[currentLevel];
-		DevilsThisLevel = DevilsEachLevel[currentLevel];
-		ZombiesEachLevel[1]=1;
-		DevilsEachLevel[1]=0;
-		ZombiesEachLevel[2]=15;
-		DevilsEachLevel[2]=5;
-		ZombiesEachLevel[3]=20;
-		DevilsEachLevel[3]=7;
-		ZombiesEachLevel[4]=25;
-		DevilsEachLevel[4]=10;
+		currentLevel=1;
+		ZombiesThisLevel = getZombiesThisLevel();
+		DevilsThisLevel = getDevilsThisLevel();
+		//zombies each level: level# * 5
+		//devils each level (level#-1)*3+2
 		//stop
+		System.out.println(currentLevel+"gamepanel"+ZombiesThisLevel);
+		generateEnemy();
 	}
 	public void updateweapon(){
 		//we keep track of how far the weapon can travel
@@ -353,9 +354,11 @@ public class GamePanel extends JPanel implements KeyListener{
 
 		for (Zombie zzh8829:toRemoveZ){
 			//for every zombie that dies, add onto the score, remove the zombie and add a magical box to the screen
-			allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY()));
-			
+			if ((int)(Math.random()*3)==1){
+				allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY()));
+			}
 			BH.score+=200;
+			ZombiesDead++;
 			allZombies.remove(zzh8829);
 			fullCountDown();
 			consecutiveKills++;
@@ -376,10 +379,10 @@ public class GamePanel extends JPanel implements KeyListener{
 			allDevils.remove(zzh8829);
 			allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY()));
 			fullCountDown();
+			DevilsDead++;
 			consecutiveKills++;
 			
 		}
-		//remember to check the devils to
 		return flag;
 	}
 	public boolean checkOutside(int x,int y){
@@ -499,19 +502,23 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void generateEnemy(){
-		//level 1 (1-3)
-		//level 2 (2-5)
-		//level 3 (3-7)
-		//level 4 (4-9)
-		//level 5 (5-11)
-		int maxZ=3,minZ=1,maxD=1,minD=0;
+		//level 1 (1-4)
+		//level 2 (2-6)
+		//level 3 (3-8)
+		//level 4 (4-11)
+		//level 5 (5-13)
+		//System.out.println("generate"+ZombiesThisLevel);
+		int maxZ=4,minZ=1,maxD=1,minD=0;
 		int generateZ,generateD; //the number of zombies and devils generated at this time
 		int pos1Z,pos2Z,pos1D,pos2D;
 		if (ZombiesThisLevel>0){
-			generateZ = (int)(Math.random()*(Math.min(ZombiesThisLevel-minZ, maxZ-minZ))+minZ);
+			int n = (int)(Math.random()*(Math.min(ZombiesThisLevel-minZ, maxZ-minZ)));
+			System.out.println("n"+n);
+			generateZ = (int)(Math.random()*(Math.min(ZombiesThisLevel-minZ, maxZ-minZ)))+minZ;
 			//randomly generate the number of Zombies needed based on the maximum Zombie generation allowed for this level and the the remaining allowance of zombie for the level
 			//add on the minimum zombie generatoin allowed to ensure that enough zombies are generated
 			ZombiesThisLevel-=generateZ;
+			System.out.println(generateZ+"generate");
 			pos1Z = generateZ/2;
 			pos2Z = generateZ-pos1Z;
 			for (int i=0;i<pos1Z;i++){
@@ -523,6 +530,7 @@ public class GamePanel extends JPanel implements KeyListener{
 			}
 
 		}
+		//System.out.println(ZombiesThisLevel+"this level");
 		if (DevilsThisLevel>0){
 			generateD = (int)(Math.random()*(Math.min(DevilsThisLevel-minD, maxD-minD))+minD);
 			DevilsThisLevel-=generateD;
@@ -534,7 +542,8 @@ public class GamePanel extends JPanel implements KeyListener{
 			for (int i=0;i<pos2D;i++){
 				allDevils.add(new Devil(-mapx+gs2x+(int)(Math.random()*60-30),-mapy+gs2y+(int)(Math.random()*60-30),ang2,BH.mc));
 			}
-		}		
+		}
+		System.out.println("this level" +ZombiesThisLevel);
 	}
 	
 	public void checkBoxCollision(){
@@ -624,10 +633,14 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		return false;
 	}
-	
-	
+	public int getZombiesThisLevel(){
+		return currentLevel*5;
+	}
+	public int getDevilsThisLevel(){
+		return (currentLevel-1)*3+2;
+	}
 	public void checkLevelOver(){
-		if (ZombiesThisLevel==0 && DevilsThisLevel==0){
+		if (ZombiesDead == getZombiesThisLevel() && DevilsDead == getDevilsThisLevel()){
 			//this level is over
 			System.out.println("LEVEUP");
 			levelUp();
@@ -636,8 +649,10 @@ public class GamePanel extends JPanel implements KeyListener{
 	public void levelUp(){
 		System.out.println("leveUp()");
 		currentLevel++;
-		ZombiesThisLevel=ZombiesEachLevel[currentLevel];
-		DevilsThisLevel=DevilsEachLevel[currentLevel];
+		ZombiesDead=0;
+		DevilsDead=0;
+		ZombiesThisLevel=getZombiesThisLevel();
+		DevilsThisLevel=getDevilsThisLevel();
 		displayLevelCounter=1000;
 	}
 	public void checkBarricades(){
@@ -653,7 +668,6 @@ public class GamePanel extends JPanel implements KeyListener{
 	}
 	
 	public void paintComponent(Graphics g){
-		System.out.println("why you do this sto me");
 		Font Sfont = new Font("Calisto MT", Font.BOLD, 20);
 		g.setFont(Sfont);
 		g.drawImage(background, -mapx, -mapy, this);
