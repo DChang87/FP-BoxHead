@@ -86,6 +86,7 @@ public class BoxHead extends JFrame implements ActionListener{
 				game.moveMC();
 				game.moveBullets();
 				game.checkBulletCollision();
+				game.checkBulletDistance();
 				game.checkMC();
 				game.checkPause();
 				game.moveMap();
