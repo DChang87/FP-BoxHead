@@ -31,6 +31,10 @@ public class BoxHead extends JFrame implements ActionListener{
 		fireTimer = new Timer(100,this); //timer used to increase the timeCount on the fireball for the devil
 		myTimer = new Timer(20,this); //myTimer is used to record the time for general movements in the game
 		mc = new MainCharacter("damn it leo", 100, 400);		
+		go = new GameOver(this);
+		go.setLocation(0,0);
+		go.setSize(800,640);
+		add(go);
 		game = new GamePanel(this);
 		game.setLocation(0,0);
 		game.setSize(800,640);
@@ -39,17 +43,15 @@ public class BoxHead extends JFrame implements ActionListener{
 		sm.setLocation(0,0);
 		sm.setSize(800,640);
 		add(sm);
-		go = new GameOver(this);
-		go.setLocation(0,0);
-		go.setSize(800,640);
-		add(go);
+		
+		/*
 		startB = new JButton("START");
 		startB.setLocation(350, 400);
 		startB.setSize(100, 50);
 		startB.addActionListener(this);
 		add(startB);
 		startB.setVisible(true);
-		
+		*/
 		startS = new StartScreen(this);
 		startS.setLocation(0,0);
 		startS.setSize(800,640);
@@ -71,12 +73,12 @@ public class BoxHead extends JFrame implements ActionListener{
 		Object source = evt.getSource();
 		if (state==START){
 			
-			startB.setVisible(true);
-			if (source==startB){
+			//startB.setVisible(true);
+			/*if (source==startB){
 				startB.setVisible(false);
 				state=GAME;
 	    		game.requestFocus();
-			}
+			}*/
 			startS.repaint();
 		}
 		else if (state==GAME){
