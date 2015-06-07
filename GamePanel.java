@@ -40,7 +40,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	private ArrayList<Image> bulletSprites = new ArrayList<Image>();
 	private ArrayList<Barricade> allBarricades = new ArrayList<Barricade>();
 	private ArrayList<Barrel> allBarrels = new ArrayList<Barrel>();
-	private int ZombiesThisLevel=10, DevilsThisLevel=3;
+	private int ZombiesThisLevel, DevilsThisLevel;
 
 	//add this
 	private int displayLevelCounter=0; //this is the counter used to display the "+-+-+-+ Level 2 +-+-+-+"
@@ -102,7 +102,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		//zombies each level: level# * 5
 		//devils each level (level#-1)*3+2
 		//stop
-		System.out.println(currentLevel+"gamepanel"+ZombiesThisLevel);
+		//System.out.println(currentLevel+"gamepanel"+ZombiesThisLevel);
 		generateEnemy();
 	}
 	public void updateweapon(){
@@ -111,6 +111,18 @@ public class GamePanel extends JPanel implements KeyListener{
 		weapondist[2] = 500;
 		for (int i=3; i!=7; ++i)
 			weapondist[i] = 600;
+	}
+	public void restart(){
+		currentLevel=1;
+		BH.mc.setHealth(BH.mc.full_health);
+		ZombiesThisLevel=getZombiesThisLevel();
+		DevilsThisLevel=getDevilsThisLevel();
+		ZombiesDead=0;
+		DevilsDead=0;
+		allZombies.clear();
+		allDevils.clear();
+		BH.mc.setX(100);
+		BH.mc.setY(400);
 	}
 	public void keyTyped(KeyEvent e){
 		
@@ -334,6 +346,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	public void checkDeath(){
 		if(BH.mc.getHealth()<=0){
 			BH.state=BH.OVER;
+			BH.go.activateMouse();
 			//setFocusable(false);
 			BH.go.requestFocus();
 		}
@@ -513,12 +526,12 @@ public class GamePanel extends JPanel implements KeyListener{
 		int pos1Z,pos2Z,pos1D,pos2D;
 		if (ZombiesThisLevel>0){
 			int n = (int)(Math.random()*(Math.min(ZombiesThisLevel-minZ, maxZ-minZ)));
-			System.out.println("n"+n);
+			//System.out.println("n"+n);
 			generateZ = (int)(Math.random()*(Math.min(ZombiesThisLevel-minZ, maxZ-minZ)))+minZ;
 			//randomly generate the number of Zombies needed based on the maximum Zombie generation allowed for this level and the the remaining allowance of zombie for the level
 			//add on the minimum zombie generatoin allowed to ensure that enough zombies are generated
 			ZombiesThisLevel-=generateZ;
-			System.out.println(generateZ+"generate");
+			//System.out.println(generateZ+"generate");
 			pos1Z = generateZ/2;
 			pos2Z = generateZ-pos1Z;
 			for (int i=0;i<pos1Z;i++){
@@ -543,7 +556,7 @@ public class GamePanel extends JPanel implements KeyListener{
 				allDevils.add(new Devil(-mapx+gs2x+(int)(Math.random()*60-30),-mapy+gs2y+(int)(Math.random()*60-30),ang2,BH.mc));
 			}
 		}
-		System.out.println("this level" +ZombiesThisLevel);
+		//System.out.println("this level" +ZombiesThisLevel);
 	}
 	
 	public void checkBoxCollision(){
@@ -640,8 +653,8 @@ public class GamePanel extends JPanel implements KeyListener{
 		return (currentLevel-1)*3+2;
 	}
 	public void checkLevelOver(){
-		System.out.println(ZombiesDead+" "+getZombiesThisLevel());
-		System.out.println(DevilsDead+" "+getDevilsThisLevel());
+		//System.out.println(ZombiesDead+" "+getZombiesThisLevel());
+		//System.out.println(DevilsDead+" "+getDevilsThisLevel());
 		if (ZombiesDead == getZombiesThisLevel() && DevilsDead == getDevilsThisLevel()){
 			//this level is over
 			System.out.println("LEVEUP");
