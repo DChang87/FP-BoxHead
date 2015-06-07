@@ -1,6 +1,8 @@
 import java.util.*;
 class MainCharacter {
-	private int health=1000, ANGLE,sx = 30, sy = 70, sp=10;
+	public final int full_health=1000;
+	private int health=full_health, ANGLE,sx = 30, sy = 70, sp=10;
+	
 	private String name;
 	private int cweapon = 1;
 	public double posx, posy;
