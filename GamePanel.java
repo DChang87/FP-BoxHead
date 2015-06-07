@@ -34,7 +34,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	final int HEALTH=0,PISTOL=1,UZI=2,PISTOLP=11,SHOTGUN=3,UZIP=21,BARREL = 4,UZIPP=22,GRENADE= 5, FAKEWALLS=6;
 	private ArrayList<Zombie> allZombies = new ArrayList<Zombie>(); //this stores all of the zombies that are currently in the game
 	private ArrayList<Devil> allDevils = new ArrayList<Devil>(); //this stores all of the devils that are currently running around in the game
-	public ArrayList<PosPair> fireballs = new ArrayList<PosPair>(); //this stores all of the fireballs that are currently in the game
+	private ArrayList<PosPair> fireballs = new ArrayList<PosPair>(); //this stores all of the fireballs that are currently in the game
 	//make an arraylist of active bullets that save the info about the bullet including the type of gun
 	private ArrayList<PosPair> activeBullets = new ArrayList<PosPair>(); //private?
 	private ArrayList<MagicalBox> allBoxes = new ArrayList<MagicalBox>();
@@ -122,6 +122,11 @@ public class GamePanel extends JPanel implements KeyListener{
 		DevilsDead=0;
 		allZombies.clear();
 		allDevils.clear();
+		fireballs.clear();
+		activeBullets.clear();
+		allBarricades.clear();
+		allBarrels.clear();
+		allBoxes.clear();
 		BH.mc.setX(100);
 		BH.mc.setY(400);
 	}
@@ -522,9 +527,10 @@ public class GamePanel extends JPanel implements KeyListener{
 		//level 4 (4-11)
 		//level 5 (5-13)
 		//System.out.println("generate"+ZombiesThisLevel);
-		int maxZ=2,minZ=1,maxD=1,minD=1;
+		int maxZ=1,minZ=1,maxD=1,minD=1;
 		int generateZ,generateD; //the number of zombies and devils generated at this time
-		int pos1Z,pos2Z,pos1D,pos2D;
+		
+		int posZ,posD;
 		if (ZombiesThisLevel>0){
 			int n = (int)(Math.random()*(Math.min(ZombiesThisLevel-minZ, maxZ-minZ)));
 			//System.out.println("n"+n);
@@ -532,35 +538,42 @@ public class GamePanel extends JPanel implements KeyListener{
 			//randomly generate the number of Zombies needed based on the maximum Zombie generation allowed for this level and the the remaining allowance of zombie for the level
 			//add on the minimum zombie generatoin allowed to ensure that enough zombies are generated
 			ZombiesThisLevel-=generateZ;
-			//System.out.println(generateZ+"generate");
-			pos1Z = generateZ/2;
-			pos2Z = generateZ-pos1Z;
+			posZ = (int)(Math.random()*2);
 			int y;
-			for (int i=0;i<pos1Z;i++){
-				y = 1279+(int)(Math.random()*182)*((int)(Math.random()*2)-1);
-				System.out.println(mapx+" "+mapy+"y"+y);
-				allZombies.add(new Zombie(-mapx,-mapy+y,ang1,BH.mc));
+			if (posZ==0){
+				for (int i=0;i<generateZ;i++){
+					y = 1279+(int)(Math.random()*182)*((int)(Math.random()*2)-1);
+					System.out.println(mapx+" "+mapy+"y"+y);
+					allZombies.add(new Zombie(-mapx,-mapy+y,ang1,BH.mc));
+				}
 			}
-			//the number of zombies and devils required for each spot
-			for (int i=0;i<pos2Z;i++){
-				y = (int)(Math.random()*490);
-				System.out.println(mapx+" "+mapy+"y2"+y);
-				allZombies.add(new Zombie(-mapx,-mapy+y,ang2,BH.mc));
+			else{
+				//the number of zombies and devils required for each spot
+				for (int i=0;i<generateZ;i++){
+					y = (int)(Math.random()*490);
+					System.out.println(mapx+" "+mapy+"y2"+y);
+					allZombies.add(new Zombie(-mapx,-mapy+y,ang2,BH.mc));
+				}
 			}
+			
 
 		}
 		//System.out.println(ZombiesThisLevel+"this level");
 		if (DevilsThisLevel>0){
 			generateD = (int)(Math.random()*(Math.min(DevilsThisLevel-minD, maxD-minD)))+minD;
 			DevilsThisLevel-=generateD;
-			pos1D = generateD/2;
-			pos2D = generateD-pos1D;
-			for (int i=0;i<pos1D;i++){
-				allDevils.add(new Devil(-mapx,-mapy+1279+(int)(Math.random()*182)*((int)(Math.random()*2)-1),ang1,BH.mc));
+			posD = (int)(Math.random()*2);
+			if (posD==0){
+				for (int i=0;i<generateD;i++){
+					allDevils.add(new Devil(-mapx,-mapy+1279+(int)(Math.random()*182)*((int)(Math.random()*2)-1),ang1,BH.mc));
+				}
 			}
-			for (int i=0;i<pos2D;i++){
-				allDevils.add(new Devil(-mapx,-mapy+(int)(Math.random()*490),ang2,BH.mc));
+			else{
+				for (int i=0;i<generateD;i++){
+					allDevils.add(new Devil(-mapx,-mapy+(int)(Math.random()*490),ang2,BH.mc));
+				}
 			}
+			
 		}
 		//System.out.println("this level" +ZombiesThisLevel);
 	}
