@@ -7,6 +7,7 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+
 import java.io.File;
 import java.io.IOException;
 import java.awt.image.BufferedImage;
@@ -20,7 +21,7 @@ import javax.swing.JPanel;
 public class GamePanel extends JPanel implements KeyListener{
 	private BoxHead BH;
 	private boolean[] keys; 
-	private Image background = new ImageIcon("forestmap.jpg").getImage();
+	private Image background = new ImageIcon("forestmap2.jpg").getImage();
 	private Image boxSprite = new ImageIcon("box.png").getImage();
 	
 	private BufferedImage mask_background;
@@ -91,7 +92,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		weaponNames[5]="GRENADE";
 		weaponNames[6]="BARRICADE";
 		try{
-			File file= new File("mask_map.jpg");
+			File file= new File("mask_map2.jpg");
 			mask_background = ImageIO.read(file);
 		}
 		catch (IOException ex){}
@@ -521,7 +522,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		//level 4 (4-11)
 		//level 5 (5-13)
 		//System.out.println("generate"+ZombiesThisLevel);
-		int maxZ=4,minZ=1,maxD=1,minD=1;
+		int maxZ=2,minZ=1,maxD=1,minD=1;
 		int generateZ,generateD; //the number of zombies and devils generated at this time
 		int pos1Z,pos2Z,pos1D,pos2D;
 		if (ZombiesThisLevel>0){
@@ -534,12 +535,17 @@ public class GamePanel extends JPanel implements KeyListener{
 			//System.out.println(generateZ+"generate");
 			pos1Z = generateZ/2;
 			pos2Z = generateZ-pos1Z;
+			int y;
 			for (int i=0;i<pos1Z;i++){
-				allZombies.add(new Zombie(-mapx,-mapy+1279+(int)(Math.random()*364)-182,ang1,BH.mc));
+				y = 1279+(int)(Math.random()*182)*((int)(Math.random()*2)-1);
+				System.out.println(mapx+" "+mapy+"y"+y);
+				allZombies.add(new Zombie(-mapx,-mapy+y,ang1,BH.mc));
 			}
 			//the number of zombies and devils required for each spot
 			for (int i=0;i<pos2Z;i++){
-				allZombies.add(new Zombie(-mapx,-mapy+(int)(Math.random()*490)-245,ang2,BH.mc));
+				y = (int)(Math.random()*490);
+				System.out.println(mapx+" "+mapy+"y2"+y);
+				allZombies.add(new Zombie(-mapx,-mapy+y,ang2,BH.mc));
 			}
 
 		}
@@ -550,10 +556,10 @@ public class GamePanel extends JPanel implements KeyListener{
 			pos1D = generateD/2;
 			pos2D = generateD-pos1D;
 			for (int i=0;i<pos1D;i++){
-				allDevils.add(new Devil(-mapx,-mapy+1279+(int)(Math.random()*364)-182,ang1,BH.mc));
+				allDevils.add(new Devil(-mapx,-mapy+1279+(int)(Math.random()*182)*((int)(Math.random()*2)-1),ang1,BH.mc));
 			}
 			for (int i=0;i<pos2D;i++){
-				allDevils.add(new Devil(-mapx,-mapy+(int)(Math.random()*490)-245,ang2,BH.mc));
+				allDevils.add(new Devil(-mapx,-mapy+(int)(Math.random()*490),ang2,BH.mc));
 			}
 		}
 		//System.out.println("this level" +ZombiesThisLevel);
@@ -637,12 +643,18 @@ public class GamePanel extends JPanel implements KeyListener{
 	}
 	
 	public boolean validMove(int x, int y){
-		int clr=  mask_background.getRGB(mapx+x,mapy+y);
-		int  red   = (clr & 0x00ff0000) >> 16;
-		int  green = (clr & 0x0000ff00) >> 8;
-		int  blue  =  clr & 0x000000ff;
-		if (red == 255 && green == 255 && blue == 255){
-			return true;
+		System.out.println(x+" "+y+" "+mapx+" "+mapy);
+		if (mapx+x>=0&& mapy+y>=0){
+			int clr=  mask_background.getRGB(mapx+x,mapy+y);
+			int  red   = (clr & 0x00ff0000) >> 16;
+			int  green = (clr & 0x0000ff00) >> 8;
+			int  blue  =  clr & 0x000000ff;
+			if (red == 255 && green == 255 && blue == 255){
+				return true;
+			}
+		}
+		else{
+			System.out.println("sht");
 		}
 		return false;
 	}
