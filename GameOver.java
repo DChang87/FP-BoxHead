@@ -60,12 +60,18 @@ public class GameOver extends JPanel implements MouseMotionListener, MouseListen
     	//draw the background and the button (According to the situation)
     	g.drawImage(background,0,0,this);
     	//System.out.println("paintComponent game over");
-    	g.drawRect(350, 200, 100, 50);
-    	if (Down&&collide()){
+    	if (collide()&&Down){
     		BH.state=BH.GAME;
     		System.out.println("restart");
     		BH.game.restart();
     		BH.game.requestFocus();
+    	
+    	}
+    	else if (collide()){
+    		g.drawImage(hover,bx,by,this);
+    	}
+    	else{
+    		g.drawImage(up,bx,by,this);
     	}
     	g.drawString(BH.score+"", 390, 500);
     }
