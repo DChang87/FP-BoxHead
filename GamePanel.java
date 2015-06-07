@@ -57,7 +57,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	
 
 	private String[] weaponNames = new String[10];
-	private int gs1x=72,gs1y=1273,gs2x=905,gs2y=73,ang1=90,ang2=180; //generation spot 1, generation spot 2
+	private int ang1=90,ang2=180; //generation spot 1, generation spot 2
 	//private int gs1x=100,gs1y=100,gs2x=500,gs2y=500,ang1=0,ang2=270;
 
 	
@@ -535,11 +535,11 @@ public class GamePanel extends JPanel implements KeyListener{
 			pos1Z = generateZ/2;
 			pos2Z = generateZ-pos1Z;
 			for (int i=0;i<pos1Z;i++){
-				allZombies.add(new Zombie(-mapx+gs1x+(int)(Math.random()*60-30),-mapy+gs1y+(int)(Math.random()*60-30),ang1,BH.mc));
+				allZombies.add(new Zombie(-mapx,-mapy+1279+(int)(Math.random()*364)-182,ang1,BH.mc));
 			}
 			//the number of zombies and devils required for each spot
 			for (int i=0;i<pos2Z;i++){
-				allZombies.add(new Zombie(-mapx+gs2x+(int)(Math.random()*60-30),-mapy+gs2y+(int)(Math.random()*60-30),ang2,BH.mc));
+				allZombies.add(new Zombie(-mapx,-mapy+(int)(Math.random()*490)-245,ang2,BH.mc));
 			}
 
 		}
@@ -550,10 +550,10 @@ public class GamePanel extends JPanel implements KeyListener{
 			pos1D = generateD/2;
 			pos2D = generateD-pos1D;
 			for (int i=0;i<pos1D;i++){
-				allDevils.add(new Devil(-mapx+gs1x+(int)(Math.random()*60-30),-mapy+gs1y+(int)(Math.random()*60-30),ang1,BH.mc));
+				allDevils.add(new Devil(-mapx,-mapy+1279+(int)(Math.random()*364)-182,ang1,BH.mc));
 			}
 			for (int i=0;i<pos2D;i++){
-				allDevils.add(new Devil(-mapx+gs2x+(int)(Math.random()*60-30),-mapy+gs2y+(int)(Math.random()*60-30),ang2,BH.mc));
+				allDevils.add(new Devil(-mapx,-mapy+(int)(Math.random()*490)-245,ang2,BH.mc));
 			}
 		}
 		//System.out.println("this level" +ZombiesThisLevel);
