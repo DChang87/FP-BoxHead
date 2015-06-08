@@ -210,7 +210,10 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void activateAudio(int weapon){
-		audio[weapon].play();
+		if (weapon<=2){
+			audio[weapon].play();
+		}
+		
 	}
 	public void checkPause(){
 		//display another pause screen
