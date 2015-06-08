@@ -19,6 +19,7 @@ public class BoxHead extends JFrame implements ActionListener{
 	MainCharacter mc;
 	StartScreen startS;
 	SelectionMenu sm;
+	Upgrades ug;
 	public BoxHead(){
 		super("BoxHead Zombies");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -27,10 +28,11 @@ public class BoxHead extends JFrame implements ActionListener{
 		setLayout(null);
 		shootTimer = new Timer(100,this);
 		zombieTimer = new Timer(200,this);
-		enemyGenerationTimer = new Timer(20000,this);
+		enemyGenerationTimer = new Timer(3000,this);
 		fireTimer = new Timer(100,this); //timer used to increase the timeCount on the fireball for the devil
 		myTimer = new Timer(20,this); //myTimer is used to record the time for general movements in the game
-		mc = new MainCharacter("damn it leo", 100, 400);		
+		mc = new MainCharacter("damn it leo", 100, 400);
+		ug = new Upgrades();
 		go = new GameOver(this);
 		go.setLocation(0,0);
 		go.setSize(800,640);
