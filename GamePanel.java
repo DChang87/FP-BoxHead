@@ -101,7 +101,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	}
 	public void loadMask(){
 		try{
-			File file= new File("mask_map2.jpg");
+			File file= new File("mask_map3.jpg");
 			mask_background = ImageIO.read(file);
 		}
 		catch (IOException ex){}
@@ -119,8 +119,8 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void loadAudio(){
-		audio[1]=Applet.newAudioClip(getClass().getResource("pistol.wav"));
-		audio[2]=Applet.newAudioClip(getClass().getResource("uzi.wav"));
+		//audio[1]=Applet.newAudioClip(getClass().getResource("pistol.wav"));
+		//audio[2]=Applet.newAudioClip(getClass().getResource("uzi.wav"));
 		//audio[3]=Applet.newAudioClip(getClass().getResource("shotgunS.wav"));
 	}
 	public void getWeaponNames(){
@@ -205,15 +205,12 @@ public class GamePanel extends JPanel implements KeyListener{
 			else{
 				activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.mc.getWeapon()));
 				BH.mc.useAmmo(BH.mc.getWeapon());
-				activateAudio(BH.mc.getWeapon());
+				//activateAudio(BH.mc.getWeapon());
 			}
 		}
 	}
 	public void activateAudio(int weapon){
-		if (weapon<=2){
-			audio[weapon].play();
-		}
-		
+		audio[weapon].play();
 	}
 	public void checkPause(){
 		//display another pause screen
@@ -231,51 +228,51 @@ public class GamePanel extends JPanel implements KeyListener{
 		//how do you do this HELP IDKKKK RIGHT NOW
 		//SHOOTING OF BULLETS IS ALSO WEIRD LOL
 		
-		double nx=BH.mc.getX(), ny=BH.mc.getY();
+		double nx=BH.mc.getDX(), ny=BH.mc.getDY();
 		
 		
 		if (keys[KeyEvent.VK_LEFT] && keys[KeyEvent.VK_UP]){
 			BH.mc.setAngle(225);
-			nx = Math.max(BH.mc.getX()-speed/2*Math.sqrt(2),0);
-			ny = Math.max(BH.mc.getY()-speed/2*Math.sqrt(2),0);
+			nx = Math.max(nx-speed/2*Math.sqrt(2),0);
+			ny = Math.max(ny-speed/2*Math.sqrt(2),0);
 			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_LEFT] && keys[KeyEvent.VK_DOWN]){
 			BH.mc.setAngle(135);
-			nx = Math.max(BH.mc.getX()-speed/2*Math.sqrt(2),0); 
-			ny = Math.min(BH.mc.getY()+speed/2*Math.sqrt(2),640);
+			nx = Math.max(nx-speed/2*Math.sqrt(2),0); 
+			ny = Math.min(ny+speed/2*Math.sqrt(2),640);
 			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_RIGHT] && keys[KeyEvent.VK_DOWN]){
 			BH.mc.setAngle(45);
-			nx = Math.min(BH.mc.getX()+speed/2*Math.sqrt(2),800); 
-			ny = Math.min(BH.mc.getY()+speed/2*Math.sqrt(2),640); 
+			nx = Math.min(nx+speed/2*Math.sqrt(2),800); 
+			ny = Math.min(ny+speed/2*Math.sqrt(2),640); 
 			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_RIGHT] && keys[KeyEvent.VK_UP]){
 			BH.mc.setAngle(315);
-			nx = Math.min(BH.mc.getX()+speed/2*Math.sqrt(2),800); 
-			ny = Math.max(BH.mc.getY()-speed/2*Math.sqrt(2),0); 
+			nx = Math.min(nx+speed/2*Math.sqrt(2),800); 
+			ny = Math.max(ny-speed/2*Math.sqrt(2),0); 
 			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_LEFT]){
 			//maybe set the direction lol
 			BH.mc.setAngle(180);
-			nx = Math.max(0, BH.mc.getX()-speed);
+			nx = Math.max(0, nx-speed);
 			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_RIGHT]){
-			nx = Math.min(800-BH.mc.getWidth(), BH.mc.getX()+speed);
+			nx = Math.min(800-BH.mc.getWidth(), nx+speed);
 			BH.mc.setAngle(0);
 			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_UP]){
-			ny = Math.max(0, BH.mc.getY()-speed);
+			ny = Math.max(0, ny-speed);
 			BH.mc.setAngle(270);
 			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_DOWN]){
-			ny = Math.min(640-BH.mc.getLength(),BH.mc.getY()+speed);
+			ny = Math.min(640-BH.mc.getLength(),ny+speed);
 			BH.mc.setAngle(90);
 			spriteCounter++;
 		}
@@ -314,6 +311,7 @@ public class GamePanel extends JPanel implements KeyListener{
 			}
 			for (Barrel b : allBarrels){
 				if (b.rectcollision((int)nx,(int)ny)){
+					System.out.println("COLLISION");
 					b.setHealth(b.getHealth()-temp.getdmg());
 				}
 			}
@@ -479,13 +477,10 @@ public class GamePanel extends JPanel implements KeyListener{
 	public void checkBulletCollision(){
 		//check if the bullets hit any enemies
 		ArrayList<PosPair> toRemove = new ArrayList<PosPair>();
-		for (int i=0;i<activeBullets.size();i++){
-			if (enemyCollision(activeBullets.get(i).getX(),activeBullets.get(i).getY())){
+		for (PosPair temp : activeBullets){
+			if (enemyCollision(temp.getX(),temp.getY()) || checkOutside(temp.getX(),temp.getY())){
 				//REMOVE THE ENEMIES
-				toRemove.add(activeBullets.get(i));
-			}
-			else if (checkOutside(activeBullets.get(i).getX(),activeBullets.get(i).getY())){
-				toRemove.add(activeBullets.get(i));
+				toRemove.add(temp);
 			}
 		}
 		for (PosPair pair:toRemove){
@@ -513,12 +508,11 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void moveBullets(){
-		for (int i=0;i<activeBullets.size();i++)
+		for (PosPair temp : activeBullets)
 		{
-			PosPair temp = activeBullets.get(i);
 			final double ANG = Math.toRadians(temp.getANGLE());
 			double xx = temp.getDX(), yy = temp.getDY();
-			activeBullets.get(i).setPos(xx+weaponsp[BH.mc.getWeapon()]*Math.cos(ANG),yy+weaponsp[BH.mc.getWeapon()]*Math.sin(ANG));
+			temp.setPos(xx+weaponsp[BH.mc.getWeapon()]*Math.cos(ANG),yy+weaponsp[BH.mc.getWeapon()]*Math.sin(ANG));
 		}
 	}
 	public void moveFireballs()
@@ -727,7 +721,7 @@ public class GamePanel extends JPanel implements KeyListener{
 			int  red   = (clr & 0x00ff0000) >> 16;
 			int  green = (clr & 0x0000ff00) >> 8;
 			int  blue  =  clr & 0x000000ff;
-			if (red == 255 && green == 255 && blue == 255){
+			if (red != 0 && green != 0 && blue != 0){
 				return true;
 			}
 		}
@@ -768,6 +762,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	public void checkBarrels(){
 		ArrayList<Barrel> toRemove = new ArrayList<Barrel>();
 		for (Barrel b : allBarrels){
+			System.out.println(b.getHealth());
 			if (b.getHealth() <= 0){
 				toRemove.add(b);
 			}
@@ -860,10 +855,8 @@ public class GamePanel extends JPanel implements KeyListener{
 		g.drawString(weaponNames[BH.mc.getWeapon()], BH.mc.getX()-5, BH.mc.getY()-10); //maybe do the string formatting with this later if we have time
 		//drawing the health bar
 		//figure out the colouring of the bar ugh
-		g.setColor(Color.green);
-		g.fillRect(BH.mc.getX()-5,BH.mc.getY()-3,BH.mc.calculateHealth(),5); //filling of the bar
-		g.setColor(Color.black);
-		g.drawRect(BH.mc.getX()-5, BH.mc.getY()-3, 30, 5); //drawing the outline
+		g.drawRect(BH.mc.getX()-5,BH.mc.getY()-3,BH.mc.calculateHealth(),5); //filling of the bar
+		g.drawRect(BH.mc.getX()-5, BH.mc.getY()-3, 20, 5); //drawing the outline
 		
 		for (PosPair pp : activeBullets){
 			//we need to get bulllet sprites
