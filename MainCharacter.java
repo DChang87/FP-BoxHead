@@ -13,19 +13,54 @@ class MainCharacter {
 	 */
 	public double posx, posy;
 	private final int NUMOFWEAPONS = 7;
+	private final int UZI = 2,SHOTGUN =3, BARREL=4,GRENADE=5,FAKEWALLS=6;
 	private int[] weapons = new int[NUMOFWEAPONS];
+	private int[] maxAmmo = new int[NUMOFWEAPONS]; //this stores all the max ammo values but it changes as the character receives upgrades
+	private int[] ORIGINALmaxAmmo = new int[NUMOFWEAPONS]; //this stores the original max ammo values
 	//this stores all the weapons available to the character
+	private int[] weaponsp = new int[30];
+	private int[] ORIGINALweaponsp = new int[30];
 	public MainCharacter(String n, int px, int py){
 		name = n;
 		posx = px;
 		posy = py;
+		loadORMaxAmmo();
+		loadORWeaponSpeed();
 		for (int i=0;i<NUMOFWEAPONS;i++){
 			weapons[i]=0;
 			//all weapons have default at 0
 			//pistol is unlimited
 		}
+		
 		for (int i=0; i!=7; ++i)//temporary
 			weapons[i] = 100;
+	}
+	public int getAtWeaponSpeed(int weapon){
+		return weaponsp[weapon];
+	}
+	public void loadORWeaponSpeed(){
+		ORIGINALweaponsp[1]=5; //pistol
+		ORIGINALweaponsp[2]=10; //uzi
+		ORIGINALweaponsp[3]=10;//pistol
+		loadWeaponSpeed();
+	}
+	public void loadWeaponSpeed(){
+		for (int i=0;i<ORIGINALweaponsp.length;i++){
+			weaponsp[i]=ORIGINALweaponsp[i];
+		}
+	}
+	public void loadORMaxAmmo(){
+		ORIGINALmaxAmmo[UZI]=100;
+		ORIGINALmaxAmmo[SHOTGUN]=20;
+		ORIGINALmaxAmmo[BARREL]=10;
+		ORIGINALmaxAmmo[FAKEWALLS]=5;
+		ORIGINALmaxAmmo[GRENADE]=5;
+		loadMaxAmmo();
+	}
+	public void loadMaxAmmo(){
+		for (int i=0;i<ORIGINALmaxAmmo.length;i++){
+			maxAmmo[i]=ORIGINALmaxAmmo[i];
+		}
 	}
 	public int getX(){
 		return (int)posx;
