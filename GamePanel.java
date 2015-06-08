@@ -33,8 +33,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	private Image[][] zombieSprites = new Image[8][8];
 	private int spriteCounter = 0;
 	private int[] weapondist = new int[30];
-	private int[] weaponsp = new int[30];
-	private int[] ORIGINALweaponsp = new int[30];
+	
 	private int rectsx = 34, rectsy = 47, barricadesx = 20, barricadesy = 20, barrelsx = 20, barrelsy = 50;
 	final int HEALTH=0,PISTOL=1,UZI=2,PISTOLP=11,SHOTGUN=3,UZIP=21,BARREL = 4,UZIPP=22,GRENADE= 5, FAKEWALLS=6;
 	private ArrayList<Zombie> allZombies = new ArrayList<Zombie>(); //this stores all of the zombies that are currently in the game
@@ -82,26 +81,15 @@ public class GamePanel extends JPanel implements KeyListener{
 		loadAudio();
 		loadSprites();
 		loadMask();
-		loadORWeaponSpeed();
 		currentLevel=1;
 		ZombiesThisLevel = getZombiesThisLevel();
 		DevilsThisLevel = getDevilsThisLevel();
 		generateEnemy();
 	}
-	public void loadORWeaponSpeed(){
-		ORIGINALweaponsp[1]=5; //pistol
-		ORIGINALweaponsp[2]=10; //uzi
-		ORIGINALweaponsp[3]=10;//pistol
-		loadWeaponSpeed();
-	}
-	public void loadWeaponSpeed(){
-		for (int i=0;i<ORIGINALweaponsp.length;i++){
-			weaponsp[i]=ORIGINALweaponsp[i];
-		}
-	}
+
 	public void loadMask(){
 		try{
-			File file= new File("mask_map3.jpg");
+			File file= new File("mask_map2.jpg");
 			mask_background = ImageIO.read(file);
 		}
 		catch (IOException ex){}
@@ -141,6 +129,8 @@ public class GamePanel extends JPanel implements KeyListener{
 	}
 	public void restart(){
 		currentLevel=1;
+		BH.mc.loadMaxAmmo();
+		BH.mc.loadWeaponSpeed();
 		BH.mc.setHealth(BH.mc.full_health);
 		ZombiesThisLevel=getZombiesThisLevel();
 		DevilsThisLevel=getDevilsThisLevel();
@@ -230,51 +220,51 @@ public class GamePanel extends JPanel implements KeyListener{
 		//how do you do this HELP IDKKKK RIGHT NOW
 		//SHOOTING OF BULLETS IS ALSO WEIRD LOL
 		
-		double nx=BH.mc.getDX(), ny=BH.mc.getDY();
+		double nx=BH.mc.getX(), ny=BH.mc.getY();
 		
 		
 		if (keys[KeyEvent.VK_LEFT] && keys[KeyEvent.VK_UP]){
 			BH.mc.setAngle(225);
-			nx = Math.max(nx-speed/2*Math.sqrt(2),0);
-			ny = Math.max(ny-speed/2*Math.sqrt(2),0);
+			nx = Math.max(BH.mc.getX()-speed/2*Math.sqrt(2),0);
+			ny = Math.max(BH.mc.getY()-speed/2*Math.sqrt(2),0);
 			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_LEFT] && keys[KeyEvent.VK_DOWN]){
 			BH.mc.setAngle(135);
-			nx = Math.max(nx-speed/2*Math.sqrt(2),0); 
-			ny = Math.min(ny+speed/2*Math.sqrt(2),640);
+			nx = Math.max(BH.mc.getX()-speed/2*Math.sqrt(2),0); 
+			ny = Math.min(BH.mc.getY()+speed/2*Math.sqrt(2),640);
 			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_RIGHT] && keys[KeyEvent.VK_DOWN]){
 			BH.mc.setAngle(45);
-			nx = Math.min(nx+speed/2*Math.sqrt(2),800); 
-			ny = Math.min(ny+speed/2*Math.sqrt(2),640); 
+			nx = Math.min(BH.mc.getX()+speed/2*Math.sqrt(2),800); 
+			ny = Math.min(BH.mc.getY()+speed/2*Math.sqrt(2),640); 
 			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_RIGHT] && keys[KeyEvent.VK_UP]){
 			BH.mc.setAngle(315);
-			nx = Math.min(nx+speed/2*Math.sqrt(2),800); 
-			ny = Math.max(ny-speed/2*Math.sqrt(2),0); 
+			nx = Math.min(BH.mc.getX()+speed/2*Math.sqrt(2),800); 
+			ny = Math.max(BH.mc.getY()-speed/2*Math.sqrt(2),0); 
 			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_LEFT]){
 			//maybe set the direction lol
 			BH.mc.setAngle(180);
-			nx = Math.max(0, nx-speed);
+			nx = Math.max(0, BH.mc.getX()-speed);
 			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_RIGHT]){
-			nx = Math.min(800-BH.mc.getWidth(), nx+speed);
+			nx = Math.min(800-BH.mc.getWidth(), BH.mc.getX()+speed);
 			BH.mc.setAngle(0);
 			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_UP]){
-			ny = Math.max(0, ny-speed);
+			ny = Math.max(0, BH.mc.getY()-speed);
 			BH.mc.setAngle(270);
 			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_DOWN]){
-			ny = Math.min(640-BH.mc.getLength(),ny+speed);
+			ny = Math.min(640-BH.mc.getLength(),BH.mc.getY()+speed);
 			BH.mc.setAngle(90);
 			spriteCounter++;
 		}
@@ -313,7 +303,6 @@ public class GamePanel extends JPanel implements KeyListener{
 			}
 			for (Barrel b : allBarrels){
 				if (b.rectcollision((int)nx,(int)ny)){
-					System.out.println("COLLISION");
 					b.setHealth(b.getHealth()-temp.getdmg());
 				}
 			}
@@ -479,10 +468,13 @@ public class GamePanel extends JPanel implements KeyListener{
 	public void checkBulletCollision(){
 		//check if the bullets hit any enemies
 		ArrayList<PosPair> toRemove = new ArrayList<PosPair>();
-		for (PosPair temp : activeBullets){
-			if (enemyCollision(temp.getX(),temp.getY()) || checkOutside(temp.getX(),temp.getY())){
+		for (int i=0;i<activeBullets.size();i++){
+			if (enemyCollision(activeBullets.get(i).getX(),activeBullets.get(i).getY())){
 				//REMOVE THE ENEMIES
-				toRemove.add(temp);
+				toRemove.add(activeBullets.get(i));
+			}
+			else if (checkOutside(activeBullets.get(i).getX(),activeBullets.get(i).getY())){
+				toRemove.add(activeBullets.get(i));
 			}
 		}
 		for (PosPair pair:toRemove){
@@ -510,11 +502,12 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void moveBullets(){
-		for (PosPair temp : activeBullets)
+		for (int i=0;i<activeBullets.size();i++)
 		{
+			PosPair temp = activeBullets.get(i);
 			final double ANG = Math.toRadians(temp.getANGLE());
 			double xx = temp.getDX(), yy = temp.getDY();
-			temp.setPos(xx+weaponsp[BH.mc.getWeapon()]*Math.cos(ANG),yy+weaponsp[BH.mc.getWeapon()]*Math.sin(ANG));
+			activeBullets.get(i).setPos(xx+BH.mc.getAtWeaponSpeed(BH.mc.getWeapon())*Math.cos(ANG),yy+BH.mc.getAtWeaponSpeed(BH.mc.getWeapon())*Math.sin(ANG));
 		}
 	}
 	public void moveFireballs()
@@ -723,7 +716,7 @@ public class GamePanel extends JPanel implements KeyListener{
 			int  red   = (clr & 0x00ff0000) >> 16;
 			int  green = (clr & 0x0000ff00) >> 8;
 			int  blue  =  clr & 0x000000ff;
-			if (red != 0 && green != 0 && blue != 0){
+			if (red == 255 && green == 255 && blue == 255){
 				return true;
 			}
 		}
@@ -764,7 +757,6 @@ public class GamePanel extends JPanel implements KeyListener{
 	public void checkBarrels(){
 		ArrayList<Barrel> toRemove = new ArrayList<Barrel>();
 		for (Barrel b : allBarrels){
-			System.out.println(b.getHealth());
 			if (b.getHealth() <= 0){
 				toRemove.add(b);
 			}
