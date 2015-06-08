@@ -5,6 +5,12 @@ class MainCharacter {
 	
 	private String name;
 	private int cweapon = 1;
+	//cweapon:
+	/*
+	 * pistol = 1
+	 * uzi = 2
+	 * pistol = 3
+	 */
 	public double posx, posy;
 	private final int NUMOFWEAPONS = 7;
 	private int[] weapons = new int[NUMOFWEAPONS];
@@ -85,7 +91,7 @@ class MainCharacter {
 		return (int)posy + sy/2;
 	}
 	public int calculateHealth(){
-		return (int)(health/1000*20);
+		return (int)(health*30/1000.0);
 	}
 	public void addAmmo(int n){
 		weapons[n]=100;
