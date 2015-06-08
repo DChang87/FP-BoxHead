@@ -129,6 +129,19 @@ public class GamePanel extends JPanel implements KeyListener{
 		allBoxes.clear();
 		BH.mc.setX(100);
 		BH.mc.setY(400);
+		keys[KeyEvent.VK_SPACE]=false;
+		keys[KeyEvent.VK_UP]=false;
+		keys[KeyEvent.VK_DOWN]=false;
+		keys[KeyEvent.VK_LEFT]=false;
+		keys[KeyEvent.VK_RIGHT]=false;
+		keys[KeyEvent.VK_1]=false;
+		keys[KeyEvent.VK_2]=false;
+		keys[KeyEvent.VK_3]=false;
+		keys[KeyEvent.VK_4]=false;
+		keys[KeyEvent.VK_5]=false;
+		keys[KeyEvent.VK_6]=false;
+		keys[KeyEvent.VK_7]=false;
+		keys[KeyEvent.VK_8]=false;
 	}
 	public void keyTyped(KeyEvent e){
 		
@@ -376,7 +389,7 @@ public class GamePanel extends JPanel implements KeyListener{
 			if ((int)(Math.random()*3)==1){
 				allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY()));
 			}
-			BH.score+=200;
+			BH.score+=200+consecutiveKills*100;
 			ZombiesDead++;
 			allZombies.remove(zzh8829);
 			fullCountDown();
@@ -394,7 +407,7 @@ public class GamePanel extends JPanel implements KeyListener{
 			}
 		}
 		for (Devil zzh8829:toRemoveD){
-			BH.score+=200;
+			BH.score+=200+consecutiveKills*100;
 			allDevils.remove(zzh8829);
 			allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY()));
 			fullCountDown();
@@ -710,6 +723,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	public void paintComponent(Graphics g){
 		Font Sfont = new Font("Calisto MT", Font.BOLD, 20);
 		g.setFont(Sfont);
+		System.out.println("gamepanel paint");
 		g.drawImage(background, -mapx, -mapy, this);
 		g.drawString(weaponNames[BH.mc.getWeapon()], BH.mc.getX()-5, BH.mc.getY()-10); //maybe do the string formatting with this later if we have time
 		//drawing the health bar
