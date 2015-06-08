@@ -119,8 +119,8 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void loadAudio(){
-		//audio[1]=Applet.newAudioClip(getClass().getResource("pistol.wav"));
-		//audio[2]=Applet.newAudioClip(getClass().getResource("uzi.wav"));
+		audio[1]=Applet.newAudioClip(getClass().getResource("pistol.wav"));
+		audio[2]=Applet.newAudioClip(getClass().getResource("uzi.wav"));
 		//audio[3]=Applet.newAudioClip(getClass().getResource("shotgunS.wav"));
 	}
 	public void getWeaponNames(){
@@ -205,12 +205,14 @@ public class GamePanel extends JPanel implements KeyListener{
 			else{
 				activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.mc.getWeapon()));
 				BH.mc.useAmmo(BH.mc.getWeapon());
-				//activateAudio(BH.mc.getWeapon());
+				activateAudio(BH.mc.getWeapon());
 			}
 		}
 	}
 	public void activateAudio(int weapon){
-		audio[weapon].play();
+		if (weapon<=2){
+			audio[weapon].play();
+		}
 	}
 	public void checkPause(){
 		//display another pause screen
@@ -855,8 +857,10 @@ public class GamePanel extends JPanel implements KeyListener{
 		g.drawString(weaponNames[BH.mc.getWeapon()], BH.mc.getX()-5, BH.mc.getY()-10); //maybe do the string formatting with this later if we have time
 		//drawing the health bar
 		//figure out the colouring of the bar ugh
-		g.drawRect(BH.mc.getX()-5,BH.mc.getY()-3,BH.mc.calculateHealth(),5); //filling of the bar
-		g.drawRect(BH.mc.getX()-5, BH.mc.getY()-3, 20, 5); //drawing the outline
+		g.setColor(Color.green);
+		g.fillRect(BH.mc.getX()-5,BH.mc.getY()-3,BH.mc.calculateHealth(),5); //filling of the bar
+		g.setColor(Color.black);
+		g.drawRect(BH.mc.getX()-5, BH.mc.getY()-3, 30, 5); //drawing the outline
 		
 		for (PosPair pp : activeBullets){
 			//we need to get bulllet sprites
