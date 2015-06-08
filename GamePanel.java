@@ -41,6 +41,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	private ArrayList<Image> bulletSprites = new ArrayList<Image>();
 	private ArrayList<Barricade> allBarricades = new ArrayList<Barricade>();
 	private ArrayList<Barrel> allBarrels = new ArrayList<Barrel>();
+	private ArrayList<Explosion> allExplosions = new ArrayList<Explosion>();
 	private int ZombiesThisLevel, DevilsThisLevel;
 
 	//add this
@@ -126,6 +127,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		activeBullets.clear();
 		allBarricades.clear();
 		allBarrels.clear();
+		allExplosions.clear();
 		allBoxes.clear();
 		BH.mc.setX(100);
 		BH.mc.setY(400);
@@ -279,6 +281,11 @@ public class GamePanel extends JPanel implements KeyListener{
 					b.setHealth(b.getHealth()-temp.getdmg());
 				}
 			}
+			for (Barrel b : allBarrels){
+				if (b.rectcollision((int)nx,(int)ny)){
+					b.setHealth(b.getHealth()-temp.getdmg());
+				}
+			}
 			if (numbercollisions((int)nx, temp.getY()) <= 1 && validMove((int)nx,temp.getY())){
 				temp.setX(nx);
 			}
@@ -311,6 +318,11 @@ public class GamePanel extends JPanel implements KeyListener{
 					b.setHealth(b.getHealth()-temp.getdmg());
 				}
 			}
+			for (Barrel b : allBarrels){
+				if (b.rectcollision((int)nx,(int)ny)){
+					b.setHealth(b.getHealth()-temp.getdmg());
+				}
+			}
 			if (numbercollisions((int)nx, temp.getY()) <= 1 && validMove((int)nx,temp.getY())){
 				temp.setX(nx);
 			}
@@ -337,6 +349,11 @@ public class GamePanel extends JPanel implements KeyListener{
 			}
 		}
 		for (Barricade b : allBarricades){
+			if (b.rectcollision(x,y)){
+				ncollision++;
+			}
+		}
+		for (Barrel b : allBarrels){
 			if (b.rectcollision(x,y)){
 				ncollision++;
 			}
@@ -666,6 +683,10 @@ public class GamePanel extends JPanel implements KeyListener{
 			a.setX(a.getX()-shiftx);
 			a.setY(a.getY()-shifty);
 		}
+		for (Barrel a : allBarrels){
+			a.setX(a.getX()-shiftx);
+			a.setY(a.getY()-shifty);
+		}
 	}
 	
 	public boolean validMove(int x, int y){
@@ -720,6 +741,32 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	
+	public void checkBarrels(){
+		ArrayList<Barrel> toRemove = new ArrayList<Barrel>();
+		for (Barrel b : allBarrels){
+			if (b.getHealth() <= 0){
+				toRemove.add(b);
+			}
+		}
+		for (Barrel b : toRemove){
+			allExplosions.add(new Explosion(b.getX(), b.getY()));
+			allBarrels.remove(b);
+		}
+	}
+	
+	public void checkExplosions(){
+		ArrayList<Explosion> toRemove = new ArrayList<Explosion>();
+		for (Explosion b : allExplosions){
+			if (b.getspritenum() == 5){
+				toRemove.add(b);
+			}
+		}
+		for (Explosion b : toRemove){
+			allExplosions.remove(b);
+		}
+		
+	}
+	
 	public void paintComponent(Graphics g){
 		Font Sfont = new Font("Calisto MT", Font.BOLD, 20);
 		g.setFont(Sfont);
@@ -771,6 +818,9 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		for (Barricade bar : allBarricades){
 			g.drawRect(bar.getX(), bar.getY()-10, 20, 20);
+		}
+		for (Barrel bar : allBarrels){
+			g.drawRect(bar.getX(), bar.getY()-10, 20, 50);
 		}
 		g.drawString(consecutiveKills+" "+consecutiveCountDown,100,600);
 	}
