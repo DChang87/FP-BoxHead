@@ -1,3 +1,5 @@
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -19,6 +21,7 @@ import javax.swing.JPanel;
 
 
 public class GamePanel extends JPanel implements KeyListener{
+	private AudioClip[] audio = new AudioClip[6];
 	private BoxHead BH;
 	private boolean[] keys; 
 	private Image background = new ImageIcon("forestmap2.jpg").getImage();
@@ -30,6 +33,8 @@ public class GamePanel extends JPanel implements KeyListener{
 	private Image[][] zombieSprites = new Image[8][8];
 	private int spriteCounter = 0;
 	private int[] weapondist = new int[30];
+	private int[] weaponsp = new int[30];
+	private int[] ORIGINALweaponsp = new int[30];
 	private int rectsx = 34, rectsy = 47, barricadesx = 20, barricadesy = 20, barrelsx = 20, barrelsy = 50;
 	final int HEALTH=0,PISTOL=1,UZI=2,PISTOLP=11,SHOTGUN=3,UZIP=21,BARREL = 4,UZIPP=22,GRENADE= 5, FAKEWALLS=6;
 	private ArrayList<Zombie> allZombies = new ArrayList<Zombie>(); //this stores all of the zombies that are currently in the game
@@ -56,7 +61,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	//map shift
 	private int consecutiveKills=0;
 	private int consecutiveCountDown=0;
-	
+	int nextUpgrade=0;
 
 	private String[] weaponNames = new String[10];
 	private int ang1=90,ang2=180; //generation spot 1, generation spot 2
@@ -71,6 +76,37 @@ public class GamePanel extends JPanel implements KeyListener{
 		BH=bh;
 		keys = new boolean[65535];
 		addKeyListener(this);
+		updateweapon();
+		getWeaponNames();	
+		
+		loadAudio();
+		loadSprites();
+		loadMask();
+		loadORWeaponSpeed();
+		currentLevel=1;
+		ZombiesThisLevel = getZombiesThisLevel();
+		DevilsThisLevel = getDevilsThisLevel();
+		generateEnemy();
+	}
+	public void loadORWeaponSpeed(){
+		ORIGINALweaponsp[1]=5; //pistol
+		ORIGINALweaponsp[2]=10; //uzi
+		ORIGINALweaponsp[3]=10;//pistol
+		loadWeaponSpeed();
+	}
+	public void loadWeaponSpeed(){
+		for (int i=0;i<ORIGINALweaponsp.length;i++){
+			weaponsp[i]=ORIGINALweaponsp[i];
+		}
+	}
+	public void loadMask(){
+		try{
+			File file= new File("mask_map2.jpg");
+			mask_background = ImageIO.read(file);
+		}
+		catch (IOException ex){}
+	}
+	public void loadSprites(){
 		for (int i=0;i<8;i++){
 			for (int k=0;k<3;k++){
 				charSprites[i][k]=new ImageIcon("guy0"+i+k+".png").getImage();
@@ -81,28 +117,21 @@ public class GamePanel extends JPanel implements KeyListener{
 				zombieSprites[i][k]=new ImageIcon("zombie"+i+k+".png").getImage();
 			}
 		}
-		
-		updateweapon();
+	}
+	public void loadAudio(){
+		audio[1]=Applet.newAudioClip(getClass().getResource("pistol.wav"));
+		//audio[2]=Applet.newAudioClip(getClass().getResource("uzi.wav"));
+		//audio[3]=Applet.newAudioClip(getClass().getResource("shotgunS.wav"));
+	}
+	public void getWeaponNames(){
 		weaponNames[1]="PISTOL";
 		weaponNames[2]="UZI";
 		weaponNames[3]="SHOTGUN";
 		weaponNames[4]="BARREL";
 		weaponNames[5]="GRENADE";
 		weaponNames[6]="BARRICADE";
-		try{
-			File file= new File("mask_map2.jpg");
-			mask_background = ImageIO.read(file);
-		}
-		catch (IOException ex){}
-		//add this
-		currentLevel=1;
-		ZombiesThisLevel = getZombiesThisLevel();
-		DevilsThisLevel = getDevilsThisLevel();
-		//zombies each level: level# * 5
-		//devils each level (level#-1)*3+2
-		//stop
-		generateEnemy();
 	}
+	
 	public void updateweapon(){
 		//we keep track of how far the weapon can travel
 		weapondist[1] = 400;
@@ -176,8 +205,12 @@ public class GamePanel extends JPanel implements KeyListener{
 			else{
 				activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.mc.getWeapon()));
 				BH.mc.useAmmo(BH.mc.getWeapon());
+				activateAudio(BH.mc.getWeapon());
 			}
 		}
+	}
+	public void activateAudio(int weapon){
+		audio[weapon].play();
 	}
 	public void checkPause(){
 		//display another pause screen
@@ -251,9 +284,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		if (validMove(BH.mc.getX(),iny) && numbercollisions(BH.mc.getX(),iny) <= 1){
 			BH.mc.setY(ny);
 		}
-	}
-	
-	
+	}	
 	
 	public void moveZombie(){
 		for (int i=0; i< allZombies.size(); i++){
@@ -407,7 +438,8 @@ public class GamePanel extends JPanel implements KeyListener{
 			ZombiesDead++;
 			allZombies.remove(zzh8829);
 			fullCountDown();
-			consecutiveKills++;
+			addConsecutive();
+
 			
 		}
 		ArrayList<Devil> toRemoveD = new ArrayList<Devil>();
@@ -426,10 +458,17 @@ public class GamePanel extends JPanel implements KeyListener{
 			allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY()));
 			fullCountDown();
 			DevilsDead++;
-			consecutiveKills++;
+			addConsecutive();
 			
 		}
 		return flag;
+	}
+	public void addConsecutive(){
+		consecutiveKills++;
+		if (consecutiveKills==BH.ug.allUpgradesNum[nextUpgrade]){
+			BH.ug.getUpgrade(nextUpgrade++);		
+			
+		}
 	}
 	public boolean checkOutside(int x,int y){
 		return x<0||x>800||y<0||y>640;
@@ -476,7 +515,7 @@ public class GamePanel extends JPanel implements KeyListener{
 			PosPair temp = activeBullets.get(i);
 			final double ANG = Math.toRadians(temp.getANGLE());
 			double xx = temp.getDX(), yy = temp.getDY();
-			activeBullets.get(i).setPos(xx+10*Math.cos(ANG),yy+10*Math.sin(ANG));
+			activeBullets.get(i).setPos(xx+weaponsp[BH.mc.getWeapon()]*Math.cos(ANG),yy+weaponsp[BH.mc.getWeapon()]*Math.sin(ANG));
 		}
 	}
 	public void moveFireballs()
@@ -692,7 +731,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		return false;
 	}
 	public int getZombiesThisLevel(){
-		return currentLevel*5;
+		return currentLevel*10-5;
 	}
 	public int getDevilsThisLevel(){
 		return (currentLevel-1)*3+2;
