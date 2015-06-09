@@ -7,7 +7,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 public class BoxHead extends JFrame implements ActionListener{
-	Timer fireTimer,myTimer,shootTimer,zombieTimer,enemyGenerationTimer;
+	Timer fireTimer,myTimer,shootTimer,zombieTimer,enemyGenerationTimer, SentryTimer;
 	public final int START=0,GAME = 1,PAUSE=2;
 	public int state=START;
 	public final int OVER=3;
@@ -31,6 +31,7 @@ public class BoxHead extends JFrame implements ActionListener{
 		enemyGenerationTimer = new Timer(3000,this);
 		fireTimer = new Timer(100,this); //timer used to increase the timeCount on the fireball for the devil
 		myTimer = new Timer(20,this); //myTimer is used to record the time for general movements in the game
+		SentryTimer = new Timer(200,this);
 		mc = new MainCharacter("damn it leo", 100, 400);
 		ug = new Upgrades(this);
 		go = new GameOver(this);
@@ -99,10 +100,11 @@ public class BoxHead extends JFrame implements ActionListener{
 				game.switchWeapon();
 				game.checkLevelOver();
 				game.CountDown();
-				game.checkBarricades();
-				game.checkBarrels();
-				game.checkExplosions();
+				game.checkObjects();
 				
+			}
+			if (source == SentryTimer){
+				game.shootSentry();
 			}
 			if (source == zombieTimer){	
 				game.addZombieCounter();
