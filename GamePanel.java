@@ -47,7 +47,8 @@ public class GamePanel extends JPanel implements KeyListener{
 	private ArrayList<Barrel> allBarrels = new ArrayList<Barrel>();
 	private ArrayList<Explosion> allExplosions = new ArrayList<Explosion>();
 	private int ZombiesThisLevel, DevilsThisLevel;
-
+	private String printUpgradeString="";
+	private int UpgradeStringCountDown=0;
 	//add this
 	private int displayLevelCounter=0; //this is the counter used to display the "+-+-+-+ Level 2 +-+-+-+"
 	private int currentLevel=0;
@@ -119,7 +120,21 @@ public class GamePanel extends JPanel implements KeyListener{
 		weaponNames[5]="GRENADE";
 		weaponNames[6]="BARRICADE";
 	}
-	
+	public void fullUpgradeCountDown(){
+		UpgradeStringCountDown=200;
+	}
+	public void UpgradeCountDown(){
+		if (UpgradeStringCountDown!=0){
+			UpgradeStringCountDown--;
+		}
+		else{
+			printUpgradeString="";
+		}
+		
+	}
+	public void setUpgradeString(String n){
+		printUpgradeString=n;
+	}
 	public void updateweapon(){
 		//we keep track of how far the weapon can travel
 		weapondist[1] = 400;
@@ -651,7 +666,8 @@ public class GamePanel extends JPanel implements KeyListener{
 			BH.mc.setHealth(Math.min(BH.mc.getHealth()+500,1000));
 		}
 		else{
-			BH.mc.addAmmo(item);
+			//um i dont think this is needed
+			//BH.mc.addAmmo(item);
 		}
 	}
 	public void moveMap()
@@ -895,5 +911,6 @@ public class GamePanel extends JPanel implements KeyListener{
 			g.drawRect(bar.getX(), bar.getY()-10, 20, 50);
 		}
 		g.drawString(consecutiveKills+" "+consecutiveCountDown,100,600);
+		g.drawString(printUpgradeString, 300, 600);
 	}
 }
