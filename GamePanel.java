@@ -32,7 +32,6 @@ public class GamePanel extends JPanel implements KeyListener{
 	private Image[][] charSprites = new Image[8][3];
 	private Image[][] zombieSprites = new Image[8][8];
 	private int spriteCounter = 0;
-	private int[] weapondist = new int[30];
 	
 	private int rectsx = 34, rectsy = 47, barricadesx = 20, barricadesy = 20, barrelsx = 20, barrelsy = 50;
 	private int sentrysx = 20, sentrysy = 20;
@@ -78,7 +77,6 @@ public class GamePanel extends JPanel implements KeyListener{
 		BH=bh;
 		keys = new boolean[65535];
 		addKeyListener(this);
-		updateweapon();
 		getWeaponNames();	
 		
 		loadAudio();
@@ -137,13 +135,6 @@ public class GamePanel extends JPanel implements KeyListener{
 	}
 	public void setUpgradeString(String n){
 		printUpgradeString=n;
-	}
-	public void updateweapon(){
-		//we keep track of how far the weapon can travel
-		weapondist[1] = 400;
-		weapondist[2] = 500;
-		for (int i=3; i!=7; ++i)
-			weapondist[i] = 600;
 	}
 	public void restart(){
 		currentLevel=1;
@@ -305,9 +296,9 @@ public class GamePanel extends JPanel implements KeyListener{
 	public void moveZombie(){
 		for (int i=0; i< allZombies.size(); i++){
 			Zombie temp = allZombies.get(i);
-			double ManhatX = Math.abs(temp.getDX() - BH.mc.getDX()), ManhatY = Math.abs(temp.getDY() - BH.mc.getDY()), speed = temp.getspeed();
+			double ManhatX = Math.abs(temp.getcdx() - BH.mc.getcdx()), ManhatY = Math.abs(temp.getcdy() - BH.mc.getcdy()), speed = temp.getspeed();
 			double moveX = ManhatX/(ManhatX+ManhatY)*speed, moveY = ManhatY/(ManhatX+ManhatY)*speed,		nx, ny;
-			temp.setAngle(Math.toDegrees(Math.PI+Math.atan2(temp.getDY() - BH.mc.getDY(),temp.getDX() - BH.mc.getDX())));
+			temp.setAngle(Math.toDegrees(Math.PI+Math.atan2(temp.getcdy() - BH.mc.getcdy(),temp.getcdx() - BH.mc.getcdx())));
 			if (temp.getDX() <= BH.mc.getDX()){
 				nx = temp.getDX()+moveX;
 			}
@@ -524,7 +515,8 @@ public class GamePanel extends JPanel implements KeyListener{
 		//checks how far the bullet travels and if it needs to be removed
 		ArrayList<PosPair> toRemove = new ArrayList<PosPair>();
 		for (PosPair a: activeBullets){
-			if ((a.getX()-a.getorigX())*(a.getX()-a.getorigX()) + (a.getY()-a.getorigY())*(a.getY()-a.getorigY()) > weapondist[a.getTYPE()]*weapondist[a.getTYPE()]){
+			int mdist = BH.mc.getMaxDist(a.getType());
+			if ((a.getX()-a.getorigX())*(a.getX()-a.getorigX()) + (a.getY()-a.getorigY())*(a.getY()-a.getorigY()) > mdist*mdist){
 				toRemove.add(a);	
 			}
 		}
@@ -541,12 +533,12 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void moveBullets(){
-		for (int i=0;i<activeBullets.size();i++)
+		for (PosPair temp : activeBullets)
 		{
-			PosPair temp = activeBullets.get(i);
+			int sp = BH.mc.getAtWeaponSpeed(temp.getType());
 			final double ANG = Math.toRadians(temp.getANGLE());
 			double xx = temp.getDX(), yy = temp.getDY();
-			activeBullets.get(i).setPos(xx+BH.mc.getAtWeaponSpeed(BH.mc.getWeapon())*Math.cos(ANG),yy+BH.mc.getAtWeaponSpeed(BH.mc.getWeapon())*Math.sin(ANG));
+			temp.setPos(xx+sp*Math.cos(ANG),yy+sp*Math.sin(ANG));
 		}
 	}
 	public void moveFireballs()
@@ -910,14 +902,33 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void shootSentry(){
-		Zombie zClosest;
-		Devil dClosest;
-		System.out.println("IM HEREEEEE");
-		for (Devil d : allDevils){
-			
-		}
-		for (Zombie z : allZombies){
-			
+		for (SentryGun sentry : allSentries){
+			int x = sentry.getcx(), y = sentry.getcy();
+			Zombie zClosest = new Zombie(0,0,0,BH.mc);
+			Devil dClosest = new Devil(0,0,0,BH.mc);
+			int zd = 1000000000, dd = 1000000000;
+			for (Zombie z : allZombies){
+				int mx = z.getcx() - x, my = z.getcy() - y;
+				if (mx*mx + my*my < zd){
+					zd = mx*mx+my*my;
+					zClosest = z;
+				}
+			}
+			for (Devil d : allDevils){
+				int mx = d.getcx() - x, my = d.getcy() - y;
+				if (mx*mx + my*my < dd){
+					dd = mx*mx+my*my;
+					dClosest = d;
+				}
+			}
+			if (zd < dd && zd <= sentry.getrange()*sentry.getrange()){
+				int ang = (int)(Math.toDegrees(Math.PI+Math.atan2(y - zClosest.getcy(),x - zClosest.getDX())));
+				activeBullets.add(new PosPair(x,y,ang,1));
+			}
+			else if (dd <= sentry.getrange()*sentry.getrange()){
+				int ang = (int)(Math.toDegrees(Math.PI+Math.atan2(y - dClosest.getDY(),x - dClosest.getDX())));
+				activeBullets.add(new PosPair(x,y,ang,1));	
+			}
 		}
 		
 		
