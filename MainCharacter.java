@@ -18,38 +18,63 @@ class MainCharacter {
 	private int[] maxAmmo = new int[NUMOFWEAPONS]; //this stores all the max ammo values but it changes as the character receives upgrades
 	private int[] ORIGINALmaxAmmo = new int[NUMOFWEAPONS]; //this stores the original max ammo values
 	//this stores all the weapons available to the character
-	private int[] weaponsp = new int[30];
-	private int[] ORIGINALweaponsp = new int[30];
+	private int[] weaponsp = new int[NUMOFWEAPONS];
+	private int[] ORIGINALweaponsp = new int[NUMOFWEAPONS];
+	private int[] weapondmg = new int[NUMOFWEAPONS];
+	private int[] ORIGINALweapondmg = new int[NUMOFWEAPONS];
+	
 	public MainCharacter(String n, int px, int py){
 		name = n;
 		posx = px;
 		posy = py;
 		loadORMaxAmmo();
 		loadORWeaponSpeed();
+		loadORWeaponDmg();
 		for (int i=0;i<NUMOFWEAPONS;i++){
 			weapons[i]=0;
 			//all weapons have default at 0
 			//pistol is unlimited
 		}
 		
-		for (int i=0; i!=7; ++i)//temporary
-			weapons[i] = 100;
+		//for (int i=0; i!=7; ++i)//temporary
+			//weapons[i] = 100;
+	}
+	public void loadORWeaponDmg(){
+		for (int i=0;i<NUMOFWEAPONS;i++){
+			ORIGINALweaponsp[i]=0;
+			//just in case
+		}
+		ORIGINALweapondmg[1]=10;
+		loadWeaponDmg();
+	}
+	public void loadWeaponDmg(){
+		for (int i=0;i<NUMOFWEAPONS;i++){
+			weapondmg[i]=ORIGINALweapondmg[i];
+		}
 	}
 	public int getAtWeaponSpeed(int weapon){
 		return weaponsp[weapon];
 	}
 	public void loadORWeaponSpeed(){
+		for (int i=0;i<NUMOFWEAPONS;i++){
+			ORIGINALweaponsp[i]=0;
+			//just in case
+		}
 		ORIGINALweaponsp[1]=5; //pistol
 		ORIGINALweaponsp[2]=10; //uzi
 		ORIGINALweaponsp[3]=10;//pistol
 		loadWeaponSpeed();
 	}
 	public void loadWeaponSpeed(){
-		for (int i=0;i<ORIGINALweaponsp.length;i++){
+		for (int i=0;i<NUMOFWEAPONS;i++){
 			weaponsp[i]=ORIGINALweaponsp[i];
 		}
 	}
 	public void loadORMaxAmmo(){
+		for (int i=0;i<NUMOFWEAPONS;i++){
+			ORIGINALweaponsp[i]=0;
+			//just in case
+		}
 		ORIGINALmaxAmmo[UZI]=100;
 		ORIGINALmaxAmmo[SHOTGUN]=20;
 		ORIGINALmaxAmmo[BARREL]=10;
@@ -129,7 +154,7 @@ class MainCharacter {
 		return (int)(health*30/1000.0);
 	}
 	public void addAmmo(int n){
-		weapons[n]=100;
+		weapons[n]=maxAmmo[n];
 	}
 	public int getAmmo(int n){
 		return weapons[n];
@@ -140,4 +165,4 @@ class MainCharacter {
 			cweapon=1;
 		}
 	}
-}
+}				
