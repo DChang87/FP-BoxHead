@@ -43,11 +43,14 @@ class Upgrades {
 
 	public void getUpgrade(int n) {
 		BH.game.fullUpgradeCountDown();
+		System.out.println("n"+ n);
 		if (n == 3) {
+			System.out.println("pistol fast fire");
 			// pistol fast fire
 		} 
 		else if (n == 5) {
 			// new weapon UZI
+			System.out.println("UZI UZI");
 			BH.game.setUpgradeString("New Weapon: UZI");
 			BH.mc.addAmmo(UZI);
 		} 
@@ -56,6 +59,7 @@ class Upgrades {
 		} 
 		else if (n == 10) {
 			// new weapon shotgun
+			System.out.println("shotgun SHOTGUN");
 			BH.game.setUpgradeString("New Weapon: Shotgun");
 			BH.mc.addAmmo(SHOTGUN);
 		} 
