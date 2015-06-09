@@ -121,7 +121,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		weaponNames[6]="BARRICADE";
 	}
 	public void fullUpgradeCountDown(){
-		UpgradeStringCountDown=200;
+		UpgradeStringCountDown=100;
 	}
 	public void UpgradeCountDown(){
 		if (UpgradeStringCountDown!=0){
@@ -472,9 +472,9 @@ public class GamePanel extends JPanel implements KeyListener{
 	}
 	public void addConsecutive(){
 		consecutiveKills++;
+		System.out.println(consecutiveKills+" "+BH.ug.allUpgradesNum[nextUpgrade]);
 		if (consecutiveKills==BH.ug.allUpgradesNum[nextUpgrade]){
-			BH.ug.getUpgrade(nextUpgrade++);		
-			
+			BH.ug.getUpgrade(BH.ug.allUpgradesNum[nextUpgrade++]);
 		}
 	}
 	public boolean checkOutside(int x,int y){
