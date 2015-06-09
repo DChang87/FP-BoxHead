@@ -12,80 +12,67 @@ class MainCharacter {
 	 * pistol = 3
 	 */
 	public double posx, posy;
-	private final int NUMOFWEAPONS = 7;
-	private final int UZI = 2,SHOTGUN =3, BARREL=4,GRENADE=5,FAKEWALLS=6;
+	private final int NUMOFWEAPONS = 9;
+	private final int UZI = 2,SHOTGUN =3, BARREL=4,GRENADE=5,BARRICADE=6, SENTRY=7;
 	private int[] weapons = new int[NUMOFWEAPONS];
 	private int[] maxAmmo = new int[NUMOFWEAPONS]; //this stores all the max ammo values but it changes as the character receives upgrades
 	private int[] ORIGINALmaxAmmo = new int[NUMOFWEAPONS]; //this stores the original max ammo values
 	//this stores all the weapons available to the character
-	private int[] weaponsp = new int[NUMOFWEAPONS];
-	private int[] ORIGINALweaponsp = new int[NUMOFWEAPONS];
-	private int[] weapondmg = new int[NUMOFWEAPONS];
-	private int[] ORIGINALweapondmg = new int[NUMOFWEAPONS];
-	
+	private int[] weaponsp = new int[30];
+	private int[] ORIGINALweaponsp = new int[30];
+	private int[] weapondist = new int[30];
 	public MainCharacter(String n, int px, int py){
 		name = n;
 		posx = px;
 		posy = py;
 		loadORMaxAmmo();
 		loadORWeaponSpeed();
-		loadORWeaponDmg();
 		for (int i=0;i<NUMOFWEAPONS;i++){
 			weapons[i]=0;
 			//all weapons have default at 0
 			//pistol is unlimited
 		}
 		
-		//for (int i=0; i!=7; ++i)//temporary
-			//weapons[i] = 100;
+		for (int i=0; i!=8; ++i)//temporary
+			weapons[i] = 100;
+		setdist();
 	}
-	public void loadORWeaponDmg(){
-		for (int i=0;i<NUMOFWEAPONS;i++){
-			ORIGINALweaponsp[i]=0;
-			//just in case
+	public void setdist(){
+		for (int i=0; i!=30; ++i){
+			weapondist[i] = 400;
 		}
-		ORIGINALweapondmg[1]=10;
-		loadWeaponDmg();
-	}
-	public void loadWeaponDmg(){
-		for (int i=0;i<NUMOFWEAPONS;i++){
-			weapondmg[i]=ORIGINALweapondmg[i];
-		}
+		weapondist[2] = 500;
 	}
 	public int getAtWeaponSpeed(int weapon){
 		return weaponsp[weapon];
 	}
 	public void loadORWeaponSpeed(){
-		for (int i=0;i<NUMOFWEAPONS;i++){
-			ORIGINALweaponsp[i]=0;
-			//just in case
-		}
 		ORIGINALweaponsp[1]=5; //pistol
 		ORIGINALweaponsp[2]=10; //uzi
 		ORIGINALweaponsp[3]=10;//pistol
 		loadWeaponSpeed();
 	}
 	public void loadWeaponSpeed(){
-		for (int i=0;i<NUMOFWEAPONS;i++){
+		for (int i=0;i<ORIGINALweaponsp.length;i++){
 			weaponsp[i]=ORIGINALweaponsp[i];
 		}
 	}
 	public void loadORMaxAmmo(){
-		for (int i=0;i<NUMOFWEAPONS;i++){
-			ORIGINALweaponsp[i]=0;
-			//just in case
-		}
 		ORIGINALmaxAmmo[UZI]=100;
 		ORIGINALmaxAmmo[SHOTGUN]=20;
 		ORIGINALmaxAmmo[BARREL]=10;
-		ORIGINALmaxAmmo[FAKEWALLS]=5;
+		ORIGINALmaxAmmo[BARRICADE]=5;
 		ORIGINALmaxAmmo[GRENADE]=5;
+		ORIGINALmaxAmmo[BARRICADE]=5;
 		loadMaxAmmo();
 	}
 	public void loadMaxAmmo(){
 		for (int i=0;i<ORIGINALmaxAmmo.length;i++){
 			maxAmmo[i]=ORIGINALmaxAmmo[i];
 		}
+	}
+	public int getMaxDist(int a){
+		return weapondist[a];
 	}
 	public int getX(){
 		return (int)posx;
@@ -145,16 +132,22 @@ class MainCharacter {
 		return sy;
 	}
 	public int getcx(){
-		return (int)posx + sx/2;
+		return (int)(posx + sx/2);
 	}
 	public int getcy(){
-		return (int)posy + sy/2;
+		return (int)(posy + sy/2);
+	}
+	public double getcdx(){
+		return (posx + sx/2);
+	}
+	public double getcdy(){
+		return (posy + sy/2);
 	}
 	public int calculateHealth(){
 		return (int)(health*30/1000.0);
 	}
 	public void addAmmo(int n){
-		weapons[n]=maxAmmo[n];
+		weapons[n]=100;
 	}
 	public int getAmmo(int n){
 		return weapons[n];
@@ -165,4 +158,4 @@ class MainCharacter {
 			cweapon=1;
 		}
 	}
-}				
+}
