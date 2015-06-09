@@ -32,7 +32,7 @@ public class BoxHead extends JFrame implements ActionListener{
 		fireTimer = new Timer(100,this); //timer used to increase the timeCount on the fireball for the devil
 		myTimer = new Timer(20,this); //myTimer is used to record the time for general movements in the game
 		mc = new MainCharacter("damn it leo", 100, 400);
-		ug = new Upgrades();
+		ug = new Upgrades(this);
 		go = new GameOver(this);
 		go.setLocation(0,0);
 		go.setSize(800,640);
