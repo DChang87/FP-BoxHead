@@ -21,6 +21,9 @@ public class PosPair{
     public int getdmg(){
     	return dmg;
     }
+    public int getType(){
+    	return Type;
+    }
     public int getorigX(){
     	return (int)origX;
     }
