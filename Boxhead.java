@@ -71,6 +71,7 @@ public class BoxHead extends JFrame implements ActionListener{
 		myTimer.start();
 		zombieTimer.start();
 		enemyGenerationTimer.start();
+		SentryTimer.start();
     }
 	public void actionPerformed(ActionEvent evt) {
 		Object source = evt.getSource();
