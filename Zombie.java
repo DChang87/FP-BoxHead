@@ -2,7 +2,7 @@ import java.util.*;
 class Zombie {
 	MainCharacter mc;
 	private int Health = 20;
-	private int sx = 34, sy = 47, sp = 2, dmg = 10;
+	private int sx = 34, sy = 47, sp = 4, dmg = 10;
 	private double posx, posy;
 	private int spriteCounter=0;
 	private int ANG;
@@ -17,6 +17,12 @@ class Zombie {
 	}
 	public int getY(){
 		return (int)posy;
+	}
+	public int getcx(){
+		return (int)(posx + sx/2);
+	}
+	public int getcy(){
+		return (int)(posy + sy/2);
 	}
 	public int getdmg(){
 		return dmg;
