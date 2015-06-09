@@ -1,5 +1,4 @@
-
-public class Barrel {
+public  class Barrel {
 	final int dmg = 100;
 	private int Health = 100, sx = 20, sy = 50, rectsx = 34, rectsy = 47;
 	public double posX, posY;
@@ -12,6 +11,12 @@ public class Barrel {
 	}
 	public int getY(){
 		return (int)posY;
+	}
+	public int getcx(){
+		return (int)(posX + sx/2);
+	}
+	public int getcy(){
+		return (int)(posY + sy/2);
 	}
 	public void setX(double x){
 		posX = x;
