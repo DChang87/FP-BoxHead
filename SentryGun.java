@@ -1,7 +1,7 @@
 
 public class SentryGun {
 	private double posX, posY;
-	private int range = 100, dmg = 10, sx = 20, sy = 20, Health = 1000, rectsx = 37, rectsy = 43;
+	private int range = 1000, dmg = 10, sx = 20, sy = 20, Health = 1000, rectsx = 37, rectsy = 43, ang = 0;
 	SentryGun(int x, int y){
 		posX = x;
 		posY = y;
@@ -11,6 +11,12 @@ public class SentryGun {
 	}
 	public int getY(){
 		return (int)posY;
+	}
+	public int getcx(){
+		return (int)(posX + sx/2);
+	}
+	public int getcy(){
+		return (int)(posY + sy/2);
 	}
 	public int getHealth(){
 		return Health;
@@ -23,6 +29,12 @@ public class SentryGun {
 	}
 	public void setY(double y){
 		posY = y;
+	}
+	public void setAngle(double angle){
+		ang = (int)angle;
+	}
+	public int getAngle(){
+		return ang;
 	}
 	public int getrange(){
 		return range;
