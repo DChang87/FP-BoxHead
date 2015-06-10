@@ -118,6 +118,9 @@ public class BoxHead extends JFrame implements ActionListener{
 			}
 			game.MCshoot();
 			game.repaint();
+			game.countdownGrenade();
+			game.PostGrenadeExplosion();
+			game.UpgradeCountDown();
 		}
 		else if (state==PAUSE){
 			if (source==myTimer){
