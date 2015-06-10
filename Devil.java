@@ -23,6 +23,18 @@ class Devil {
 	public int getY(){
 		return (int)posy;
 	}
+	public int getcx(){
+		return (int)(posx + sx/2);
+	}
+	public int getcy(){
+		return (int)(posy+sy/2);
+	}
+	public double getcdx(){
+		return (posx + sx/2);
+	}
+	public double getcdy(){
+		return (posy + sy/2);
+	}
 	public int getdmg(){
 		return dmg;
 	}
