@@ -94,7 +94,7 @@ public class GamePanel extends JPanel implements KeyListener{
 
 	public void loadMask(){
 		try{
-			File file= new File("mask_map2.jpg");
+			File file= new File("mask_map3.jpg");
 			mask_background = ImageIO.read(file);
 		}
 		catch (IOException ex){}
@@ -231,6 +231,12 @@ public class GamePanel extends JPanel implements KeyListener{
 				int nx = (int) (BH.mc.getcx() + 37*Math.cos(Math.toRadians(BH.mc.getANGLE())));
 				int ny = (int) (BH.mc.getcy() + 37*Math.sin(Math.toRadians(BH.mc.getANGLE())));
 				allSentries.add(new SentryGun(nx-sentrysx/2,ny-sentrysy/2));
+			}
+			else if (BH.mc.getWeapon()==3){
+				activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.mc.getWeapon()));
+				activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),(BH.mc.getANGLE()+45)%360,BH.mc.getWeapon()));
+				activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),(BH.mc.getANGLE()-45+360)%360,BH.mc.getWeapon()));
+				BH.mc.useAmmo(BH.mc.getWeapon());	
 			}
 			else if (BH.mc.getWeapon()==1){
 				System.out.println(lastSpaceStat);
