@@ -32,9 +32,9 @@ public class GamePanel extends JPanel implements KeyListener{
 	private Image[][] charSprites = new Image[8][3];
 	private Image[][] zombieSprites = new Image[8][8];
 	private int spriteCounter = 0;
+	private int[] weapondist = new int[30];
 	
 	private int rectsx = 34, rectsy = 47, barricadesx = 20, barricadesy = 20, barrelsx = 20, barrelsy = 50;
-	private int sentrysx = 20, sentrysy = 20;
 	final int HEALTH=0,PISTOL=1,UZI=2,PISTOLP=11,SHOTGUN=3,UZIP=21,BARREL = 4,UZIPP=22,GRENADE= 5, FAKEWALLS=6;
 	private ArrayList<Zombie> allZombies = new ArrayList<Zombie>(); //this stores all of the zombies that are currently in the game
 	private ArrayList<Devil> allDevils = new ArrayList<Devil>(); //this stores all of the devils that are currently running around in the game
@@ -42,9 +42,8 @@ public class GamePanel extends JPanel implements KeyListener{
 	//make an arraylist of active bullets that save the info about the bullet including the type of gun
 	private ArrayList<PosPair> activeBullets = new ArrayList<PosPair>(); //private?
 	private ArrayList<MagicalBox> allBoxes = new ArrayList<MagicalBox>();
-	private ArrayList<Image> bulletSprites = new ArrayList<Image>();
+	private Image[] bulletSprites = new Image[8];
 	private ArrayList<Barricade> allBarricades = new ArrayList<Barricade>();
-	private ArrayList<SentryGun> allSentries = new ArrayList<SentryGun>();
 	private ArrayList<Barrel> allBarrels = new ArrayList<Barrel>();
 	private ArrayList<Explosion> allExplosions = new ArrayList<Explosion>();
 	private int ZombiesThisLevel, DevilsThisLevel;
@@ -52,12 +51,10 @@ public class GamePanel extends JPanel implements KeyListener{
 	private int UpgradeStringCountDown=0;
 	//add this
 	private int displayLevelCounter=0; //this is the counter used to display the "+-+-+-+ Level 2 +-+-+-+"
-	private int currentLevel=0;
-	
-	
+	private int currentLevel=0;	
 	private int mapx=0, mapy=0, mapsx = 2000, mapsy = 2000, bx1 = 100, bx2 = 670, by1 = 100, by2 = 510;
 	private int screensx = 800, screensy = 640;
-	
+	private boolean lastSpaceStat=false;
 	private int shiftx = 0, shifty = 0;
 	//map shift
 	private int consecutiveKills=0;
@@ -77,6 +74,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		BH=bh;
 		keys = new boolean[65535];
 		addKeyListener(this);
+		updateweapon();
 		getWeaponNames();	
 		
 		loadAudio();
@@ -90,7 +88,7 @@ public class GamePanel extends JPanel implements KeyListener{
 
 	public void loadMask(){
 		try{
-			File file= new File("mask_map3.jpg");
+			File file= new File("mask_map2.jpg");
 			mask_background = ImageIO.read(file);
 		}
 		catch (IOException ex){}
@@ -106,10 +104,13 @@ public class GamePanel extends JPanel implements KeyListener{
 				zombieSprites[i][k]=new ImageIcon("zombie"+i+k+".png").getImage();
 			}
 		}
+		for (int i=0;i<8;i++){
+			bulletSprites[i]=new ImageIcon("pistol"+i+".png").getImage();
+		}
 	}
 	public void loadAudio(){
-		//audio[1]=Applet.newAudioClip(getClass().getResource("pistol.wav"));
-		//audio[2]=Applet.newAudioClip(getClass().getResource("uzi.wav"));
+		audio[1]=Applet.newAudioClip(getClass().getResource("pistol.wav"));
+		audio[2]=Applet.newAudioClip(getClass().getResource("uzi.wav"));
 		//audio[3]=Applet.newAudioClip(getClass().getResource("shotgunS.wav"));
 	}
 	public void getWeaponNames(){
@@ -119,10 +120,9 @@ public class GamePanel extends JPanel implements KeyListener{
 		weaponNames[4]="BARREL";
 		weaponNames[5]="GRENADE";
 		weaponNames[6]="BARRICADE";
-		weaponNames[7]="SENTRY";
 	}
 	public void fullUpgradeCountDown(){
-		UpgradeStringCountDown=200;
+		UpgradeStringCountDown=100;
 	}
 	public void UpgradeCountDown(){
 		if (UpgradeStringCountDown!=0){
@@ -135,6 +135,13 @@ public class GamePanel extends JPanel implements KeyListener{
 	}
 	public void setUpgradeString(String n){
 		printUpgradeString=n;
+	}
+	public void updateweapon(){
+		//we keep track of how far the weapon can travel
+		weapondist[1] = 400;
+		weapondist[2] = 500;
+		for (int i=3; i!=7; ++i)
+			weapondist[i] = 600;
 	}
 	public void restart(){
 		currentLevel=1;
@@ -150,7 +157,6 @@ public class GamePanel extends JPanel implements KeyListener{
 		fireballs.clear();
 		activeBullets.clear();
 		allBarricades.clear();
-		allSentries.clear();
 		allBarrels.clear();
 		allExplosions.clear();
 		allBoxes.clear();
@@ -188,8 +194,10 @@ public class GamePanel extends JPanel implements KeyListener{
 		//check if the fireball is on the character
 		return (fx+10>=mcx && fx+10 <=mcx+BH.mc.getWidth() && fy+10>=mcy && fy+10<=mcy+BH.mc.getLength());
 	}
+	
 	public void MCshoot(){
 		if (keys[KeyEvent.VK_SPACE]){
+			
 			//if the user shoots, add a bullet into the arraylist keeping track of flying bullets
 			//BH.addBullet(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.getWeapon()));
 			if (BH.mc.getWeapon()==6){
@@ -202,10 +210,13 @@ public class GamePanel extends JPanel implements KeyListener{
 				int ny = (int) (BH.mc.getcy() + 60*Math.sin(Math.toRadians(BH.mc.getANGLE())));
 				allBarrels.add(new Barrel(nx - barrelsx/2, ny - barrelsy/2));
 			}
-			else if (BH.mc.getWeapon()==7){
-				int nx = (int) (BH.mc.getcx() + 37*Math.cos(Math.toRadians(BH.mc.getANGLE())));
-				int ny = (int) (BH.mc.getcy() + 37*Math.sin(Math.toRadians(BH.mc.getANGLE())));
-				allSentries.add(new SentryGun(nx-sentrysx/2,ny-sentrysy/2));
+			else if (BH.mc.getWeapon()==1){
+				System.out.println(lastSpaceStat);
+				if (lastSpaceStat==false){
+					activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.mc.getWeapon()));
+					BH.mc.useAmmo(BH.mc.getWeapon());
+					activateAudio(BH.mc.getWeapon());
+				}
 			}
 			else{
 				activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.mc.getWeapon()));
@@ -215,9 +226,9 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void activateAudio(int weapon){
-		//if (weapon<=2){
-		//	audio[weapon].play();
-		//}
+		if (weapon<=2){
+			audio[weapon].play();
+		}
 	}
 	public void checkPause(){
 		//display another pause screen
@@ -296,9 +307,9 @@ public class GamePanel extends JPanel implements KeyListener{
 	public void moveZombie(){
 		for (int i=0; i< allZombies.size(); i++){
 			Zombie temp = allZombies.get(i);
-			double ManhatX = Math.abs(temp.getcdx() - BH.mc.getcdx()), ManhatY = Math.abs(temp.getcdy() - BH.mc.getcdy()), speed = temp.getspeed();
+			double ManhatX = Math.abs(temp.getDX() - BH.mc.getDX()), ManhatY = Math.abs(temp.getDY() - BH.mc.getDY()), speed = temp.getspeed();
 			double moveX = ManhatX/(ManhatX+ManhatY)*speed, moveY = ManhatY/(ManhatX+ManhatY)*speed,		nx, ny;
-			temp.setAngle(Math.toDegrees(Math.PI+Math.atan2(temp.getcdy() - BH.mc.getcdy(),temp.getcdx() - BH.mc.getcdx())));
+			temp.setAngle(Math.toDegrees(3.14159265358+Math.atan2(temp.getDY() - BH.mc.getDY(),temp.getDX() - BH.mc.getDX())));
 			if (temp.getDX() <= BH.mc.getDX()){
 				nx = temp.getDX()+moveX;
 			}
@@ -312,11 +323,6 @@ public class GamePanel extends JPanel implements KeyListener{
 				ny = temp.getY()-moveY;
 			}
 			for (Barricade b : allBarricades){
-				if (b.rectcollision((int)nx,(int)ny)){
-					b.setHealth(b.getHealth()-temp.getdmg());
-				}
-			}
-			for (SentryGun b : allSentries){
 				if (b.rectcollision((int)nx,(int)ny)){
 					b.setHealth(b.getHealth()-temp.getdmg());
 				}
@@ -358,11 +364,6 @@ public class GamePanel extends JPanel implements KeyListener{
 					b.setHealth(b.getHealth()-temp.getdmg());
 				}
 			}
-			for (SentryGun b : allSentries){
-				if (b.rectcollision((int)nx,(int)ny)){
-					b.setHealth(b.getHealth()-temp.getdmg());
-				}
-			}
 			for (Barrel b : allBarrels){
 				if (b.rectcollision((int)nx,(int)ny)){
 					b.setHealth(b.getHealth()-temp.getdmg());
@@ -394,11 +395,6 @@ public class GamePanel extends JPanel implements KeyListener{
 			}
 		}
 		for (Barricade b : allBarricades){
-			if (b.rectcollision(x,y)){
-				ncollision++;
-			}
-		}
-		for (SentryGun b : allSentries){
 			if (b.rectcollision(x,y)){
 				ncollision++;
 			}
@@ -487,9 +483,9 @@ public class GamePanel extends JPanel implements KeyListener{
 	}
 	public void addConsecutive(){
 		consecutiveKills++;
+		System.out.println(consecutiveKills+" "+BH.ug.allUpgradesNum[nextUpgrade]);
 		if (consecutiveKills==BH.ug.allUpgradesNum[nextUpgrade]){
-			BH.ug.getUpgrade(nextUpgrade++);		
-			
+			BH.ug.getUpgrade(BH.ug.allUpgradesNum[nextUpgrade++]);
 		}
 	}
 	public boolean checkOutside(int x,int y){
@@ -515,8 +511,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		//checks how far the bullet travels and if it needs to be removed
 		ArrayList<PosPair> toRemove = new ArrayList<PosPair>();
 		for (PosPair a: activeBullets){
-			int mdist = BH.mc.getMaxDist(a.getType());
-			if ((a.getX()-a.getorigX())*(a.getX()-a.getorigX()) + (a.getY()-a.getorigY())*(a.getY()-a.getorigY()) > mdist*mdist){
+			if ((a.getX()-a.getorigX())*(a.getX()-a.getorigX()) + (a.getY()-a.getorigY())*(a.getY()-a.getorigY()) > weapondist[a.getTYPE()]*weapondist[a.getTYPE()]){
 				toRemove.add(a);	
 			}
 		}
@@ -533,12 +528,12 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void moveBullets(){
-		for (PosPair temp : activeBullets)
+		for (int i=0;i<activeBullets.size();i++)
 		{
-			int sp = BH.mc.getAtWeaponSpeed(temp.getType());
+			PosPair temp = activeBullets.get(i);
 			final double ANG = Math.toRadians(temp.getANGLE());
 			double xx = temp.getDX(), yy = temp.getDY();
-			temp.setPos(xx+sp*Math.cos(ANG),yy+sp*Math.sin(ANG));
+			activeBullets.get(i).setPos(xx+BH.mc.getAtWeaponSpeed(BH.mc.getWeapon())*Math.cos(ANG),yy+BH.mc.getAtWeaponSpeed(BH.mc.getWeapon())*Math.sin(ANG));
 		}
 	}
 	public void moveFireballs()
@@ -606,11 +601,6 @@ public class GamePanel extends JPanel implements KeyListener{
 		else if (keys[KeyEvent.VK_6]){
 			if (BH.mc.getAmmo(6)>0){
 				BH.mc.setWeapon(6);
-			}
-		}
-		else if (keys[KeyEvent.VK_7]){
-			if (BH.mc.getAmmo(7)>0){
-				BH.mc.setWeapon(7);
 			}
 		}
 	}
@@ -741,10 +731,6 @@ public class GamePanel extends JPanel implements KeyListener{
 			a.setX(a.getX()-shiftx);
 			a.setY(a.getY()-shifty);
 		}
-		for (SentryGun a : allSentries){
-			a.setX(a.getX()-shiftx);
-			a.setY(a.getY()-shifty);
-		}
 		for (Barrel a : allBarrels){
 			a.setX(a.getX()-shiftx);
 			a.setY(a.getY()-shifty);
@@ -783,26 +769,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		DevilsThisLevel=getDevilsThisLevel();
 		displayLevelCounter=1000;
 	}
-	public void checkObjects(){
-		checkSentry();
-		checkBarricades();
-		checkBarrels();
-		checkExplosions();
-		checkDead();
-	}
-	private void checkSentry(){
-		ArrayList<SentryGun> toRemove = new ArrayList<SentryGun>();
-		for (SentryGun b : allSentries){
-			if (b.getHealth() <= 0){
-				toRemove.add(b);
-			}
-		}
-		for (SentryGun b : toRemove){
-			allSentries.remove(b);
-		}
-	}
-	
-	private void checkBarricades(){
+	public void checkBarricades(){
 		ArrayList<Barricade> toRemove = new ArrayList<Barricade>();
 		for (Barricade b : allBarricades){
 			if (b.getHealth() <= 0){
@@ -814,7 +781,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	
-	private void checkBarrels(){
+	public void checkBarrels(){
 		ArrayList<Barrel> toRemove = new ArrayList<Barrel>();
 		for (Barrel b : allBarrels){
 			if (b.getHealth() <= 0){
@@ -864,7 +831,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		
 	}
-	public void checkDead(){
+	public void removeDead(){
 		//this method is called to see if the character's bullets damage the enemies
 		ArrayList<Zombie> toRemoveZ = new ArrayList<Zombie>();
 		for (Zombie z : allZombies){
@@ -901,38 +868,6 @@ public class GamePanel extends JPanel implements KeyListener{
 			
 		}
 	}
-	public void shootSentry(){
-		for (SentryGun sentry : allSentries){
-			int x = sentry.getcx(), y = sentry.getcy();
-			Zombie zClosest = new Zombie(0,0,0,BH.mc);
-			Devil dClosest = new Devil(0,0,0,BH.mc);
-			int zd = 1000000000, dd = 1000000000;
-			for (Zombie z : allZombies){
-				int mx = z.getcx() - x, my = z.getcy() - y;
-				if (mx*mx + my*my < zd){
-					zd = mx*mx+my*my;
-					zClosest = z;
-				}
-			}
-			for (Devil d : allDevils){
-				int mx = d.getcx() - x, my = d.getcy() - y;
-				if (mx*mx + my*my < dd){
-					dd = mx*mx+my*my;
-					dClosest = d;
-				}
-			}
-			if (zd < dd && zd <= sentry.getrange()*sentry.getrange()){
-				int ang = (int)(Math.toDegrees(Math.PI+Math.atan2(y - zClosest.getcy(),x - zClosest.getDX())));
-				activeBullets.add(new PosPair(x,y,ang,1));
-			}
-			else if (dd <= sentry.getrange()*sentry.getrange()){
-				int ang = (int)(Math.toDegrees(Math.PI+Math.atan2(y - dClosest.getDY(),x - dClosest.getDX())));
-				activeBullets.add(new PosPair(x,y,ang,1));	
-			}
-		}
-		
-		
-	}
 	
 	public void paintComponent(Graphics g){
 		Font Sfont = new Font("Calisto MT", Font.BOLD, 20);
@@ -948,8 +883,9 @@ public class GamePanel extends JPanel implements KeyListener{
 		
 		for (PosPair pp : activeBullets){
 			//we need to get bulllet sprites
+			g.drawImage(bulletSprites[pp.getANGLE()/45],pp.getX(),pp.getY(),this);
 			///g.drawImage(BH.bulletSprites.get(BH.activeBullets.get(i).getTYPE()),BH.activeBullets.get(i).getX(),BH.activeBullets.get(i).getY(),this);
-			g.drawOval(pp.getX(), pp.getY(), 20, 20);
+			//g.drawOval(pp.getX(), pp.getY(), 20, 20);
 		}
 		for (PosPair pp : fireballs){
 			g.drawOval(pp.getX(), pp.getY(), 20, 20);
@@ -983,14 +919,11 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (Barricade bar : allBarricades){
 			g.drawRect(bar.getX(), bar.getY()-10, 20, 20);
 		}
-		for (SentryGun bar : allSentries){
-			g.drawRect(bar.getX(), bar.getY()-10, 20, 20);
-			g.drawRect(bar.getX()+5, bar.getY()-5, 10, 10);
-		}
 		for (Barrel bar : allBarrels){
 			g.drawRect(bar.getX(), bar.getY()-10, 20, 50);
 		}
 		g.drawString(consecutiveKills+" "+consecutiveCountDown,100,600);
 		g.drawString(printUpgradeString, 300, 600);
+		lastSpaceStat=keys[KeyEvent.VK_SPACE];
 	}
 }
