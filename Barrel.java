@@ -1,41 +1,138 @@
-public  class Barrel {
-	final int dmg = 100;
-	private int Health = 100, sx = 20, sy = 50, rectsx = 34, rectsy = 47;
-	public double posX, posY;
-	public Barrel(int x, int y){
-		posX = x;
-		posY = y;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.Timer;
+public class BoxHead extends JFrame implements ActionListener{
+	Timer fireTimer,myTimer,shootTimer,zombieTimer,enemyGenerationTimer;
+	public final int START=0,GAME = 1,PAUSE=2;
+	public int state=START;
+	public final int OVER=3;
+	GameOver go;
+	public int score = 0;
+	GamePanel game;
+	JButton startB;
+	//need an arraylist to store these values and assign them as levels go
+	MainCharacter mc;
+	StartScreen startS;
+	SelectionMenu sm;
+	Upgrades ug;
+	public BoxHead(){
+		super("BoxHead Zombies");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(800,640);
+		//setLayout(new BorderLayout());
+		setLayout(null);
+		shootTimer = new Timer(100,this);
+		zombieTimer = new Timer(200,this);
+		enemyGenerationTimer = new Timer(3000,this);
+		fireTimer = new Timer(100,this); //timer used to increase the timeCount on the fireball for the devil
+		myTimer = new Timer(20,this); //myTimer is used to record the time for general movements in the game
+		mc = new MainCharacter("damn it leo", 100, 400);
+		ug = new Upgrades(this);
+		go = new GameOver(this);
+		go.setLocation(0,0);
+		go.setSize(800,640);
+		add(go);
+		game = new GamePanel(this);
+		game.setLocation(0,0);
+		game.setSize(800,640);
+		add(game);
+		sm = new SelectionMenu(this);
+		sm.setLocation(0,0);
+		sm.setSize(800,640);
+		add(sm);
+		
+		/*
+		startB = new JButton("START");
+		startB.setLocation(350, 400);
+		startB.setSize(100, 50);
+		startB.addActionListener(this);
+		add(startB);
+		startB.setVisible(true);
+		*/
+		startS = new StartScreen(this);
+		startS.setLocation(0,0);
+		startS.setSize(800,640);
+		add(startS);
+		
+		
+		setResizable(false);
+		setVisible(true);
 	}
-	public int getX(){
-		return (int)posX;
+	public void start(){
+		//start the timers
+		fireTimer.start();
+		shootTimer.start();
+		myTimer.start();
+		zombieTimer.start();
+		enemyGenerationTimer.start();
+    }
+	public void actionPerformed(ActionEvent evt) {
+		Object source = evt.getSource();
+		if (state==START){
+			
+			//startB.setVisible(true);
+			/*if (source==startB){
+				startB.setVisible(false);
+				state=GAME;
+	    		game.requestFocus();
+			}*/
+			startS.repaint();
+		}
+		else if (state==GAME){
+			if (source==myTimer){
+				game.moveZombie();
+				game.moveDevil();
+				game.moveMC();
+				game.moveBullets();
+				game.checkBulletCollision();
+				game.checkBulletDistance();
+				game.checkMC();
+				game.checkPause();
+				game.moveMap();
+				game.checkBoxCollision();
+				game.updateposition();
+				game.switchWeapon();
+				game.checkLevelOver();
+				game.CountDown();
+				game.checkBarricades();
+				game.checkBarrels();
+				game.checkExplosions();
+				
+			}
+			if (source == zombieTimer){	
+				game.addZombieCounter();
+			}
+			if (source==shootTimer){
+				//game.MCshoot();
+			}
+			if (source==fireTimer){
+				game.moveFireballs();
+			}
+			if (source==enemyGenerationTimer){
+				game.generateEnemy();
+			}
+			game.MCshoot();
+			game.repaint();
+			game.countdownGrenade();
+			game.PostGrenadeExplosion();
+			game.UpgradeCountDown();
+		}
+		else if (state==PAUSE){
+			if (source==myTimer){
+				sm.checkUnPause();
+			}
+			sm.repaint();
+		}
+		else if (state==OVER){
+			go.repaint();
+		}
 	}
-	public int getY(){
-		return (int)posY;
-	}
-	public int getcx(){
-		return (int)(posX + sx/2);
-	}
-	public int getcy(){
-		return (int)(posY + sy/2);
-	}
-	public void setX(double x){
-		posX = x;
-	}
-	public void setY(double y){
-		posY = y;
-	}
-	public int getHealth(){
-		return Health;
-	}
-	public void setHealth(int hp){
-		Health = hp;
-	}
-	public int getdmg(){
-		return dmg;
-	}
-	public boolean rectcollision(int x, int y){
-		if (posX > x + rectsx || posX + sx < x || posY > y + rectsy || posY + sy < y)
-			return false;
-		return true;
+	public static void main(String[] args){
+		new BoxHead();
 	}
 }
