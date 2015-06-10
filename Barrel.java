@@ -2,7 +2,7 @@ public  class Barrel {
 	final int dmg = 100;
 	private int Health = 100, sx = 20, sy = 50, rectsx = 34, rectsy = 47;
 	public double posX, posY;
-	Barrel(int x, int y){
+	public Barrel(int x, int y){
 		posX = x;
 		posY = y;
 	}
