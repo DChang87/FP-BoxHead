@@ -64,6 +64,7 @@ class MainCharacter {
 		ORIGINALmaxAmmo[BARRICADE]=5;
 		ORIGINALmaxAmmo[GRENADE]=5;
 		ORIGINALmaxAmmo[BARRICADE]=5;
+		ORIGINALmaxAmmo[SENTRY]=5;
 		loadMaxAmmo();
 	}
 	public void loadMaxAmmo(){
