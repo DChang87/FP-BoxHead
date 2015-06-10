@@ -40,6 +40,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	private ArrayList<Devil> allDevils = new ArrayList<Devil>(); //this stores all of the devils that are currently running around in the game
 	public ArrayList<PosPair> fireballs = new ArrayList<PosPair>(); //this stores all of the fireballs that are currently in the game
 	//make an arraylist of active bullets that save the info about the bullet including the type of gun
+	private Image[] fireballSprites = new Image[8];
 	private ArrayList<PosPair> activeBullets = new ArrayList<PosPair>(); //private?
 	private ArrayList<MagicalBox> allBoxes = new ArrayList<MagicalBox>();
 	private Image[] bulletSprites = new Image[8];
@@ -49,6 +50,8 @@ public class GamePanel extends JPanel implements KeyListener{
 	private int ZombiesThisLevel, DevilsThisLevel;
 	private String printUpgradeString="";
 	private int UpgradeStringCountDown=0;
+	private Image grenadeSprite = new ImageIcon("grenade.png").getImage();
+	private Image grenadeExploded = new ImageIcon("grenadeExplode.png").getImage();
 	//add this
 	private int displayLevelCounter=0; //this is the counter used to display the "+-+-+-+ Level 2 +-+-+-+"
 	private int currentLevel=0;	
@@ -60,7 +63,8 @@ public class GamePanel extends JPanel implements KeyListener{
 	private int consecutiveKills=0;
 	private int consecutiveCountDown=0;
 	int nextUpgrade=0;
-
+	private ArrayList<Grenade> allGrenades = new ArrayList<Grenade>();
+	private ArrayList<Grenade> explodedGrenade = new ArrayList<Grenade>();
 	private String[] weaponNames = new String[10];
 	private int ang1=90,ang2=180; //generation spot 1, generation spot 2
 	//private int gs1x=100,gs1y=100,gs2x=500,gs2y=500,ang1=0,ang2=270;
@@ -106,6 +110,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		for (int i=0;i<8;i++){
 			bulletSprites[i]=new ImageIcon("pistol"+i+".png").getImage();
+			fireballSprites[i]=new ImageIcon("fireball"+i+".png").getImage();
 		}
 	}
 	public void loadAudio(){
@@ -154,6 +159,8 @@ public class GamePanel extends JPanel implements KeyListener{
 		DevilsDead=0;
 		allZombies.clear();
 		allDevils.clear();
+		allGrenades.clear();
+		explodedGrenade.clear();
 		fireballs.clear();
 		activeBullets.clear();
 		allBarricades.clear();
@@ -209,6 +216,12 @@ public class GamePanel extends JPanel implements KeyListener{
 				int nx = (int) (BH.mc.getcx() + 60*Math.cos(Math.toRadians(BH.mc.getANGLE())));
 				int ny = (int) (BH.mc.getcy() + 60*Math.sin(Math.toRadians(BH.mc.getANGLE())));
 				allBarrels.add(new Barrel(nx - barrelsx/2, ny - barrelsy/2));
+			}
+			else if (BH.mc.getWeapon()==GRENADE){
+				//maybe change up the distance??
+				int nx = (int) (BH.mc.getcx() + 60*Math.cos(Math.toRadians(BH.mc.getANGLE())));
+				int ny = (int) (BH.mc.getcy() + 60*Math.sin(Math.toRadians(BH.mc.getANGLE())));
+				allGrenades.add(new Grenade(nx,ny,BH));
 			}
 			else if (BH.mc.getWeapon()==1){
 				System.out.println(lastSpaceStat);
@@ -735,6 +748,20 @@ public class GamePanel extends JPanel implements KeyListener{
 			a.setX(a.getX()-shiftx);
 			a.setY(a.getY()-shifty);
 		}
+		for (Grenade g: allGrenades){
+			g.setX(g.getX()-shiftx);
+			g.setY(g.getY()-shifty);
+		}
+		for (Grenade g: explodedGrenade){
+			g.setX(g.getX()-shiftx);
+			g.setY(g.getY()-shifty);
+		}
+		for(PosPair f: fireballs){
+			f.setPos(f.getX()-shiftx, f.getY()-shifty);
+		}
+		for (PosPair b: activeBullets){
+			b.setPos(b.getX()-shiftx, b.getY()-shifty);
+		}
 	}
 	
 	public boolean validMove(int x, int y){
@@ -868,7 +895,54 @@ public class GamePanel extends JPanel implements KeyListener{
 			
 		}
 	}
-	
+	public void countdownGrenade(){
+		ArrayList<Grenade> toRemove = new ArrayList<Grenade>();
+		for (Grenade grenade: allGrenades){
+			grenade.countDown();
+			if (grenade.getCounter()==0){
+				GrenadeExplode(grenade);
+				toRemove.add(grenade);
+			}
+		}
+		for (Grenade grenade:toRemove){
+			explodedGrenade.add(grenade);
+			allGrenades.remove(grenade);
+		}
+	}
+	public void GrenadeExplode(Grenade grenade){
+		for (Devil devil: allDevils){
+			if (dist(devil.getX(),devil.getY(),grenade.getX(),grenade.getY())<=grenade.getdmgrange()){
+				System.out.println("devil = dead"+dist(devil.getX(),devil.getY(),grenade.getX(),grenade.getY()));
+				devil.setHealth(devil.getHealth()-grenade.getdmg());
+			}
+		}
+		for (Zombie zombie: allZombies){
+			if (dist(zombie.getX(),zombie.getY(),grenade.getX(),grenade.getY())<=grenade.getdmgrange()){
+				System.out.println("zombie = dead"+dist(zombie.getX(),zombie.getY(),grenade.getX(),grenade.getY()));
+				zombie.setHealth(zombie.getHealth()-grenade.getdmg());
+			}
+		}
+		if (dist(BH.mc.getX(),BH.mc.getY(),grenade.getX(),grenade.getY())<=grenade.getdmgrange()){
+			System.out.println("character = dead"+dist(BH.mc.getX(),BH.mc.getY(),grenade.getX(),grenade.getY()));
+			BH.mc.setHealth(BH.mc.getHealth()-grenade.getdmg());
+		}
+		
+	}
+	public void PostGrenadeExplosion(){
+		ArrayList<Grenade> toRemove = new ArrayList<Grenade>();
+		for (Grenade grenade: explodedGrenade){
+			grenade.explodeCountDown();
+			if (grenade.explodeCount==0){
+				toRemove.add(grenade);
+			}
+		}
+		for (Grenade grenade: toRemove){
+			explodedGrenade.remove(grenade);
+		}
+	}
+	public double dist(int x1, int y1,int x2,int y2){
+		return Math.pow(Math.pow(x1-x2, 2)+Math.pow(y1-y2, 2),0.5);
+	}
 	public void paintComponent(Graphics g){
 		Font Sfont = new Font("Calisto MT", Font.BOLD, 20);
 		g.setFont(Sfont);
@@ -888,7 +962,8 @@ public class GamePanel extends JPanel implements KeyListener{
 			//g.drawOval(pp.getX(), pp.getY(), 20, 20);
 		}
 		for (PosPair pp : fireballs){
-			g.drawOval(pp.getX(), pp.getY(), 20, 20);
+			g.drawImage(fireballSprites[pp.getANGLE()/45],pp.getX(),pp.getY(),this);
+			//g.drawOval(pp.getX(), pp.getY(), 20, 20);
 		}
 		for (Zombie a : allZombies){
 			g.drawRect(a.getX(),a.getY(),a.getsx(), a.getsy());
@@ -921,6 +996,14 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		for (Barrel bar : allBarrels){
 			g.drawRect(bar.getX(), bar.getY()-10, 20, 50);
+		}
+		for (Grenade grenade: allGrenades){
+			//-grenadeSprite.getHeight(this)/2,ny-grenadeSprite.getWidth(this)/2
+			g.drawImage(grenadeSprite,grenade.getX()-grenadeSprite.getHeight(this)/2, grenade.getY()-grenadeSprite.getWidth(this)/2, this);
+		}
+		for (Grenade grenade: explodedGrenade){
+			g.drawImage(grenadeExploded, grenade.getX()-grenadeExploded.getHeight(this)/2,grenade.getY()-grenadeExploded.getWidth(this)/2,this);
+			g.drawOval(grenade.getX()-25, grenade.getY()-25, 50, 50);
 		}
 		g.drawString(consecutiveKills+" "+consecutiveCountDown,100,600);
 		g.drawString(printUpgradeString, 300, 600);
