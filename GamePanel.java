@@ -67,7 +67,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	//map shift
 	private int consecutiveKills=0;
 	private int consecutiveCountDown=0;
-	int nextUpgrade=0;
+	private int nextUpgrade=0;
 	private ArrayList<Grenade> allGrenades = new ArrayList<Grenade>();
 	private ArrayList<Grenade> explodedGrenade = new ArrayList<Grenade>();
 	private String[] weaponNames = new String[10];
@@ -358,6 +358,9 @@ public class GamePanel extends JPanel implements KeyListener{
 	}
 	public void activateAudio(int weapon){
 		audio[weapon].play();
+	}
+	public int getNextUpgrade(){
+		return nextUpgrade;
 	}
 	public void checkPause(){
 		//display another pause screen
