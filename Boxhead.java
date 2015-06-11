@@ -8,12 +8,13 @@ import javax.swing.JFrame;
 import javax.swing.Timer;
 public class BoxHead extends JFrame implements ActionListener{
 	Timer fireTimer,myTimer,shootTimer,zombieTimer,enemyGenerationTimer,SentryTimer;
-	public final int START=0,GAME = 1,PAUSE=2;
+	public final int START=0,GAME = 1,PAUSE=2,HS=4;
 	public int state=START;
 	public final int OVER=3;
 	GameOver go;
 	public int score = 0;
 	GamePanel game;
+	HighScore hs;
 	JButton startB;
 	//need an arraylist to store these values and assign them as levels go
 	MainCharacter mc;
@@ -36,7 +37,10 @@ public class BoxHead extends JFrame implements ActionListener{
 		mc = new MainCharacter("damn it leo", 100, 400);
 		ug = new Upgrades(this);
 		go = new GameOver(this);
-		
+		hs = new HighScore(this);
+		hs.setLocation(0,0);
+		hs.setSize(800, 640);
+		add(hs);
 		go.setLocation(0,0);
 		go.setSize(800,640);
 		add(go);
@@ -48,15 +52,6 @@ public class BoxHead extends JFrame implements ActionListener{
 		sm.setLocation(0,0);
 		sm.setSize(800,640);
 		add(sm);
-		
-		/*
-		startB = new JButton("START");
-		startB.setLocation(350, 400);
-		startB.setSize(100, 50);
-		startB.addActionListener(this);
-		add(startB);
-		startB.setVisible(true);
-		*/
 		startS = new StartScreen(this);
 		startS.setLocation(0,0);
 		startS.setSize(800,640);
@@ -78,13 +73,6 @@ public class BoxHead extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent evt) {
 		Object source = evt.getSource();
 		if (state==START){
-			
-			//startB.setVisible(true);
-			/*if (source==startB){
-				startB.setVisible(false);
-				state=GAME;
-	    		game.requestFocus();
-			}*/
 			startS.repaint();
 		}
 		else if (state==GAME){
@@ -135,6 +123,9 @@ public class BoxHead extends JFrame implements ActionListener{
 		}
 		else if (state==OVER){
 			go.repaint();
+		}
+		else if (state==HS){
+			hs.repaint();
 		}
 	}
 	public static void main(String[] args){
