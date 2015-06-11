@@ -1,3 +1,4 @@
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.TextField;
 import java.awt.event.KeyEvent;
@@ -20,6 +21,7 @@ public class HighScore extends JPanel implements KeyListener{
 	private ArrayList<Integer> list= new ArrayList<Integer>();
 	BoxHead BH;
 	private boolean[] keys;
+	private Font font = new Font("Impact", Font.PLAIN, 40);
 	public HighScore(BoxHead b){
 		keys = new boolean[65535];
 		addKeyListener(this);
@@ -71,6 +73,7 @@ public class HighScore extends JPanel implements KeyListener{
 	public void keyTyped(KeyEvent arg0) {}
     
     public void paintComponent(Graphics g){
+    	g.setFont(font);
     	g.drawImage(background,0,0,this);
     	if (keys[KeyEvent.VK_SPACE]){
     		BH.state=BH.OVER;
@@ -81,7 +84,8 @@ public class HighScore extends JPanel implements KeyListener{
     		keys[KeyEvent.VK_SPACE]=false;
     	}
     	for (int i=0;i<list.size();i++){
-    		g.drawString(list.get(i)+"", 350, 200+i*30);
+    		g.drawString(i+".            "+list.get(i)+"", 300, 180+i*40);
+    		//because who counts starting from 1 anyways
     		
     	}
     }	
