@@ -215,35 +215,35 @@ public class GamePanel extends JPanel implements KeyListener{
 	
 	public void MCshoot(){
 		if (keys[KeyEvent.VK_SPACE]){
-			
+			int mx = BH.mc.getcx(), my = BH.mc.getcy();
 			//if the user shoots, add a bullet into the arraylist keeping track of flying bullets
 			//BH.addBullet(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.getWeapon()));
 			if (BH.mc.getWeapon()==BARRICADE){
 				if (!lastSpaceStat){
-					int nx = (int) (BH.mc.getcx() + 30*Math.cos(Math.toRadians(BH.mc.getANGLE())));
-					int ny = (int) (BH.mc.getcy() + 30*Math.sin(Math.toRadians(BH.mc.getANGLE())));
+					int nx = (int) (mx + 30*Math.cos(Math.toRadians(BH.mc.getANGLE())));
+					int ny = (int) (my + 30*Math.sin(Math.toRadians(BH.mc.getANGLE())));
 					allBarricades.add(new Barricade(nx-barricadesx/2,ny-barricadesy/2));
 				}
 			}
 			else if (BH.mc.getWeapon()==BARREL){
 				if (!lastSpaceStat){
-					int nx = (int) (BH.mc.getcx() + 30*Math.cos(Math.toRadians(BH.mc.getANGLE())));
-					int ny = (int) (BH.mc.getcy() + 55*Math.sin(Math.toRadians(BH.mc.getANGLE())));
+					int nx = (int) (mx + 30*Math.cos(Math.toRadians(BH.mc.getANGLE())));
+					int ny = (int) (my + 55*Math.sin(Math.toRadians(BH.mc.getANGLE())));
 					allBarrels.add(new Barrel(nx - barrelsx/2, ny - barrelsy/2));
 				}
 			}
 			else if (BH.mc.getWeapon()==GRENADE){
 				//maybe change up the distance??
 				if (!lastSpaceStat){
-					int nx = (int) (BH.mc.getcx() + 30*Math.cos(Math.toRadians(BH.mc.getANGLE())));
-					int ny = (int) (BH.mc.getcy() + 30*Math.sin(Math.toRadians(BH.mc.getANGLE())));
+					int nx = (int) (mx + 30*Math.cos(Math.toRadians(BH.mc.getANGLE())));
+					int ny = (int) (my + 30*Math.sin(Math.toRadians(BH.mc.getANGLE())));
 					allGrenades.add(new Grenade(nx,ny,BH));
 				}
 			}
 			else if (BH.mc.getWeapon()==SENTRY){
 				if (!lastSpaceStat){
-					int nx = (int) (BH.mc.getcx() + 37*Math.cos(Math.toRadians(BH.mc.getANGLE())));
-					int ny = (int) (BH.mc.getcy() + 37*Math.sin(Math.toRadians(BH.mc.getANGLE())));
+					int nx = (int) (mx + 37*Math.cos(Math.toRadians(BH.mc.getANGLE())));
+					int ny = (int) (my + 37*Math.sin(Math.toRadians(BH.mc.getANGLE())));
 					allSentries.add(new SentryGun(nx-sentrysx/2,ny-sentrysy/2));
 					BH.mc.useAmmo(SENTRY);
 				}
@@ -253,20 +253,20 @@ public class GamePanel extends JPanel implements KeyListener{
 					//if it can shoot consecutively. if not, it cannot shoot consecutively and the last space stat must be false
 					if (BH.mc.getSGW()==0){
 					
-						activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.mc.getWeapon()));
-						activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),(BH.mc.getANGLE()+45)%360,BH.mc.getWeapon()));
-						activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),(BH.mc.getANGLE()-45+360)%360,BH.mc.getWeapon()));
+						activeBullets.add(new PosPair(mx,my,BH.mc.getANGLE(),BH.mc.getWeapon()));
+						activeBullets.add(new PosPair(mx,my,(BH.mc.getANGLE()+45)%360,BH.mc.getWeapon()));
+						activeBullets.add(new PosPair(mx,my,(BH.mc.getANGLE()-45+360)%360,BH.mc.getWeapon()));
 					}
 					else if (BH.mc.getSGW()==1){
-						activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.mc.getWeapon()));
-						activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),(BH.mc.getANGLE()+60)%360,BH.mc.getWeapon()));
-						activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),(BH.mc.getANGLE()-60+360)%360,BH.mc.getWeapon()));
+						activeBullets.add(new PosPair(mx,my,BH.mc.getANGLE(),BH.mc.getWeapon()));
+						activeBullets.add(new PosPair(mx,my,(BH.mc.getANGLE()+60)%360,BH.mc.getWeapon()));
+						activeBullets.add(new PosPair(mx,my,(BH.mc.getANGLE()-60+360)%360,BH.mc.getWeapon()));
 						//wide shot
 					}
 					else{
-						activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.mc.getWeapon()));
-						activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),(BH.mc.getANGLE()+75)%360,BH.mc.getWeapon()));
-						activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),(BH.mc.getANGLE()-75+360)%360,BH.mc.getWeapon()));
+						activeBullets.add(new PosPair(mx,my,BH.mc.getANGLE(),BH.mc.getWeapon()));
+						activeBullets.add(new PosPair(mx,my,(BH.mc.getANGLE()+75)%360,BH.mc.getWeapon()));
+						activeBullets.add(new PosPair(mx,my,(BH.mc.getANGLE()-75+360)%360,BH.mc.getWeapon()));
 						//wider shot
 					}
 					for (int i=0;i<3;i++){
@@ -277,13 +277,13 @@ public class GamePanel extends JPanel implements KeyListener{
 			}
 			else if (BH.mc.getWeapon()==1){
 				if (BH.mc.getConsecutiveShoot(PISTOL)|| lastSpaceStat==false){
-					activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.mc.getWeapon()));
+					activeBullets.add(new PosPair(mx,my,BH.mc.getANGLE(),BH.mc.getWeapon()));
 					BH.mc.useAmmo(BH.mc.getWeapon());
 					activateAudio(BH.mc.getWeapon());
 				}
 			}
 			else{
-				activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.mc.getWeapon()));
+				activeBullets.add(new PosPair(mx,my,BH.mc.getANGLE(),BH.mc.getWeapon()));
 				BH.mc.useAmmo(BH.mc.getWeapon());
 				activateAudio(BH.mc.getWeapon());
 			}
