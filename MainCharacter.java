@@ -47,7 +47,7 @@ class MainCharacter {
 		loadConsecutiveShoot();
 		//for (int i=0; i!=8; ++i)//temporary
 			//cweaponAmmo[i] = 100;
-
+		
 	}
 	public int getSGW(){
 		return shotgunWide;
