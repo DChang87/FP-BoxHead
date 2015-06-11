@@ -16,6 +16,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 // Paul Krishnamurthy is a noob
 
@@ -82,6 +83,9 @@ public class GamePanel extends JPanel implements KeyListener{
 	//stop
 	private int shootCountDown=0;
 	private final int SOMENUMBER=20;
+
+	private int spawnsp = 2000;
+	
 	
 	public GamePanel(BoxHead bh){
 		BH=bh;
@@ -167,6 +171,8 @@ public class GamePanel extends JPanel implements KeyListener{
 			weapondist[i] = 600;
 	}
 	public void restart(){
+		spawnsp = 2000;
+		BH.enemyGenerationTimer = new Timer(spawnsp, BH);
 		currentLevel=1;
 		shootCountDown=0;
 		mapx=0;
@@ -773,54 +779,39 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void generateEnemy(){
-		//level 1 (1-4)
-		//level 2 (2-6)
-		//level 3 (3-8)
-		//level 4 (4-11)
-		//level 5 (5-13)
-		int maxZ=1,minZ=1,maxD=1,minD=1;
-		int generateZ,generateD; //the number of zombies and devils generated at this time
-		
-		int posZ,posD;
 		if (ZombiesThisLevel>0){
-			int n = (int)(Math.random()*(Math.min(ZombiesThisLevel-minZ, maxZ-minZ)));
-			generateZ = (int)(Math.random()*(Math.min(ZombiesThisLevel-minZ, maxZ-minZ)))+minZ;
-			//randomly generate the number of Zombies needed based on the maximum Zombie generation allowed for this level and the the remaining allowance of zombie for the level
-			//add on the minimum zombie generatoin allowed to ensure that enough zombies are generated
-			ZombiesThisLevel-=generateZ;
-			posZ = (int)(Math.random()*2);
-			int y;
-			if (posZ==0){
-				for (int i=0;i<generateZ;i++){
-					y = 1279+(int)(Math.random()*182)*((int)(Math.random()*2)-1);
-					allZombies.add(new Zombie(-mapx,-mapy+y,ang1,BH.mc));
-				}
-			}
-			else{
-				//the number of zombies and devils required for each spot
-				for (int i=0;i<generateZ;i++){
-					y = (int)(Math.random()*490);
-					allZombies.add(new Zombie(-mapx,-mapy+y,ang2,BH.mc));
-				}
-			}
-			
-
+			addZombie(-mapx,-mapy,0,490);
+			addZombie(-mapx,-mapy + 1040,0,520);
+			addZombie(-mapx+1999,-mapy+1700,0,170);
+			addZombie(-mapx+1625,-mapy+230,130,30);
+			addZombie(-mapx+710,-mapy,320,0);
 		}
 		if (DevilsThisLevel>0){
-			generateD = (int)(Math.random()*(Math.min(DevilsThisLevel-minD, maxD-minD)))+minD;
-			DevilsThisLevel-=generateD;
-			posD = (int)(Math.random()*2);
-			if (posD==0){
-				for (int i=0;i<generateD;i++){
-					allDevils.add(new Devil(-mapx,-mapy+1279+(int)(Math.random()*182)*((int)(Math.random()*2)-1),ang1,BH.mc));
-				}
+			addDevil(-mapx,-mapy,0,490);
+			addDevil(-mapx,-mapy+1040,0,520);
+		}
+	}
+	
+	public void addZombie(int x, int y, int sx, int sy){
+		for (int i=0; i!=10; ++i){
+			x = x + (int)(Math.random()*sx);
+			y = y + (int)(Math.random()*sy);
+			if (numbercollisions(x,y) == 0){
+				ZombiesThisLevel--;
+				allZombies.add(new Zombie(x,y,0,BH.mc));
+				return;
 			}
-			else{
-				for (int i=0;i<generateD;i++){
-					allDevils.add(new Devil(-mapx,-mapy+(int)(Math.random()*490),ang2,BH.mc));
-				}
+		}
+	}
+	public void addDevil(int x, int y, int sx, int sy){
+		for (int i=0; i!=10; ++i){
+			x = x + (int)(Math.random()*sx);
+			y = y + (int)(Math.random()*sy);
+			if (numbercollisions(x,y) == 0){
+				DevilsThisLevel--;
+				allDevils.add(new Devil(x,y,0,BH.mc));
+				return;
 			}
-			
 		}
 	}
 	
@@ -951,6 +942,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void levelUp(){
+		BH.enemyGenerationTimer = new Timer(spawnsp-currentLevel*300, BH);
 		currentLevel++;
 		ZombiesDead=0;
 		DevilsDead=0;
