@@ -26,7 +26,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	private boolean[] keys; 
 	private Image background = new ImageIcon("forestmap2.jpg").getImage();
 	private Image boxSprite = new ImageIcon("box.png").getImage();
-	
+	private AudioClip barrelExplodeAudio = Applet.newAudioClip(getClass().getResource("barrelExplosionAudio.wav")); 
 	private BufferedImage mask_background;
 	
 	private Image[][] charSprites = new Image[8][3];
@@ -835,8 +835,7 @@ public class GamePanel extends JPanel implements KeyListener{
 			BH.mc.setHealth(Math.min(BH.mc.getHealth()+500,1000));
 		}
 		else{
-			//um i dont think this is needed
-			//BH.mc.addAmmo(item);
+			BH.mc.addAmmo(item);
 		}
 	}
 	public void moveMap()
@@ -1010,6 +1009,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (Barrel b : allBarrels){
 			if (b.getHealth() <= 0){
 				toRemove.add(b);
+				barrelExplodeAudio.play();
 			}
 		}
 		
