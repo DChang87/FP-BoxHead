@@ -1,7 +1,7 @@
 class Upgrades {
 	public int[] allUpgradesNum = new int[30];
 	private final int PISTOL = 1, UZI = 2, SHOTGUN = 3, BARREL = 4,
-			GRENADE = 5, FAKEWALLS = 6;
+			GRENADE = 5, BARRICADE = 6,SENTRY=7;
 	BoxHead BH;
 
 	public Upgrades(BoxHead b) {
@@ -114,13 +114,12 @@ class Upgrades {
 		else if (n == 30) {
 			// new weapon fakewall
 			BH.game.setUpgradeString("New Weapon: Fake Wall");
-			BH.mc.addAmmo(FAKEWALLS);
+			BH.mc.addAmmo(BARRICADE);
 		} 
 		else if (n == 31) {
 			// shotgun wide shoot
-			
-			
-			//NOT DONE
+			BH.mc.setSGW(1);
+			BH.game.setUpgradeString("Shotgun Wide Shoot");
 		} 
 		else if (n == 32) {
 			// barrel big bang
@@ -141,14 +140,13 @@ class Upgrades {
 		} 
 		else if (n == 36) {
 			// barrel quad ammo
-			
-			
-			//NOT DONE
+			BH.mc.setMaxAmmo(BARREL,BH.mc.getMaxAmmo(BARREL));
+			BH.game.setUpgradeString("Barrel Quad Ammo");
 		} 
 		else if (n == 37) {
 			// fake walls double ammo
-			BH.mc.setMaxAmmo(FAKEWALLS,BH.mc.getMaxAmmo(FAKEWALLS));
-			BH.game.setUpgradeString("Fake Wall Double Ammo");
+			BH.mc.setMaxAmmo(BARRICADE,BH.mc.getMaxAmmo(BARRICADE));
+			BH.game.setUpgradeString("Barricade Double Ammo");
 		} 
 		else if (n == 39) {
 			// uzi quad ammo
@@ -187,14 +185,12 @@ class Upgrades {
 		else if (n == 48) {
 			// uzi double damage
 			BH.mc.setDmg(UZI, 30);
-			
-			//NOT DONE
+			BH.game.setUpgradeString("UZI Double Damage");
 		} 
 		else if (n == 51) {
 			// shotgun wider shot
-			
-			
-			//NOT DONE
+			BH.mc.setSGW(2);
+			BH.game.setUpgradeString("Shotgun Wider Shot");
 		} 
 		else if (n == 52) {
 			// grenade quad ammo
@@ -203,10 +199,12 @@ class Upgrades {
 		} 
 		else if (n == 53) {
 			// fake walls quad ammo
-			BH.mc.setMaxAmmo(FAKEWALLS, BH.mc.getMaxAmmo(FAKEWALLS)*4);
-			BH.game.setUpgradeString("Fake Wall Quad Ammo");
-			
+			BH.mc.setMaxAmmo(BARRICADE, BH.mc.getMaxAmmo(BARRICADE)*4);
+			BH.game.setUpgradeString("Barricade Quad Ammo");
 		}
-
+		else if (n==75){
+			BH.mc.addAmmo(SENTRY);
+			BH.game.setUpgradeString("New Weapon: Sentry Gun");
+		}
 	}
 }
