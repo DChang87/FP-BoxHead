@@ -1,14 +1,14 @@
 class Upgrades {
-	public int[] allUpgradesNum = new int[30];
+	public int[] allUpgradesNum = new int[26];
 	private final int PISTOL = 1, UZI = 2, SHOTGUN = 3, BARREL = 4,
 			GRENADE = 5, BARRICADE = 6,SENTRY=7;
 	BoxHead BH;
-
+	private String[] upgradeStrings = new String[26];
 	public Upgrades(BoxHead b) {
 		BH = b;
 		addUpgrades();
+		addUpgradeNames();
 	}
-
 	public void addUpgrades() {
 		allUpgradesNum[0] = 3; // pistol fast fire
 		allUpgradesNum[1] = 5; // new weapon UZI
@@ -24,23 +24,50 @@ class Upgrades {
 		allUpgradesNum[11] = 26; // barrel double ammo
 		allUpgradesNum[12] = 30; // new weapon fake wall
 		allUpgradesNum[13] = 31; // shot gun wide shot
-		allUpgradesNum[14] = 32; // barrel big bang
-		allUpgradesNum[15] = 33; // grenade cluster explode
-		allUpgradesNum[16] = 35; // shotgun long shot
-		allUpgradesNum[17] = 36; // barrel quad ammo
-		allUpgradesNum[18] = 37; // fake walls double ammo
-		allUpgradesNum[19] = 39; // uzi quad ammo
-		allUpgradesNum[20] = 41; // shotgun quad ammo
-		allUpgradesNum[21] = 42; // grenade double ammo
-		allUpgradesNum[22] = 43; // shotgun rapid fire
-		allUpgradesNum[23] = 44; // barrel bigger bang
-		allUpgradesNum[24] = 45; // grenade bigger bang
-		allUpgradesNum[25] = 48; // uzi double damage
-		allUpgradesNum[26] = 51; // shotgun wider shot
-		allUpgradesNum[27] = 52; // grenade quad ammo
-		allUpgradesNum[25] = 53; // fake walls quad ammo
+		allUpgradesNum[14] = 35; // shotgun long shot
+		allUpgradesNum[15] = 36; // barrel quad ammo
+		allUpgradesNum[16] = 37; // fake walls double ammo
+		allUpgradesNum[17] = 39; // uzi quad ammo
+		allUpgradesNum[18] = 41; // shotgun quad ammo
+		allUpgradesNum[19] = 42; // grenade double ammo
+		allUpgradesNum[20] = 43; // shotgun rapid fire
+		allUpgradesNum[21] = 48; // uzi double damage
+		allUpgradesNum[22] = 51; // shotgun wider shot
+		allUpgradesNum[23] = 52; // grenade quad ammo
+		allUpgradesNum[24] = 53; // fake walls quad ammo
+		allUpgradesNum[25]=75;
 	}
-
+	public void addUpgradeNames(){
+		upgradeStrings[0] = "pistol fast fire";
+		upgradeStrings[1] = "new weapon UZI";
+		upgradeStrings[2] = "pistol double damage";
+		upgradeStrings[3] = "new weapon shotgun";
+		upgradeStrings[4] = "uzi rapid fire";
+		upgradeStrings[5] = "new weapon barrel";
+		upgradeStrings[6] = "uzi double ammo";
+		upgradeStrings[7] = "shotgun fast fire";
+		upgradeStrings[8] = "new weapon grenade";
+		upgradeStrings[9] ="shotgun double ammo";
+		upgradeStrings[10] ="uzi long shot";
+		upgradeStrings[11] = "barrel double ammo";
+		upgradeStrings[12] = "new weapon fake wall";
+		upgradeStrings[13] = "shot gun wide shot";
+		upgradeStrings[14] = "shotgun long shot";
+		upgradeStrings[15] = "barrel quad ammo";
+		upgradeStrings[16] = "fake walls double ammo";
+		upgradeStrings[17] = "uzi quad ammo";
+		upgradeStrings[18] = "hotgun quad ammo";
+		upgradeStrings[19] = "grenade double ammo";
+		upgradeStrings[20] = "shotgun rapid fire";
+		upgradeStrings[21] = "uzi double damage";
+		upgradeStrings[22] = "shotgun wider shot";
+		upgradeStrings[23] = "grenade quad ammo";
+		upgradeStrings[24] = "fake walls quad ammo";
+		upgradeStrings[25]="new weapon sentry gun";
+	}
+	public String getUpgradeString(int n){
+		return upgradeStrings[n];
+	}
 	public void getUpgrade(int n) {
 		BH.game.fullUpgradeCountDown();
 		System.out.println("n"+ n);
@@ -124,18 +151,6 @@ class Upgrades {
 			BH.mc.setSGW(1);
 			BH.game.setUpgradeString("Shotgun Wide Shoot");
 		} 
-		else if (n == 32) {
-			// barrel big bang
-			
-			
-			//NOT DONE
-		} 
-		else if (n == 33) {
-			// grenade cluster explode
-			
-			
-			//NOT DONE
-		} 
 		else if (n == 35) {
 			// shotgun long shot
 			BH.mc.setDist(SHOTGUN, 400);
@@ -172,19 +187,7 @@ class Upgrades {
 			// shotgun rapid fire
 			BH.mc.setConsecutiveShoot(SHOTGUN);
 			BH.game.setUpgradeString("Shotgun Rapid Fire");
-		} 
-		else if (n == 44) {
-			// barrel bigger bang
-			
-			
-			//NOT DONE
-		} 
-		else if (n == 45) {
-			// grenade bigger bang
-			
-			
-			//NOT DONE
-		} 
+		}
 		else if (n == 48) {
 			// uzi double damage
 			BH.mc.setDmg(UZI, 30);
