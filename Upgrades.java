@@ -45,8 +45,9 @@ class Upgrades {
 		BH.game.fullUpgradeCountDown();
 		System.out.println("n"+ n);
 		if (n == 3) {
+			BH.game.setUpgradeString("Pistol Fast Fire");
 			System.out.println("pistol fast fire");
-			// pistol fast fire
+			BH.mc.setConsecutiveShoot(PISTOL);
 		} 
 		else if (n == 5) {
 			// new weapon UZI
@@ -56,6 +57,8 @@ class Upgrades {
 		} 
 		else if (n == 8) {
 			// pistol double damage
+			BH.mc.setDmg(PISTOL, 10);
+			BH.game.setUpgradeString("Pistol Double Damage");
 		} 
 		else if (n == 10) {
 			// new weapon shotgun
@@ -65,30 +68,48 @@ class Upgrades {
 		} 
 		else if (n == 13) {
 			// uzi rapid fire
+			BH.mc.setConsecutiveShoot(UZI);
+			BH.game.setUpgradeString("UZI Rapid Fire");
 		} 
 		else if (n == 15) {
 			// new weapon barrel
+			BH.game.setUpgradeString("New Weapon: Barrel");
+			BH.mc.addAmmo(BARREL);
+			
 		} 
 		else if (n == 17) {
 			// uzi double ammo
+			BH.mc.setMaxAmmo(UZI, BH.mc.getMaxAmmo(UZI)*2);
+			BH.game.setUpgradeString("UZI Double Ammo");
 		} 
 		else if (n == 18) {
 			// shotgun fast fire
+			BH.mc.setConsecutiveShoot(SHOTGUN);
+			BH.game.setUpgradeString("Shotgun Fast Fire");
 		} 
 		else if (n == 20) {
-			// new weapon grenade
+			// new weapon grenadE
 			BH.game.setUpgradeString("New Weapon: Grenade");
 			BH.mc.addAmmo(GRENADE);
 
 		} 
 		else if (n == 21) {
 			// shot gun double ammo
+			BH.mc.setMaxAmmo(SHOTGUN, BH.mc.getMaxAmmo(SHOTGUN)*2);
+			BH.game.setUpgradeString("Shotgun Double Ammo");
+			//NOT DONE
 		} 
 		else if (n == 23) {
 			// uzi long shot
+			BH.mc.setDist(UZI, 700);
+			BH.game.setUpgradeString("UZI Long Shot");
+			//NOT DONE
 		} 
 		else if (n == 26) {
 			// barrel double ammo
+			BH.mc.setMaxAmmo(BARREL, BH.mc.getMaxAmmo(BARREL)*2);
+			BH.game.setUpgradeString("Barrel Double Ammo");
+			
 		} 
 		else if (n == 30) {
 			// new weapon fakewall
@@ -97,51 +118,94 @@ class Upgrades {
 		} 
 		else if (n == 31) {
 			// shotgun wide shoot
+			
+			
+			//NOT DONE
 		} 
 		else if (n == 32) {
 			// barrel big bang
+			
+			
+			//NOT DONE
 		} 
 		else if (n == 33) {
 			// grenade cluster explode
+			
+			
+			//NOT DONE
 		} 
 		else if (n == 35) {
 			// shotgun long shot
+			BH.mc.setDist(SHOTGUN, 400);
+			BH.game.setUpgradeString("Shotgun Long Shot");
 		} 
 		else if (n == 36) {
 			// barrel quad ammo
+			
+			
+			//NOT DONE
 		} 
 		else if (n == 37) {
 			// fake walls double ammo
+			BH.mc.setMaxAmmo(FAKEWALLS,BH.mc.getMaxAmmo(FAKEWALLS));
+			BH.game.setUpgradeString("Fake Wall Double Ammo");
 		} 
 		else if (n == 39) {
 			// uzi quad ammo
+			BH.mc.setMaxAmmo(UZI,BH.mc.getMaxAmmo(UZI)*4);
+			BH.game.setUpgradeString("UZI Quad Ammo");
 		} 
 		else if (n == 41) {
 			// shotgun quad ammo
+			BH.mc.setMaxAmmo(SHOTGUN,BH.mc.getMaxAmmo(SHOTGUN)*4);
+			BH.game.setUpgradeString("Shotgun Quad Ammo");
+			
 		} 
 		else if (n == 42) {
 			// grenade double ammo
+			BH.mc.setMaxAmmo(GRENADE,BH.mc.getMaxAmmo(GRENADE)*2);
+			BH.game.setUpgradeString("Grenade Double Ammo");
+			
 		} 
 		else if (n == 43) {
 			// shotgun rapid fire
+			BH.mc.setConsecutiveShoot(SHOTGUN);
+			BH.game.setUpgradeString("Shotgun Rapid Fire");
 		} 
 		else if (n == 44) {
 			// barrel bigger bang
+			
+			
+			//NOT DONE
 		} 
 		else if (n == 45) {
 			// grenade bigger bang
+			
+			
+			//NOT DONE
 		} 
 		else if (n == 48) {
 			// uzi double damage
+			BH.mc.setDmg(UZI, 30);
+			
+			//NOT DONE
 		} 
 		else if (n == 51) {
 			// shotgun wider shot
+			
+			
+			//NOT DONE
 		} 
 		else if (n == 52) {
 			// grenade quad ammo
+			BH.mc.setMaxAmmo(GRENADE, BH.mc.getMaxAmmo(GRENADE)*4);
+			BH.game.setUpgradeString("Grenade Quad Ammo");
 		} 
 		else if (n == 53) {
 			// fake walls quad ammo
+			BH.mc.setMaxAmmo(FAKEWALLS, BH.mc.getMaxAmmo(FAKEWALLS)*4);
+			BH.game.setUpgradeString("Fake Wall Quad Ammo");
+			
 		}
 
 	}
