@@ -1,7 +1,7 @@
 import java.util.*;
 class MainCharacter {
 	public final int full_health=1000;
-	private int health=full_health, ANGLE,sx = 30, sy = 70, sp=10;
+	private int health=full_health, ANGLE,sx = 37, sy = 43, sp=10;
 	
 	private String name;
 	private int cweapon = 1;
@@ -153,7 +153,7 @@ class MainCharacter {
 	public void loadCAmmo(){
 		//load current ammo
 		for (int i=0;i<NUMOFWEAPONS;i++){
-			cweaponAmmo[i]=0;
+			cweaponAmmo[i]=10;
 			//all cweaponAmmo have default at 0
 			//pistol is unlimited
 		}
