@@ -43,7 +43,7 @@ class MainCharacter {
 		loadORWeaponSpeed();//done
 		loadORdist();//done
 		loadORdmg(); //done
-		loadCAmmo();
+		///loadCAmmo();
 		loadConsecutiveShoot();
 		//for (int i=0; i!=8; ++i)//temporary
 			//cweaponAmmo[i] = 100;
@@ -151,6 +151,7 @@ class MainCharacter {
 		}
 	}
 	public void loadCAmmo(){
+		//why does this method even exist
 		//load current ammo
 		for (int i=0;i<NUMOFWEAPONS;i++){
 			cweaponAmmo[i]=10;
