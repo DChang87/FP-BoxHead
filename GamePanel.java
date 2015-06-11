@@ -912,7 +912,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	private void checkSentry(){
 		ArrayList<SentryGun> toRemove = new ArrayList<SentryGun>();
 		for (SentryGun b : allSentries){
-			if (b.getHealth() <= 0){
+			if (b.getHealth() <= 0 || b.getammo() <= 0){
 				toRemove.add(b);
 			}
 		}
@@ -1045,10 +1045,12 @@ public class GamePanel extends JPanel implements KeyListener{
 			if (zd < dd && zd <= sentry.getrange()*sentry.getrange()){
 				int ang = (int)(Math.toDegrees(Math.PI+Math.atan2(y - zClosest.getcy(),x - zClosest.getDX())));
 				activeBullets.add(new PosPair(x,y,ang,1));
+				sentry.setammo(sentry.getammo()-1);
 			}
 			else if (dd <= sentry.getrange()*sentry.getrange()){
 				int ang = (int)(Math.toDegrees(Math.PI+Math.atan2(y - dClosest.getDY(),x - dClosest.getDX())));
 				activeBullets.add(new PosPair(x,y,ang,1));	
+				sentry.setammo(sentry.getammo()-1);
 			}
 		}
 		
