@@ -54,6 +54,7 @@ class Upgrades {
 			System.out.println("UZI UZI");
 			BH.game.setUpgradeString("New Weapon: UZI");
 			BH.mc.addAmmo(UZI);
+			BH.magicalBoxAllowance=UZI;
 		} 
 		else if (n == 8) {
 			// pistol double damage
@@ -65,6 +66,7 @@ class Upgrades {
 			System.out.println("shotgun SHOTGUN");
 			BH.game.setUpgradeString("New Weapon: Shotgun");
 			BH.mc.addAmmo(SHOTGUN);
+			BH.magicalBoxAllowance=SHOTGUN;
 		} 
 		else if (n == 13) {
 			// uzi rapid fire
@@ -75,7 +77,7 @@ class Upgrades {
 			// new weapon barrel
 			BH.game.setUpgradeString("New Weapon: Barrel");
 			BH.mc.addAmmo(BARREL);
-			
+			BH.magicalBoxAllowance=BARREL;
 		} 
 		else if (n == 17) {
 			// uzi double ammo
@@ -91,7 +93,7 @@ class Upgrades {
 			// new weapon grenadE
 			BH.game.setUpgradeString("New Weapon: Grenade");
 			BH.mc.addAmmo(GRENADE);
-
+			BH.magicalBoxAllowance=GRENADE;
 		} 
 		else if (n == 21) {
 			// shot gun double ammo
@@ -113,8 +115,9 @@ class Upgrades {
 		} 
 		else if (n == 30) {
 			// new weapon fakewall
-			BH.game.setUpgradeString("New Weapon: Fake Wall");
+			BH.game.setUpgradeString("New Weapon: Barricade");
 			BH.mc.addAmmo(BARRICADE);
+			BH.magicalBoxAllowance=BARRICADE;
 		} 
 		else if (n == 31) {
 			// shotgun wide shoot
@@ -205,6 +208,7 @@ class Upgrades {
 		else if (n==75){
 			BH.mc.addAmmo(SENTRY);
 			BH.game.setUpgradeString("New Weapon: Sentry Gun");
+			BH.magicalBoxAllowance=SENTRY;
 		}
 	}
 }
