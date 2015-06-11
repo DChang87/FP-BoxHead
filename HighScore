@@ -2,9 +2,6 @@ import java.awt.Graphics;
 import java.awt.TextField;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.Image;
 import java.io.File;
 import java.io.FileWriter;
@@ -16,7 +13,7 @@ import java.util.Scanner;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-public class HighScore extends JPanel implements KeyListener,MouseListener,MouseMotionListener{
+public class HighScore extends JPanel implements KeyListener{
 	private static int mouseX,mouseY;
 	private Image background = new ImageIcon("hsBackground.jpg").getImage();
 	private boolean Down=false;
@@ -24,47 +21,24 @@ public class HighScore extends JPanel implements KeyListener,MouseListener,Mouse
 	BoxHead BH;
 	private boolean[] keys;
 	public HighScore(BoxHead b){
-		//load the images for the start button
 		keys = new boolean[65535];
 		addKeyListener(this);
 		System.out.println("public high score");
 		BH=b;
 		setSize(800,640);
-		loadList();
 	}
 	public void loadList(){
 		Scanner infile = null;
+		list.clear();
 		try{
 			infile = new Scanner(new File("high_score.txt"));
 			for (int i=0;i<10;i++){
 				list.add(Integer.parseInt(infile.nextLine()));
 			}
-			
 		}
-		catch(IOException ex){
-			System.out.println("damnit");
-		}
+		catch(IOException ex){}
 		
-	}
-    //public void addNotify() {
-//    	super.addNotify();
-    	//requestFocus();
-    //}
-    // ------------ MouseListener ------------------------------------------
-    public void mouseEntered(MouseEvent e) {}
-    public void mouseExited(MouseEvent e) {}
-    public void mouseReleased(MouseEvent e) {Down=false;}    
-    public void mouseClicked(MouseEvent e){}  
-    public void mousePressed(MouseEvent e){
-    	System.out.println("mousePressed gameover");
-		Down=true;
-	}
-    // ---------- MouseMotionListener ------------------------------------------
-    public void mouseDragged(MouseEvent e){}
-    public void mouseMoved(MouseEvent e){
-    	mouseX=e.getX();
-    	mouseY = e.getY();
-    }
+	} 
     public void writeToFile(){
     	Writer writer = null;
     	try{
@@ -89,18 +63,14 @@ public class HighScore extends JPanel implements KeyListener,MouseListener,Mouse
     	}
     	list.clear();
     	Collections.sort(toSort);
-    	System.out.println("TOSOART"+toSort);
     	for (int i=toSort.size()-1;i>=toSort.size()-10;i--){
-    		System.out.println(toSort+"TOSORT");
     		list.add(toSort.get(i));
     	}
-    	System.out.println(list.toString()+"ADDSCORE");
+    }
+    public void keyPressed(KeyEvent e) {keys[e.getKeyCode()]=true;}
+	public void keyReleased(KeyEvent e) {keys[e.getKeyCode()]=false;}
+	public void keyTyped(KeyEvent arg0) {}
     
-    }
-    public void activateMouse(){
-    	addMouseMotionListener(this);
-		addMouseListener(this);
-    }
     public void paintComponent(Graphics g){
     	g.drawImage(background,0,0,this);
     	if (keys[KeyEvent.VK_SPACE]){
@@ -112,23 +82,8 @@ public class HighScore extends JPanel implements KeyListener,MouseListener,Mouse
     		keys[KeyEvent.VK_SPACE]=false;
     	}
     	for (int i=0;i<list.size();i++){
-    		System.out.println(list+"LIST");
     		g.drawString(list.get(i)+"", 350, 200+i*30);
     		
     	}
-    }
-
-	public void keyPressed(KeyEvent e) {
-		keys[e.getKeyCode()]=true;
-	}
-
-	public void keyReleased(KeyEvent e) {
-		keys[e.getKeyCode()]=false;
-		
-	}
-
-	public void keyTyped(KeyEvent arg0) {
-
-		
-	}
+    }	
 }
