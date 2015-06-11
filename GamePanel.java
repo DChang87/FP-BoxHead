@@ -352,6 +352,8 @@ public class GamePanel extends JPanel implements KeyListener{
 			double ManhatX = Math.abs(temp.getDX() - BH.mc.getDX()), ManhatY = Math.abs(temp.getDY() - BH.mc.getDY()), speed = temp.getspeed();
 			double moveX = ManhatX/(ManhatX+ManhatY)*speed, moveY = ManhatY/(ManhatX+ManhatY)*speed,		nx, ny;
 			temp.setAngle(Math.toDegrees(3.14159265358+Math.atan2(temp.getDY() - BH.mc.getDY(),temp.getDX() - BH.mc.getDX())));
+			System.out.println(moveX + " " + moveY);
+			
 			if (temp.getDX() <= BH.mc.getDX()){
 				nx = temp.getDX()+moveX;
 			}
@@ -615,6 +617,9 @@ public class GamePanel extends JPanel implements KeyListener{
 				toRemove.add(temp);
 			}
 			else if (checkOutside(temp.getX(),temp.getY())){
+				toRemove.add(temp);
+			}
+			else if (!validMove(temp.getX(),temp.getY())){
 				toRemove.add(temp);
 			}
 			for (Barrel bar : allBarrels){
