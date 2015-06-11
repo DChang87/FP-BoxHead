@@ -159,6 +159,8 @@ public class GamePanel extends JPanel implements KeyListener{
 		BH.mc.loadMaxAmmo();
 		BH.mc.loadWeaponSpeed();
 		BH.mc.loadConsecutiveShoot();
+		mapx = 0;
+		mapy = 0;
 		BH.mc.setHealth(BH.mc.full_health);
 		ZombiesThisLevel=getZombiesThisLevel();
 		DevilsThisLevel=getDevilsThisLevel();
