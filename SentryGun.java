@@ -17,8 +17,6 @@ public class SentryGun {
 	public int getcy(){
 		return (int)(posY + sy/2);
 	}
-	public int getsx(){return sx;}
-	public int getsy(){return sy;}
 	public int getHealth(){
 		return Health;
 	}
