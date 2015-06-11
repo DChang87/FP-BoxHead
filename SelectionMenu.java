@@ -1,3 +1,5 @@
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -14,6 +16,7 @@ public class SelectionMenu extends JPanel implements KeyListener{
 	private boolean down=false;
 	BoxHead BH;
 	private boolean[] keys;
+	private Font font = new Font("Impact", Font.PLAIN, 35);
 	public SelectionMenu(BoxHead b){
 		//load the images for the start button
 		System.out.println("Selection menu");
@@ -36,8 +39,7 @@ public class SelectionMenu extends JPanel implements KeyListener{
     	keys[e.getKeyCode()]=false;
     }
     public void checkUnPause(){
-    	//System.out.println("checkunpause");
-		if (keys[KeyEvent.VK_P] || down){
+    	if (keys[KeyEvent.VK_P] || down){
 			BH.state=BH.GAME;
 			System.out.println("checkunpause");
 			BH.game.requestFocus();
@@ -45,8 +47,27 @@ public class SelectionMenu extends JPanel implements KeyListener{
 		}
 	}
     public void paintComponent(Graphics g){
-    	//draw the background and the button (According to the situation)
+    	g.setFont(font);
     	g.drawImage(background,0,0,this);
+    	for (int i=0;i<13;i++){
+    		if (BH.game.getNextUpgrade()>i){
+    			g.setColor(Color.green);
+    		}
+    		else{
+    			g.setColor(Color.red);
+    			
+    		}
+    		g.drawString(BH.ug.getUpgradeString(i), 30, 150+i*30);
+    	}
+    	for (int i=13;i<26;i++){
+    		if (BH.game.getNextUpgrade()>i){
+    			g.setColor(Color.green);
+    		}
+    		else{
+    			g.setColor(Color.red);
+    		}
+    		g.drawString(BH.ug.getUpgradeString(i), 430, 150+(i-13)*30);
+    	}
     }
     
 	    
