@@ -11,10 +11,14 @@ public class GameOver extends JPanel implements MouseMotionListener, MouseListen
 	private static int mouseX,mouseY;
 	private Image background = new ImageIcon("gameOver.jpg").getImage();
 	private boolean Down=false;
-	private Image up = new ImageIcon("restartup.jpg").getImage();
-	private Image hover = new ImageIcon("restarthover.jpg").getImage();
-	private Image down = new ImageIcon("restartdown.jpg").getImage();
-	private int bx=350,by=400,bLength=50,bWidth=100;
+	private Image rup = new ImageIcon("restartup.jpg").getImage();
+	private Image rhover = new ImageIcon("restarthover.jpg").getImage();
+	private Image rdown = new ImageIcon("restartdown.jpg").getImage();
+	private Image hsup = new ImageIcon("hsUp.jpg").getImage();
+	private Image hshover = new ImageIcon("hpHover.jpg").getImage();
+	private Image hsdown = new ImageIcon("hsDown.jpg").getImage();
+	private int rx=350,ry=300,rLength=50,rWidth=100;
+	private int hsx=350,hsy=500,hsLength=50,hsWidth=100;
 	
 	BoxHead BH;
 	public GameOver(BoxHead b){
@@ -22,8 +26,6 @@ public class GameOver extends JPanel implements MouseMotionListener, MouseListen
 		System.out.println("public gameover");
 		BH=b;
 		setSize(800,640);
-		
-		
 	}
     //public void addNotify() {
 //    	super.addNotify();
@@ -49,8 +51,8 @@ public class GameOver extends JPanel implements MouseMotionListener, MouseListen
     	mouseX=e.getX();
     	mouseY = e.getY();
     }
-    public boolean collide(){
-		return bx<=mouseX&&bx+bWidth>=mouseX&&by<=mouseY&&by+bLength>=mouseY;
+    public boolean collide(int x,int y,int w, int l){
+		return x<=mouseX&&x+w>=mouseX&&y<=mouseY&&y+l>=mouseY;
 	}
     public void activateMouse(){
     	addMouseMotionListener(this);
@@ -59,19 +61,31 @@ public class GameOver extends JPanel implements MouseMotionListener, MouseListen
     public void paintComponent(Graphics g){
     	//draw the background and the button (According to the situation)
     	g.drawImage(background,0,0,this);
-    	//System.out.println("paintComponent game over");
-    	if (collide()&&Down){
+    	if (collide(rx,ry,rWidth,rLength)&&Down){
+    		g.drawImage(rdown,rx,ry,this);
     		BH.state=BH.GAME;
     		System.out.println("restart");
     		BH.game.restart();
     		BH.game.requestFocus();
-    	
     	}
-    	else if (collide()){
-    		g.drawImage(hover,bx,by,this);
+    	else if (collide(rx,ry,rWidth,rLength)){
+    		g.drawImage(rhover,rx,ry,this);
     	}
     	else{
-    		g.drawImage(up,bx,by,this);
+    		g.drawImage(rup,rx,ry,this);
+    	}
+    	if (collide(hsx,hsy,hsWidth,hsLength)&&Down){
+    		g.drawImage(hsdown,hsx,hsy,this);
+    		BH.state=BH.HS;
+    		BH.hs.requestFocus();
+    		BH.hs.loadList();
+    		BH.hs.addScore(BH.score);
+    	}
+    	else if(collide(hsx,hsy,hsWidth,hsLength)){
+    		g.drawImage(hshover,rx,ry,this);
+    	}
+    	else{
+    		g.drawImage(hsup,hsx,hsy,this);
     	}
     	g.drawString(BH.score+"", 390, 500);
     }
