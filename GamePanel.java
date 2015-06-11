@@ -31,6 +31,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	
 	private Image[][] charSprites = new Image[8][3];
 	private Image[][] zombieSprites = new Image[8][8];
+	private Image[][] devilSprites = new Image[8][8];
 	private int spriteCounter = 0;
 	private int[] weapondist = new int[30];
 	
@@ -76,6 +77,8 @@ public class GamePanel extends JPanel implements KeyListener{
 	private Image barrelExplosion = new ImageIcon("barrelExplosion.png").getImage();
 	///add
 	private int ZombiesDead=0,DevilsDead=0;
+	private String boxString = "";
+	private int boxCountDown=0;
 	//stop
 	
 	
@@ -111,6 +114,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (int i=0;i<8;i++){
 			for (int k=0;k<8;k++){
 				zombieSprites[i][k]=new ImageIcon("zombie"+i+k+".png").getImage();
+				devilSprites[i][k]=new ImageIcon("devil"+i+k+".png").getImage();
 			}
 		}
 		for (int i=0;i<8;i++){
@@ -149,6 +153,10 @@ public class GamePanel extends JPanel implements KeyListener{
 	}
 	public void setUpgradeString(String n){
 		printUpgradeString=n;
+	}
+	public void setBoxString(String n){
+		boxString=n;
+		boxCountDown=80;
 	}
 	public void updateweapon(){
 		//we keep track of how far the weapon can travel
@@ -1232,6 +1240,14 @@ public class GamePanel extends JPanel implements KeyListener{
 			allBoxes.remove(b);
 		}
 	}
+	public void boxCount(){
+		if (boxCountDown!=0){
+			boxCountDown--;
+		}
+		else{
+			boxString="";
+		}
+	}
 	public void paintComponent(Graphics g){
 		Font Sfont = new Font("Calisto MT", Font.BOLD, 20);
 		g.setFont(Sfont);
@@ -1271,7 +1287,7 @@ public class GamePanel extends JPanel implements KeyListener{
 			g.drawImage(zombieSprites[(a.getAngle()+22)%360/45][a.returnSpriteCounter()%8], a.getX(),a.getY(),this);
 		}
 		for (Devil a : allDevils){
-			g.drawImage(zombieSprites[(a.getAngle()+22)%360/45][a.returnSpriteCounter()%8], a.getX(),a.getY(),this);
+			g.drawImage(devilSprites[(a.getAngle()+22)%360/45][a.returnSpriteCounter()%8], a.getX(),a.getY(),this);
 		}
 		for (MagicalBox box: allBoxes){
 			g.setColor(Color.BLUE);
@@ -1305,8 +1321,11 @@ public class GamePanel extends JPanel implements KeyListener{
 			g.drawImage(barrelExplosion,exp.getX()-exp.getrange()/2,exp.getY()-exp.getrange()/2,this);		
 			g.drawOval(exp.getX()-exp.getrange()/2,exp.getY()-exp.getrange()/2,100,100);		
 		}
+		g.drawString(boxString,350,300);
+		boxCount();
 		g.drawString(consecutiveKills+" "+consecutiveCountDown,100,600);
 		g.drawString(printUpgradeString, 300, 600);
 		lastSpaceStat=keys[KeyEvent.VK_SPACE];
+		
 	}
 }
