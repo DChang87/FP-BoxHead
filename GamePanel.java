@@ -238,6 +238,18 @@ public class GamePanel extends JPanel implements KeyListener{
 				activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.mc.getWeapon()));
 				activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),(BH.mc.getANGLE()+45)%360,BH.mc.getWeapon()));
 				activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),(BH.mc.getANGLE()-45+360)%360,BH.mc.getWeapon()));
+				
+
+//				activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.mc.getWeapon()));
+//				activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),(BH.mc.getANGLE()+60)%360,BH.mc.getWeapon()));
+//				activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),(BH.mc.getANGLE()-60+360)%360,BH.mc.getWeapon()));
+				//wide shot
+
+//				activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.mc.getWeapon()));
+//				activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),(BH.mc.getANGLE()+75)%360,BH.mc.getWeapon()));
+//				activeBullets.add(new PosPair(BH.mc.getX(),BH.mc.getY(),(BH.mc.getANGLE()-75+360)%360,BH.mc.getWeapon()));
+				//wider shot
+				
 				BH.mc.useAmmo(BH.mc.getWeapon());	
 			}
 			else if (BH.mc.getWeapon()==1){
@@ -362,11 +374,6 @@ public class GamePanel extends JPanel implements KeyListener{
 					b.setHealth(b.getHealth()-temp.getdmg());
 				}
 			}
-			for (Barrel b : allBarrels){
-				if (b.rectcollision((int)nx,(int)ny)){
-					b.setHealth(b.getHealth()-temp.getdmg());
-				}
-			}
 			if (numbercollisions((int)nx, temp.getY()) <= 1 && validMove((int)nx,temp.getY())){
 				temp.setX(nx);
 			}
@@ -400,11 +407,6 @@ public class GamePanel extends JPanel implements KeyListener{
 				}
 			}
 			for (SentryGun b : allSentries){
-				if (b.rectcollision((int)nx,(int)ny)){
-					b.setHealth(b.getHealth()-temp.getdmg());
-				}
-			}
-			for (Barrel b : allBarrels){
 				if (b.rectcollision((int)nx,(int)ny)){
 					b.setHealth(b.getHealth()-temp.getdmg());
 				}
@@ -539,14 +541,22 @@ public class GamePanel extends JPanel implements KeyListener{
 	public void checkBulletCollision(){
 		//check if the bullets hit any enemies
 		ArrayList<PosPair> toRemove = new ArrayList<PosPair>();
-		for (int i=0;i<activeBullets.size();i++){
-			if (enemyCollision(activeBullets.get(i).getX(),activeBullets.get(i).getY())){
+		for (PosPair temp : activeBullets){
+			if (enemyCollision(temp.getX(),temp.getY())){
 				//REMOVE THE ENEMIES
-				toRemove.add(activeBullets.get(i));
+				toRemove.add(temp);
 			}
-			else if (checkOutside(activeBullets.get(i).getX(),activeBullets.get(i).getY())){
-				toRemove.add(activeBullets.get(i));
+			else if (checkOutside(temp.getX(),temp.getY())){
+				toRemove.add(temp);
 			}
+			for (Barrel bar : allBarrels){
+				int x = bar.getX(), y = bar.getY(), sx = bar.getsx(), sy = bar.getsy(), px = temp.getX(), py = temp.getY();
+				if (px >= x && px <= x + sx && py >= y && py <= y + sy){
+					bar.setHealth(0);
+					toRemove.add(temp);
+				}
+			}
+			
 		}
 		for (PosPair pair:toRemove){
 			activeBullets.remove(pair);
@@ -573,12 +583,22 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void moveBullets(){
+		ArrayList<PosPair> toRemove = new ArrayList<PosPair>();
 		for (PosPair temp : activeBullets)
 		{
 			final double ANG = Math.toRadians(temp.getANGLE());
 			double xx = temp.getDX(), yy = temp.getDY();
 			final int sp =BH.mc.getAtWeaponSpeed(temp.getType());
-			temp.setPos(xx+sp*Math.cos(ANG),yy+sp*Math.sin(ANG));
+			double nx = xx+sp*Math.cos(ANG), ny = yy+sp*Math.sin(ANG);
+			if (validMove((int)nx,(int)ny)){
+				temp.setPos(nx,ny);
+			}
+			else{
+				toRemove.add(temp);
+			}
+		}
+		for (PosPair temp : toRemove){
+			activeBullets.remove(temp);
 		}
 	}
 	public void moveFireballs()
@@ -596,6 +616,20 @@ public class GamePanel extends JPanel implements KeyListener{
 			}
 			else if (checkOutside(temp.getX(),temp.getY())){
 				toRemove.add(temp);
+			}
+			for (Barrel bar : allBarrels){
+				int x = bar.getX(), y = bar.getY(), sx = bar.getsx(), sy = bar.getsy(), px = temp.getX(), py = temp.getY();
+				if (px >= x && px <= x + sx && py >= y && py <= y + sy){
+					bar.setHealth(0);
+					toRemove.add(temp);
+				}
+			}
+			for (Barricade bar : allBarricades){
+				int x = bar.getX(), y = bar.getY(), sx = bar.getsx(), sy = bar.getsy(), px = temp.getX(), py = temp.getY();
+				if (px >= x && px <= x + sx && py >= y && py <= y + sy){
+					bar.setHealth(0);
+					toRemove.add(temp);
+				}
 			}
 		}
 		for (PosPair pair:toRemove){
@@ -879,14 +913,28 @@ public class GamePanel extends JPanel implements KeyListener{
 			allBarricades.remove(b);
 		}
 	}
-	
+
 	private void checkBarrels(){
 		ArrayList<Barrel> toRemove = new ArrayList<Barrel>();
+		for (int x=1; x!=4; ++x){
+			for (Barrel b1 : allBarrels){
+				if (b1.getHealth() <= 0){
+					for (Barrel b2 : allBarrels){
+						int x1 = b1.getcx(), x2 = b2.getcx(), y1 = b1.getcy(), y2 = b2.getcy();
+						if ((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) <= b1.getrange()*b1.getrange()){
+							b2.setHealth(0);
+						}
+					}
+				}
+			}
+		}
 		for (Barrel b : allBarrels){
 			if (b.getHealth() <= 0){
 				toRemove.add(b);
 			}
 		}
+		
+		
 		for (Barrel b : toRemove){
 			Explosion eee=new Explosion(b.getX(), b.getY());
 			allExplosions.add(eee);
