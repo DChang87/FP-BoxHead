@@ -31,7 +31,7 @@ class MainCharacter {
 	
 	private int[] ORIGINALweapondist= new int[NUMOFWEAPONS];
 	private int[] weapondist = new int[NUMOFWEAPONS];
-			
+	private int shotgunWide = 0;
 			
 	private boolean[] consecutiveShoot = new boolean[NUMOFWEAPONS];
 	
@@ -48,6 +48,12 @@ class MainCharacter {
 		//for (int i=0; i!=8; ++i)//temporary
 			//cweaponAmmo[i] = 100;
 
+	}
+	public int getSGW(){
+		return shotgunWide;
+	}
+	public void setSGW(int n){
+		shotgunWide = n;
 	}
 	/////////////DAMAGE//////////////////
 	public void loadORdmg(){
@@ -133,7 +139,7 @@ class MainCharacter {
 	}
 	//////////AMMO//////////
 	public void addAmmo(int n){
-		cweaponAmmo[n]=100;
+		cweaponAmmo[n]=getMaxAmmo(n);
 	}
 	public int getAmmo(int n){
 		return cweaponAmmo[n];
@@ -162,7 +168,9 @@ class MainCharacter {
 	public void setConsecutiveShoot(int weapon){
 		consecutiveShoot[weapon]=true;
 	}
-	
+	public boolean getConsecutiveShoot(int weapon){
+		return consecutiveShoot[weapon];
+	}
 	
 	public int getX(){
 		return (int)posx;
