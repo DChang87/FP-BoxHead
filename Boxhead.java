@@ -20,6 +20,7 @@ public class BoxHead extends JFrame implements ActionListener{
 	StartScreen startS;
 	SelectionMenu sm;
 	Upgrades ug;
+	public int magicalBoxAllowance=1;
 	public BoxHead(){
 		super("BoxHead Zombies");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -35,6 +36,7 @@ public class BoxHead extends JFrame implements ActionListener{
 		mc = new MainCharacter("damn it leo", 100, 400);
 		ug = new Upgrades(this);
 		go = new GameOver(this);
+		
 		go.setLocation(0,0);
 		go.setSize(800,640);
 		add(go);
