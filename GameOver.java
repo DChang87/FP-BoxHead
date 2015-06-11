@@ -1,3 +1,5 @@
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.TextField;
 import java.awt.event.MouseEvent;
@@ -17,9 +19,10 @@ public class GameOver extends JPanel implements MouseMotionListener, MouseListen
 	private Image hsup = new ImageIcon("hsUp.jpg").getImage();
 	private Image hshover = new ImageIcon("hpHover.jpg").getImage();
 	private Image hsdown = new ImageIcon("hsDown.jpg").getImage();
-	private int rx=350,ry=300,rLength=50,rWidth=100;
-	private int hsx=350,hsy=500,hsLength=50,hsWidth=100;
-	
+	private int rx=270,ry=350,rLength=60,rWidth=243;
+	private int hsx=210,hsy=420,hsLength=60,hsWidth=360;
+	private Font font = new Font("Impact", Font.PLAIN, 70);
+	private Font LARGEfont = new Font("Impact", Font.PLAIN, 120);
 	BoxHead BH;
 	public GameOver(BoxHead b){
 		//load the images for the start button
@@ -61,32 +64,54 @@ public class GameOver extends JPanel implements MouseMotionListener, MouseListen
     public void paintComponent(Graphics g){
     	//draw the background and the button (According to the situation)
     	g.drawImage(background,0,0,this);
+    	g.setFont(LARGEfont);
+    	g.drawString("GAME OVER", 130, 130);
+    	g.setColor(Color.black);
+    	g.setFont(font);
+    	
     	if (collide(rx,ry,rWidth,rLength)&&Down){
-    		g.drawImage(rdown,rx,ry,this);
+    		//g.drawImage(rdown,rx,ry,this);
+    		g.setColor(Color.black);
+    		g.drawString("RESTART", rx, ry+rLength);
     		BH.state=BH.GAME;
     		System.out.println("restart");
     		BH.game.restart();
     		BH.game.requestFocus();
     	}
     	else if (collide(rx,ry,rWidth,rLength)){
-    		g.drawImage(rhover,rx,ry,this);
+    		//g.drawImage(rhover,rx,ry,this);
+    		g.setColor(Color.gray);
+    		g.drawString("RESTART", rx, ry+rLength);
+    		
     	}
     	else{
-    		g.drawImage(rup,rx,ry,this);
+    		g.setColor(Color.black);
+    		//g.drawImage(rup,rx,ry,this);
+    		//g.drawRect(rx, ry, rWidth, rLength);
+    		g.drawString("RESTART",rx,ry+rLength);
     	}
     	if (collide(hsx,hsy,hsWidth,hsLength)&&Down){
-    		g.drawImage(hsdown,hsx,hsy,this);
+    		//g.drawImage(hsdown,hsx,hsy,this);
+    		g.setColor(Color.black);
+    		g.drawString("HIGH SCORES", hsx, hsy+hsLength);
     		BH.state=BH.HS;
     		BH.hs.requestFocus();
     		BH.hs.loadList();
     		BH.hs.addScore(BH.score);
+    		BH.score=0;
     	}
     	else if(collide(hsx,hsy,hsWidth,hsLength)){
-    		g.drawImage(hshover,rx,ry,this);
+    		//g.drawImage(hshover,rx,ry,this);
+    		g.setColor(Color.GRAY);
+    		g.drawString("HIGH SCORES", hsx, hsy+hsLength);
     	}
     	else{
-    		g.drawImage(hsup,hsx,hsy,this);
+    		//g.drawImage(hsup,hsx,hsy,this);
+    		g.setColor(Color.black);
+    		g.drawString("HIGH SCORES", hsx, hsy+hsLength);
+    		//g.drawRect(hsx,hsy,hsWidth,hsLength);
     	}
-    	g.drawString(BH.score+"", 390, 500);
+    	g.setColor(Color.black);
+    	g.drawString(BH.score+"", 375, 550);
     }
 }
