@@ -30,7 +30,7 @@ public class BoxHead extends JFrame implements ActionListener{
 		setLayout(null);
 		shootTimer = new Timer(100,this);
 		zombieTimer = new Timer(200,this);
-		enemyGenerationTimer = new Timer(3000,this);
+		enemyGenerationTimer = new Timer(2000,this);
 		SentryTimer = new Timer(500,this);
 		fireTimer = new Timer(100,this); //timer used to increase the timeCount on the fireball for the devil
 		myTimer = new Timer(20,this); //myTimer is used to record the time for general movements in the game
