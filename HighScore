@@ -49,8 +49,6 @@ public class HighScore extends JPanel implements KeyListener{
     		outfile.close();
     	}
     	catch(IOException ex){}
-    	
-    	list.clear();
     }
     public boolean collide(int x,int y,int w, int l){
 		return x<=mouseX&&x+w>=mouseX&&y<=mouseY&&y+l>=mouseY;
@@ -66,6 +64,7 @@ public class HighScore extends JPanel implements KeyListener{
     	for (int i=toSort.size()-1;i>=toSort.size()-10;i--){
     		list.add(toSort.get(i));
     	}
+    	writeToFile();
     }
     public void keyPressed(KeyEvent e) {keys[e.getKeyCode()]=true;}
 	public void keyReleased(KeyEvent e) {keys[e.getKeyCode()]=false;}
@@ -76,7 +75,7 @@ public class HighScore extends JPanel implements KeyListener{
     	if (keys[KeyEvent.VK_SPACE]){
     		BH.state=BH.OVER;
     		System.out.println("back togame over");
-    		writeToFile();
+    		list.clear();
     		//BH.go.activateMouse();
     		BH.go.requestFocus();
     		keys[KeyEvent.VK_SPACE]=false;
