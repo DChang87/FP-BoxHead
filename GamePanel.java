@@ -422,10 +422,10 @@ public class GamePanel extends JPanel implements KeyListener{
 				nx = temp.getDX()-moveX;
 			}
 			if (temp.getDY() <= BH.mc.getDY()){
-				ny = temp.getY()+moveY;
+				ny = temp.getDY()+moveY;
 			}
 			else{
-				ny = temp.getY()-moveY;
+				ny = temp.getDY()-moveY;
 			}
 			for (Barricade b : allBarricades){
 				if (b.rectcollision((int)nx,(int)ny)){
@@ -459,10 +459,10 @@ public class GamePanel extends JPanel implements KeyListener{
 				nx = temp.getDX()-moveX;
 			}
 			if (temp.getDY() <= BH.mc.getDY()){
-				ny = temp.getY()+moveY;
+				ny = temp.getDY()+moveY;
 			}
 			else{
-				ny = temp.getY()-moveY;
+				ny = temp.getDY()-moveY;
 			}
 			for (Barricade b : allBarricades){
 				if (b.rectcollision((int)nx,(int)ny)){
