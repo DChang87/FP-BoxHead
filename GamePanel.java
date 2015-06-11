@@ -21,7 +21,7 @@ import javax.swing.JPanel;
 
 
 public class GamePanel extends JPanel implements KeyListener{
-	private AudioClip[] audio = new AudioClip[6];
+	private AudioClip[] audio = new AudioClip[8];
 	private BoxHead BH;
 	private boolean[] keys; 
 	private Image background = new ImageIcon("forestmap2.jpg").getImage();
@@ -55,7 +55,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	private Image grenadeSprite = new ImageIcon("grenade.png").getImage();
 	private Image grenadeExploded = new ImageIcon("grenadeExplode.png").getImage();
 	//add this
-	
+	private AudioClip explodeGrenade =Applet.newAudioClip(getClass().getResource("grenadeExplode.wav")); 
 	private int displayLevelCounter=0; //this is the counter used to display the "+-+-+-+ Level 2 +-+-+-+"
 	private int currentLevel=0;	
 	private int mapx=0, mapy=0, mapsx = 2000, mapsy = 2000, bx1 = 100, bx2 = 670, by1 = 100, by2 = 510;
@@ -121,7 +121,9 @@ public class GamePanel extends JPanel implements KeyListener{
 	public void loadAudio(){
 		audio[1]=Applet.newAudioClip(getClass().getResource("pistol.wav"));
 		audio[2]=Applet.newAudioClip(getClass().getResource("uzi.wav"));
-		//audio[3]=Applet.newAudioClip(getClass().getResource("shotgunS.wav"));
+		audio[3]=Applet.newAudioClip(getClass().getResource("shotgun.wav"));
+		audio[SENTRY]=Applet.newAudioClip(getClass().getResource("sentrygun_qq.wav"));
+		audio[GRENADE] = Applet.newAudioClip(getClass().getResource("grenadethrow.wav"));
 	}
 	public void getWeaponNames(){
 		weaponNames[1]="PISTOL";
@@ -156,11 +158,11 @@ public class GamePanel extends JPanel implements KeyListener{
 	}
 	public void restart(){
 		currentLevel=1;
+		mapx=0;
+		mapy=0;
 		BH.mc.loadMaxAmmo();
 		BH.mc.loadWeaponSpeed();
 		BH.mc.loadConsecutiveShoot();
-		mapx = 0;
-		mapy = 0;
 		BH.mc.setHealth(BH.mc.full_health);
 		ZombiesThisLevel=getZombiesThisLevel();
 		DevilsThisLevel=getDevilsThisLevel();
@@ -251,8 +253,8 @@ public class GamePanel extends JPanel implements KeyListener{
 			//BH.addBullet(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.getWeapon()));
 			if (BH.mc.getWeapon()==BARRICADE){
 				if (!lastSpaceStat){
-					int nx = (int) (mx + 30*Math.cos(Math.toRadians(BH.mc.getANGLE())));
-					int ny = (int) (my + 30*Math.sin(Math.toRadians(BH.mc.getANGLE())));
+					int nx = (int) (mx + 45*Math.cos(Math.toRadians(BH.mc.getANGLE())));
+					int ny = (int) (my + 45*Math.sin(Math.toRadians(BH.mc.getANGLE())));
 					if(!objectPlacementCollision(nx-barricadesx/2,ny-barricadesy/2,barricadesx,barricadesy)){
 						allBarricades.add(new Barricade(nx-barricadesx/2,ny-barricadesy/2));
 						BH.mc.useAmmo(BARRICADE);
@@ -276,6 +278,7 @@ public class GamePanel extends JPanel implements KeyListener{
 					int ny = (int) (my + 60*Math.sin(Math.toRadians(BH.mc.getANGLE())));
 					allGrenades.add(new Grenade(nx,ny,BH));
 					BH.mc.useAmmo(GRENADE);
+					activateAudio(GRENADE);
 				}
 			}
 			else if (BH.mc.getWeapon()==SENTRY){
@@ -310,6 +313,7 @@ public class GamePanel extends JPanel implements KeyListener{
 						activeBullets.add(new PosPair(mx,my,(BH.mc.getANGLE()-20+360)%360,BH.mc.getWeapon()));
 						//wider shot
 					}
+					activateAudio(BH.mc.getWeapon());
 					BH.mc.useAmmo(BH.mc.getWeapon());
 				}
 			}
@@ -328,9 +332,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void activateAudio(int weapon){
-		if (weapon<=2){
-			audio[weapon].play();
-		}
+		audio[weapon].play();
 	}
 	public void checkPause(){
 		//display another pause screen
@@ -1089,11 +1091,13 @@ public class GamePanel extends JPanel implements KeyListener{
 			if (zd < dd && zd <= sentry.getrange()*sentry.getrange()){
 				int ang = (int)(Math.toDegrees(Math.PI+Math.atan2(y - zClosest.getcy(),x - zClosest.getDX())));
 				activeBullets.add(new PosPair(x,y,ang,1));
+				activateAudio(SENTRY);
 				sentry.setammo(sentry.getammo()-1);
 			}
 			else if (dd <= sentry.getrange()*sentry.getrange()){
 				int ang = (int)(Math.toDegrees(Math.PI+Math.atan2(y - dClosest.getDY(),x - dClosest.getDX())));
-				activeBullets.add(new PosPair(x,y,ang,1));	
+				activeBullets.add(new PosPair(x,y,ang,1));
+				activateAudio(SENTRY);
 				sentry.setammo(sentry.getammo()-1);
 			}
 		}
@@ -1142,6 +1146,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (Grenade grenade: allGrenades){
 			grenade.countDown();
 			if (grenade.getCounter()==0){
+				explodeGrenade.play();
 				GrenadeExplode(grenade);
 				toRemove.add(grenade);
 			}
