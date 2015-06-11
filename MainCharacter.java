@@ -139,6 +139,7 @@ class MainCharacter {
 	}
 	//////////AMMO//////////
 	public void addAmmo(int n){
+		System.out.println(n+" "+getMaxAmmo(n)+"ADAMMO");
 		cweaponAmmo[n]=getMaxAmmo(n);
 	}
 	public int getAmmo(int n){
