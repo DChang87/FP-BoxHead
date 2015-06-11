@@ -209,11 +209,39 @@ public class GamePanel extends JPanel implements KeyListener{
     	requestFocus();
     	BH.start();
     }
-	public boolean checkCollision(int fx,int fy,int mcx,int mcy){
+	public boolean checkFireballCollision(int fx,int fy,int mcx,int mcy){
 		//check if the fireball is on the character
 		return (fx+10>=mcx && fx+10 <=mcx+BH.mc.getWidth() && fy+10>=mcy && fy+10<=mcy+BH.mc.getLength());
 	}
-	
+	public boolean objectPlacementCollision(int objx,int objy,int objsx,int objsy){
+		boolean flag=false;
+		for (Zombie zombie: allZombies){
+			if (rectcollision(objx,objy,objsx,objsy,zombie.getX(),zombie.getY(),zombie.getsx(),zombie.getsy())){
+				flag=true;
+			}
+		}
+		for(Devil devil:allDevils){
+			if (rectcollision(objx,objy,objsx,objsy,devil.getX(),devil.getY(),devil.getsx(),devil.getsy())){
+				flag=true;
+			}
+		}
+		for(Barrel barrel:allBarrels){
+			if (rectcollision(objx,objy,objsx,objsy,barrel.getX(),barrel.getY(),barrel.getsx(),barrel.getsy())){
+				flag=true;
+			}
+		}
+		for (Barricade barricade: allBarricades){
+			if (rectcollision(objx,objy,objsx,objsy,barricade.getX(),barricade.getY(),barricade.getsx(),barricade.getsy())){
+				flag=true;
+			}
+		}
+		for (SentryGun sentry: allSentries){
+			if (rectcollision(objx,objy,objsx,objsy,sentry.getX(),sentry.getY(),sentrysx,sentrysy)){
+				flag=true;
+			}
+		}
+		return flag;
+	}
 	public void MCshoot(){
 		if (keys[KeyEvent.VK_SPACE]){
 			int mx = BH.mc.getcx(), my = BH.mc.getcy();
@@ -223,16 +251,20 @@ public class GamePanel extends JPanel implements KeyListener{
 				if (!lastSpaceStat){
 					int nx = (int) (mx + 30*Math.cos(Math.toRadians(BH.mc.getANGLE())));
 					int ny = (int) (my + 30*Math.sin(Math.toRadians(BH.mc.getANGLE())));
-					allBarricades.add(new Barricade(nx-barricadesx/2,ny-barricadesy/2));
-					BH.mc.useAmmo(BARRICADE);
+					if(!objectPlacementCollision(nx-barricadesx/2,ny-barricadesy/2,barricadesx,barricadesy)){
+						allBarricades.add(new Barricade(nx-barricadesx/2,ny-barricadesy/2));
+						BH.mc.useAmmo(BARRICADE);
+					}		
 				}
 			}
 			else if (BH.mc.getWeapon()==BARREL){
 				if (!lastSpaceStat){
 					int nx = (int) (mx + 30*Math.cos(Math.toRadians(BH.mc.getANGLE())));
 					int ny = (int) (my + 55*Math.sin(Math.toRadians(BH.mc.getANGLE())));
-					allBarrels.add(new Barrel(nx - barrelsx/2, ny - barrelsy/2));
-					BH.mc.useAmmo(BARREL);
+					if(!objectPlacementCollision(nx-barrelsx/2,ny-barrelsy/2,barrelsx,barrelsy)){
+						allBarrels.add(new Barrel(nx - barrelsx/2, ny - barrelsy/2));
+						BH.mc.useAmmo(BARREL);
+					}	
 				}
 			}
 			else if (BH.mc.getWeapon()==GRENADE){
@@ -248,8 +280,11 @@ public class GamePanel extends JPanel implements KeyListener{
 				if (!lastSpaceStat){
 					int nx = (int) (mx + 37*Math.cos(Math.toRadians(BH.mc.getANGLE())));
 					int ny = (int) (my + 37*Math.sin(Math.toRadians(BH.mc.getANGLE())));
-					allSentries.add(new SentryGun(nx-sentrysx/2,ny-sentrysy/2));
-					BH.mc.useAmmo(SENTRY);
+					if(!objectPlacementCollision(nx-sentrysx/2,ny-sentrysy/2,sentrysx,sentrysy)){
+						allSentries.add(new SentryGun(nx-sentrysx/2,ny-sentrysy/2));
+						BH.mc.useAmmo(SENTRY);
+					}
+					
 				}
 			}
 			else if (BH.mc.getWeapon()==SHOTGUN){
@@ -446,16 +481,16 @@ public class GamePanel extends JPanel implements KeyListener{
 	public int numbercollisions(int x, int y){
 		//collisions should max 1 (itself)
 		int ncollision = 0;
-		if (rectcollision(x,y,BH.mc.getX(),BH.mc.getY())){
+		if (rectcollision(x,y,rectsx,rectsy,BH.mc.getX(),BH.mc.getY(),rectsx,rectsy)){
 			ncollision++;
 		}
 		for (Zombie z : allZombies){
-			if (rectcollision(x,y,z.getX(),z.getY())){
+			if (rectcollision(x,y,rectsx,rectsy,z.getX(),z.getY(),rectsx,rectsy)){
 				ncollision++;
 			}
 		}
 		for (Devil d : allDevils){
-			if (rectcollision(x,y,d.getX(),d.getY())){
+			if (rectcollision(x,y,rectsx,rectsy,d.getX(),d.getY(),rectsx,rectsy)){
 				ncollision++;
 			}
 		}
@@ -476,8 +511,8 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		return ncollision;
 	}
-	public boolean rectcollision(int x1, int y1, int x2, int y2){
-		if (x1+rectsx < x2 || x1 > x2 + rectsx || y1 + rectsy < y2 || y1 > y2 + rectsy){
+	public boolean rectcollision(int x1, int y1,int rectsx1, int rectsy1, int x2, int y2,int rectsx2, int rectsy2){
+		if (x1+rectsx1 < x2 || x1 > x2 + rectsx2 || y1 + rectsy1 < y2 || y1 > y2 + rectsy2){
 			return false;
 		}
 		return true;
@@ -635,7 +670,7 @@ public class GamePanel extends JPanel implements KeyListener{
 			final double ANG = Math.toRadians(temp.getANGLE());
 			double xx = temp.getDX(), yy = temp.getDY();
 			temp.setPos(xx+20*Math.cos(ANG),yy+20*Math.sin(ANG));
-			if (checkCollision(temp.getX(),temp.getY(),BH.mc.getX(),BH.mc.getY())){
+			if (checkFireballCollision(temp.getX(),temp.getY(),BH.mc.getX(),BH.mc.getY())){
 				//decrease health by 15 points per fireball
 				BH.mc.setHealth(BH.mc.getHealth()-temp.getdmg());
 				toRemove.add(temp);
