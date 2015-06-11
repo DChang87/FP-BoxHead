@@ -680,7 +680,7 @@ public class GamePanel extends JPanel implements KeyListener{
 				BH.mc.setHealth(BH.mc.getHealth()-temp.getdmg());
 				toRemove.add(temp);
 			}
-			else if (checkOutside(temp.getX(),temp.getY())){
+			else if (checkOutside(temp.getX(),temp.getY()) || !validMove(temp.getX(),temp.getY())){
 				toRemove.add(temp);
 			}
 			for (Barrel bar : allBarrels){
@@ -869,11 +869,11 @@ public class GamePanel extends JPanel implements KeyListener{
 			a.setX(a.getDX() - shiftx);
 			a.setY(a.getDY() - shifty);
 		}
-		for (MagicalBox a : allBoxes){
-			a.setX(a.getX()-shiftx);
-			a.setY(a.getY()-shifty);
-		}
 		for (Devil a : allDevils){
+			a.setX(a.getDX()-shiftx);
+			a.setY(a.getDY()-shifty);
+		}
+		for (MagicalBox a : allBoxes){
 			a.setX(a.getX()-shiftx);
 			a.setY(a.getY()-shifty);
 		}
@@ -896,6 +896,10 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (Grenade g: explodedGrenade){
 			g.setX(g.getX()-shiftx);
 			g.setY(g.getY()-shifty);
+		}
+		for (Explosion exp : allExplosions){
+			exp.setX(exp.getX()-shiftx);
+			exp.setY(exp.getY()-shifty);
 		}
 		for(PosPair f: fireballs){
 			f.setPos(f.getX()-shiftx, f.getY()-shifty);
@@ -947,7 +951,8 @@ public class GamePanel extends JPanel implements KeyListener{
 	private void checkExplosions(){
 		ArrayList<Explosion> toRemove = new ArrayList<Explosion>();
 		for (Explosion b : allExplosions){
-			if (b.getspritenum() == 5){
+			b.incrementsprite();
+			if (b.getspritenum() >= 10){
 				toRemove.add(b);
 			}
 		}
