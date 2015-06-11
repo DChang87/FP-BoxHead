@@ -34,7 +34,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	private int spriteCounter = 0;
 	private int[] weapondist = new int[30];
 	
-	private int rectsx = 34, rectsy = 47, barricadesx = 20, barricadesy = 20, barrelsx = 27, barrelsy = 43;
+	private int rectsx = 34, rectsy = 47, barricadesx = 60, barricadesy = 48, barrelsx = 27, barrelsy = 43;
 	private int sentrysx = 20, sentrysy = 20;
 	final int HEALTH=0,PISTOL=1,UZI=2,SHOTGUN=3,BARREL = 4,GRENADE= 5, BARRICADE=6,SENTRY=7;
 	private ArrayList<Zombie> allZombies = new ArrayList<Zombie>(); //this stores all of the zombies that are currently in the game
@@ -72,6 +72,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	private int ang1=90,ang2=180; //generation spot 1, generation spot 2
 	//private int gs1x=100,gs1y=100,gs2x=500,gs2y=500,ang1=0,ang2=270;
 	private Image barrelSprite = new ImageIcon("barrel.png").getImage();
+	private Image barricadeSprite = new ImageIcon("barricade.png").getImage();
 	///add
 	private int ZombiesDead=0,DevilsDead=0;
 	//stop
@@ -223,6 +224,7 @@ public class GamePanel extends JPanel implements KeyListener{
 					int nx = (int) (mx + 30*Math.cos(Math.toRadians(BH.mc.getANGLE())));
 					int ny = (int) (my + 30*Math.sin(Math.toRadians(BH.mc.getANGLE())));
 					allBarricades.add(new Barricade(nx-barricadesx/2,ny-barricadesy/2));
+					BH.mc.useAmmo(BARRICADE);
 				}
 			}
 			else if (BH.mc.getWeapon()==BARREL){
@@ -230,14 +232,16 @@ public class GamePanel extends JPanel implements KeyListener{
 					int nx = (int) (mx + 30*Math.cos(Math.toRadians(BH.mc.getANGLE())));
 					int ny = (int) (my + 55*Math.sin(Math.toRadians(BH.mc.getANGLE())));
 					allBarrels.add(new Barrel(nx - barrelsx/2, ny - barrelsy/2));
+					BH.mc.useAmmo(BARREL);
 				}
 			}
 			else if (BH.mc.getWeapon()==GRENADE){
 				//maybe change up the distance??
 				if (!lastSpaceStat){
-					int nx = (int) (mx + 30*Math.cos(Math.toRadians(BH.mc.getANGLE())));
-					int ny = (int) (my + 30*Math.sin(Math.toRadians(BH.mc.getANGLE())));
+					int nx = (int) (mx + 60*Math.cos(Math.toRadians(BH.mc.getANGLE())));
+					int ny = (int) (my + 60*Math.sin(Math.toRadians(BH.mc.getANGLE())));
 					allGrenades.add(new Grenade(nx,ny,BH));
+					BH.mc.useAmmo(GRENADE);
 				}
 			}
 			else if (BH.mc.getWeapon()==SENTRY){
@@ -254,25 +258,22 @@ public class GamePanel extends JPanel implements KeyListener{
 					if (BH.mc.getSGW()==0){
 					
 						activeBullets.add(new PosPair(mx,my,BH.mc.getANGLE(),BH.mc.getWeapon()));
-						activeBullets.add(new PosPair(mx,my,(BH.mc.getANGLE()+45)%360,BH.mc.getWeapon()));
-						activeBullets.add(new PosPair(mx,my,(BH.mc.getANGLE()-45+360)%360,BH.mc.getWeapon()));
+						activeBullets.add(new PosPair(mx,my,(BH.mc.getANGLE()+5)%360,BH.mc.getWeapon()));
+						activeBullets.add(new PosPair(mx,my,(BH.mc.getANGLE()-5+360)%360,BH.mc.getWeapon()));
 					}
 					else if (BH.mc.getSGW()==1){
 						activeBullets.add(new PosPair(mx,my,BH.mc.getANGLE(),BH.mc.getWeapon()));
-						activeBullets.add(new PosPair(mx,my,(BH.mc.getANGLE()+60)%360,BH.mc.getWeapon()));
-						activeBullets.add(new PosPair(mx,my,(BH.mc.getANGLE()-60+360)%360,BH.mc.getWeapon()));
+						activeBullets.add(new PosPair(mx,my,(BH.mc.getANGLE()+10)%360,BH.mc.getWeapon()));
+						activeBullets.add(new PosPair(mx,my,(BH.mc.getANGLE()-10+360)%360,BH.mc.getWeapon()));
 						//wide shot
 					}
 					else{
 						activeBullets.add(new PosPair(mx,my,BH.mc.getANGLE(),BH.mc.getWeapon()));
-						activeBullets.add(new PosPair(mx,my,(BH.mc.getANGLE()+75)%360,BH.mc.getWeapon()));
-						activeBullets.add(new PosPair(mx,my,(BH.mc.getANGLE()-75+360)%360,BH.mc.getWeapon()));
+						activeBullets.add(new PosPair(mx,my,(BH.mc.getANGLE()+20)%360,BH.mc.getWeapon()));
+						activeBullets.add(new PosPair(mx,my,(BH.mc.getANGLE()-20+360)%360,BH.mc.getWeapon()));
 						//wider shot
 					}
-					for (int i=0;i<3;i++){
-						//since there are 3 bullets shot
-						BH.mc.useAmmo(BH.mc.getWeapon());
-					}
+					BH.mc.useAmmo(BH.mc.getWeapon());
 				}
 			}
 			else if (BH.mc.getWeapon()==1){
@@ -1113,22 +1114,47 @@ public class GamePanel extends JPanel implements KeyListener{
 			allGrenades.remove(grenade);
 		}
 	}
+	public boolean circleRectangleCollision(int cx,int cy, int cr, int rx,int ry,int rl,int rw){
+		boolean flag=false;
+		if(rx<=cx && cx<=rx+rw && ry<=cy && cy<=ry+rl){
+			flag=true;
+		}
+		else if (dist(rx,ry,cx,cy)<=cr){
+			flag=true;
+		}
+		else if (dist(rx,ry+rl,cx,cy)<=cr){
+			flag=true;
+		}
+		else if (dist(rx+rw,ry,cx,cy)<=cr){
+			flag=true;
+		}
+		else if (dist(rx+rw,ry+rl,cx,cy)<=cr){
+			flag=true;
+		}
+		return flag;
+	}
 	public void GrenadeExplode(Grenade grenade){
 		for (Devil devil: allDevils){
-			if (dist(devil.getX(),devil.getY(),grenade.getX(),grenade.getY())<=grenade.getdmgrange()){
+			if (circleRectangleCollision(grenade.getX(),grenade.getY(),grenade.getdmgrange(),devil.getX(),devil.getY(),devil.getsx(),devil.getsy())){
 				System.out.println("devil = dead"+dist(devil.getX(),devil.getY(),grenade.getX(),grenade.getY()));
 				devil.setHealth(devil.getHealth()-grenade.getdmg());
 			}
 		}
 		for (Zombie zombie: allZombies){
-			if (dist(zombie.getX(),zombie.getY(),grenade.getX(),grenade.getY())<=grenade.getdmgrange()){
+			if (circleRectangleCollision(grenade.getX(),grenade.getY(),grenade.getdmgrange(),zombie.getX(),zombie.getY(),zombie.getsx(),zombie.getsy())){
 				System.out.println("zombie = dead"+dist(zombie.getX(),zombie.getY(),grenade.getX(),grenade.getY()));
 				zombie.setHealth(zombie.getHealth()-grenade.getdmg());
 			}
 		}
-		if (dist(BH.mc.getX(),BH.mc.getY(),grenade.getX(),grenade.getY())<=grenade.getdmgrange()){
+		if (circleRectangleCollision(grenade.getX(),grenade.getY(),grenade.getdmgrange(),BH.mc.getX(),BH.mc.getY(),BH.mc.getsx(),BH.mc.getsy())){
 			System.out.println("character = dead"+dist(BH.mc.getX(),BH.mc.getY(),grenade.getX(),grenade.getY()));
 			BH.mc.setHealth(BH.mc.getHealth()-grenade.getdmg());
+		}
+		for (Barrel bar : allBarrels){
+			int x = bar.getX(), y = bar.getY(), sx = bar.getsx(), sy = bar.getsy();
+			if (circleRectangleCollision(grenade.getX(),grenade.getY(),grenade.getdmgrange(),x,y,sx,sy)){
+				bar.setHealth(0);
+			}
 		}
 		
 	}
@@ -1196,7 +1222,8 @@ public class GamePanel extends JPanel implements KeyListener{
 			g.drawString("+-+-+-+ "+currentLevel+" +-+-+-+", 400, 600);
 		}
 		for (Barricade bar : allBarricades){
-			g.drawRect(bar.getX(), bar.getY()-10, 20, 20);
+			//g.drawRect(bar.getX(), bar.getY()-10, 20, 20);
+			g.drawImage(barricadeSprite, bar.getX(), bar.getY(), this);
 		}
 		for (Barrel bar : allBarrels){
 			g.drawImage(barrelSprite,bar.getX(),bar.getY(),this);
