@@ -34,7 +34,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	private int spriteCounter = 0;
 	private int[] weapondist = new int[30];
 	
-	private int rectsx = 34, rectsy = 47, barricadesx = 20, barricadesy = 20, barrelsx = 20, barrelsy = 50;
+	private int rectsx = 34, rectsy = 47, barricadesx = 20, barricadesy = 20, barrelsx = 27, barrelsy = 43;
 	private int sentrysx = 20, sentrysy = 20;
 	final int HEALTH=0,PISTOL=1,UZI=2,SHOTGUN=3,BARREL = 4,GRENADE= 5, BARRICADE=6,SENTRY=7;
 	private ArrayList<Zombie> allZombies = new ArrayList<Zombie>(); //this stores all of the zombies that are currently in the game
@@ -71,7 +71,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	private String[] weaponNames = new String[10];
 	private int ang1=90,ang2=180; //generation spot 1, generation spot 2
 	//private int gs1x=100,gs1y=100,gs2x=500,gs2y=500,ang1=0,ang2=270;
-	
+	private Image barrelSprite = new ImageIcon("barrel.png").getImage();
 	///add
 	private int ZombiesDead=0,DevilsDead=0;
 	//stop
@@ -115,6 +115,7 @@ public class GamePanel extends JPanel implements KeyListener{
 			bulletSprites[i]=new ImageIcon("pistol"+i+".png").getImage();
 			fireballSprites[i]=new ImageIcon("fireball"+i+".png").getImage();
 		}
+		
 	}
 	public void loadAudio(){
 		audio[1]=Applet.newAudioClip(getClass().getResource("pistol.wav"));
@@ -190,6 +191,8 @@ public class GamePanel extends JPanel implements KeyListener{
 		keys[KeyEvent.VK_8]=false;
 		BH.mc.setSGW(0);
 		BH.mc.loadConsecutiveShoot();
+		consecutiveKills=0;
+		nextUpgrade=0;
 	}
 	public void keyTyped(KeyEvent e){
 		
@@ -238,9 +241,12 @@ public class GamePanel extends JPanel implements KeyListener{
 				}
 			}
 			else if (BH.mc.getWeapon()==SENTRY){
-				int nx = (int) (BH.mc.getcx() + 37*Math.cos(Math.toRadians(BH.mc.getANGLE())));
-				int ny = (int) (BH.mc.getcy() + 37*Math.sin(Math.toRadians(BH.mc.getANGLE())));
-				allSentries.add(new SentryGun(nx-sentrysx/2,ny-sentrysy/2));
+				if (!lastSpaceStat){
+					int nx = (int) (BH.mc.getcx() + 37*Math.cos(Math.toRadians(BH.mc.getANGLE())));
+					int ny = (int) (BH.mc.getcy() + 37*Math.sin(Math.toRadians(BH.mc.getANGLE())));
+					allSentries.add(new SentryGun(nx-sentrysx/2,ny-sentrysy/2));
+					BH.mc.useAmmo(SENTRY);
+				}
 			}
 			else if (BH.mc.getWeapon()==SHOTGUN){
 				if (BH.mc.getConsecutiveShoot(SHOTGUN) || lastSpaceStat==false){
@@ -1193,7 +1199,7 @@ public class GamePanel extends JPanel implements KeyListener{
 			g.drawRect(bar.getX(), bar.getY()-10, 20, 20);
 		}
 		for (Barrel bar : allBarrels){
-			g.drawRect(bar.getX(), bar.getY()-10, 20, 50);
+			g.drawImage(barrelSprite,bar.getX(),bar.getY(),this);
 		}
 		for (SentryGun bar : allSentries){
 			g.drawRect(bar.getX(), bar.getY()-10, 20, 20);
