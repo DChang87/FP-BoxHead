@@ -918,6 +918,9 @@ public class GamePanel extends JPanel implements KeyListener{
 	}
 	
 	public boolean validMove(int x, int y){
+		if (mapx+x >=2000 || mapy+y >= 2000){
+			return false;
+		}
 		if (mapx+x>=0&& mapy+y>=0){
 			int clr=  mask_background.getRGB(mapx+x,mapy+y);
 			int  red   = (clr & 0x00ff0000) >> 16;
@@ -930,10 +933,10 @@ public class GamePanel extends JPanel implements KeyListener{
 		return false;
 	}
 	public int getZombiesThisLevel(){
-		return currentLevel*10-5;
+		return (currentLevel+2)*20;
 	}
 	public int getDevilsThisLevel(){
-		return (currentLevel-1)*3+2;
+		return (currentLevel+2)*15;
 	}
 	public void checkLevelOver(){
 		if (ZombiesDead == getZombiesThisLevel() && DevilsDead == getDevilsThisLevel()){
