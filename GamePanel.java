@@ -73,6 +73,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	//private int gs1x=100,gs1y=100,gs2x=500,gs2y=500,ang1=0,ang2=270;
 	private Image barrelSprite = new ImageIcon("barrel.png").getImage();
 	private Image barricadeSprite = new ImageIcon("barricade.png").getImage();
+	private Image barrelExplosion = new ImageIcon("barrelExplosion.png").getImage();
 	///add
 	private int ZombiesDead=0,DevilsDead=0;
 	//stop
@@ -421,10 +422,10 @@ public class GamePanel extends JPanel implements KeyListener{
 				nx = temp.getDX()-moveX;
 			}
 			if (temp.getDY() <= BH.mc.getDY()){
-				ny = temp.getY()+moveY;
+				ny = temp.getDY()+moveY;
 			}
 			else{
-				ny = temp.getY()-moveY;
+				ny = temp.getDY()-moveY;
 			}
 			for (Barricade b : allBarricades){
 				if (b.rectcollision((int)nx,(int)ny)){
@@ -679,7 +680,7 @@ public class GamePanel extends JPanel implements KeyListener{
 				BH.mc.setHealth(BH.mc.getHealth()-temp.getdmg());
 				toRemove.add(temp);
 			}
-			else if (checkOutside(temp.getX(),temp.getY())){
+			else if (checkOutside(temp.getX(),temp.getY())|| !validMove(temp.getX(),temp.getY())){
 				toRemove.add(temp);
 			}
 			for (Barrel bar : allBarrels){
@@ -872,9 +873,9 @@ public class GamePanel extends JPanel implements KeyListener{
 			a.setX(a.getX()-shiftx);
 			a.setY(a.getY()-shifty);
 		}
-		for (Devil a : allDevils){
-			a.setX(a.getX()-shiftx);
-			a.setY(a.getY()-shifty);
+		for (Devil a : allDevils){		
+			a.setX(a.getDX()-shiftx);		
+			a.setY(a.getDY()-shifty);		
 		}
 		for (Barricade a : allBarricades){
 			a.setX(a.getX()-shiftx);
@@ -895,6 +896,10 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (Grenade g: explodedGrenade){
 			g.setX(g.getX()-shiftx);
 			g.setY(g.getY()-shifty);
+		}
+		for (Explosion exp : allExplosions){		
+			exp.setX(exp.getX()-shiftx);		
+			exp.setY(exp.getY()-shifty);		
 		}
 		for(PosPair f: fireballs){
 			f.setPos(f.getX()-shiftx, f.getY()-shifty);
@@ -946,7 +951,8 @@ public class GamePanel extends JPanel implements KeyListener{
 	private void checkExplosions(){
 		ArrayList<Explosion> toRemove = new ArrayList<Explosion>();
 		for (Explosion b : allExplosions){
-			if (b.getspritenum() == 5){
+			b.incrementsprite();
+			if (b.getspritenum() >= 10){
 				toRemove.add(b);
 			}
 		}
@@ -1001,7 +1007,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		
 		
 		for (Barrel b : toRemove){
-			Explosion eee=new Explosion(b.getX(), b.getY());
+			Explosion eee=new Explosion(b.getcx(), b.getcy());
 			allExplosions.add(eee);
 			explosiondmg(eee);
 			allBarrels.remove(b);
@@ -1294,6 +1300,10 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (Grenade grenade: explodedGrenade){
 			g.drawImage(grenadeExploded, grenade.getX()-grenadeExploded.getHeight(this)/2,grenade.getY()-grenadeExploded.getWidth(this)/2,this);
 			g.drawOval(grenade.getX()-25, grenade.getY()-25, 50, 50);
+		}
+		for (Explosion exp : allExplosions){		
+			g.drawImage(barrelExplosion,exp.getX()-exp.getrange()/2,exp.getY()-exp.getrange()/2,this);		
+			g.drawOval(exp.getX()-exp.getrange()/2,exp.getY()-exp.getrange()/2,100,100);		
 		}
 		g.drawString(consecutiveKills+" "+consecutiveCountDown,100,600);
 		g.drawString(printUpgradeString, 300, 600);
