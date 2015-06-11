@@ -80,7 +80,8 @@ public class GamePanel extends JPanel implements KeyListener{
 	private String boxString = "";
 	private int boxCountDown=0;
 	//stop
-	
+	private int shootCountDown=0;
+	private final int SOMENUMBER=20;
 	
 	public GamePanel(BoxHead bh){
 		BH=bh;
@@ -167,6 +168,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	}
 	public void restart(){
 		currentLevel=1;
+		shootCountDown=0;
 		mapx=0;
 		mapy=0;
 		BH.mc.loadMaxAmmo();
@@ -298,11 +300,10 @@ public class GamePanel extends JPanel implements KeyListener{
 						allSentries.add(new SentryGun(nx-sentrysx/2,ny-sentrysy/2));
 						BH.mc.useAmmo(SENTRY);
 					}
-					
 				}
 			}
 			else if (BH.mc.getWeapon()==SHOTGUN){
-				if (BH.mc.getConsecutiveShoot(SHOTGUN) || lastSpaceStat==false){
+				if ((BH.mc.getConsecutiveShoot(SHOTGUN) &&shootCountDown==0)|| lastSpaceStat==false){
 					//if it can shoot consecutively. if not, it cannot shoot consecutively and the last space stat must be false
 					if (BH.mc.getSGW()==0){
 					
@@ -322,21 +323,30 @@ public class GamePanel extends JPanel implements KeyListener{
 						activeBullets.add(new PosPair(mx,my,(BH.mc.getANGLE()-20+360)%360,BH.mc.getWeapon()));
 						//wider shot
 					}
+					shootCountDown=SOMENUMBER;
 					activateAudio(BH.mc.getWeapon());
 					BH.mc.useAmmo(BH.mc.getWeapon());
 				}
 			}
 			else if (BH.mc.getWeapon()==1){
-				if (BH.mc.getConsecutiveShoot(PISTOL)|| lastSpaceStat==false){
+				if ((BH.mc.getConsecutiveShoot(PISTOL)&&shootCountDown==0)|| lastSpaceStat==false){
+					activeBullets.add(new PosPair(mx,my,BH.mc.getANGLE(),BH.mc.getWeapon()));
+					BH.mc.useAmmo(BH.mc.getWeapon());
+					activateAudio(BH.mc.getWeapon());
+					shootCountDown=SOMENUMBER;
+				}
+			}
+			else{
+				if (shootCountDown==0){
+					shootCountDown=SOMENUMBER;
 					activeBullets.add(new PosPair(mx,my,BH.mc.getANGLE(),BH.mc.getWeapon()));
 					BH.mc.useAmmo(BH.mc.getWeapon());
 					activateAudio(BH.mc.getWeapon());
 				}
+				
 			}
-			else{
-				activeBullets.add(new PosPair(mx,my,BH.mc.getANGLE(),BH.mc.getWeapon()));
-				BH.mc.useAmmo(BH.mc.getWeapon());
-				activateAudio(BH.mc.getWeapon());
+			if (shootCountDown>0){
+				shootCountDown--;
 			}
 		}
 	}
