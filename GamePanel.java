@@ -73,7 +73,6 @@ public class GamePanel extends JPanel implements KeyListener{
 	//private int gs1x=100,gs1y=100,gs2x=500,gs2y=500,ang1=0,ang2=270;
 	private Image barrelSprite = new ImageIcon("barrel.png").getImage();
 	private Image barricadeSprite = new ImageIcon("barricade.png").getImage();
-	private Image barrelExplosion = new ImageIcon("barrelExplosion.png").getImage();
 	///add
 	private int ZombiesDead=0,DevilsDead=0;
 	//stop
@@ -422,10 +421,10 @@ public class GamePanel extends JPanel implements KeyListener{
 				nx = temp.getDX()-moveX;
 			}
 			if (temp.getDY() <= BH.mc.getDY()){
-				ny = temp.getDY()+moveY;
+				ny = temp.getY()+moveY;
 			}
 			else{
-				ny = temp.getDY()-moveY;
+				ny = temp.getY()-moveY;
 			}
 			for (Barricade b : allBarricades){
 				if (b.rectcollision((int)nx,(int)ny)){
@@ -459,10 +458,10 @@ public class GamePanel extends JPanel implements KeyListener{
 				nx = temp.getDX()-moveX;
 			}
 			if (temp.getDY() <= BH.mc.getDY()){
-				ny = temp.getDY()+moveY;
+				ny = temp.getY()+moveY;
 			}
 			else{
-				ny = temp.getDY()-moveY;
+				ny = temp.getY()-moveY;
 			}
 			for (Barricade b : allBarricades){
 				if (b.rectcollision((int)nx,(int)ny)){
@@ -560,7 +559,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (Zombie zzh8829:toRemoveZ){
 			//for every zombie that dies, add onto the score, remove the zombie and add a magical box to the screen
 			if ((int)(Math.random()*3)==1){
-				allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY()));
+				allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY(),BH));
 			}
 			BH.score+=200+consecutiveKills*100;
 			ZombiesDead++;
@@ -583,7 +582,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (Devil zzh8829:toRemoveD){
 			BH.score+=200+consecutiveKills*100;
 			allDevils.remove(zzh8829);
-			allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY()));
+			allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY(),BH));
 			fullCountDown();
 			DevilsDead++;
 			addConsecutive();
@@ -680,7 +679,7 @@ public class GamePanel extends JPanel implements KeyListener{
 				BH.mc.setHealth(BH.mc.getHealth()-temp.getdmg());
 				toRemove.add(temp);
 			}
-			else if (checkOutside(temp.getX(),temp.getY()) || !validMove(temp.getX(),temp.getY())){
+			else if (checkOutside(temp.getX(),temp.getY())){
 				toRemove.add(temp);
 			}
 			for (Barrel bar : allBarrels){
@@ -811,7 +810,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (int i=0;i<allBoxes.size();i++){
 			MagicalBox box = allBoxes.get(i);
 			int x = box.getX(), y = box.getY(), mcx = BH.mc.getX(), mcy = BH.mc.getY();
-			if (x + box.bsx < mcx || x > mcx + BH.mc.getsx() || y + box.bsy < mcy || y > mcy + BH.mc.getsy()){
+			if (x + box.getbsx() < mcx || x > mcx + BH.mc.getsx() || y + box.getbsy() < mcy || y > mcy + BH.mc.getsy()){
 				continue;
 			}
 			addItem(box.generateItem());
@@ -869,11 +868,11 @@ public class GamePanel extends JPanel implements KeyListener{
 			a.setX(a.getDX() - shiftx);
 			a.setY(a.getDY() - shifty);
 		}
-		for (Devil a : allDevils){
-			a.setX(a.getDX()-shiftx);
-			a.setY(a.getDY()-shifty);
-		}
 		for (MagicalBox a : allBoxes){
+			a.setX(a.getX()-shiftx);
+			a.setY(a.getY()-shifty);
+		}
+		for (Devil a : allDevils){
 			a.setX(a.getX()-shiftx);
 			a.setY(a.getY()-shifty);
 		}
@@ -896,10 +895,6 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (Grenade g: explodedGrenade){
 			g.setX(g.getX()-shiftx);
 			g.setY(g.getY()-shifty);
-		}
-		for (Explosion exp : allExplosions){
-			exp.setX(exp.getX()-shiftx);
-			exp.setY(exp.getY()-shifty);
 		}
 		for(PosPair f: fireballs){
 			f.setPos(f.getX()-shiftx, f.getY()-shifty);
@@ -951,8 +946,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	private void checkExplosions(){
 		ArrayList<Explosion> toRemove = new ArrayList<Explosion>();
 		for (Explosion b : allExplosions){
-			b.incrementsprite();
-			if (b.getspritenum() >= 10){
+			if (b.getspritenum() == 5){
 				toRemove.add(b);
 			}
 		}
@@ -1007,7 +1001,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		
 		
 		for (Barrel b : toRemove){
-			Explosion eee=new Explosion(b.getcx(), b.getcy());
+			Explosion eee=new Explosion(b.getX(), b.getY());
 			allExplosions.add(eee);
 			explosiondmg(eee);
 			allBarrels.remove(b);
@@ -1049,7 +1043,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (Zombie zzh8829:toRemoveZ){
 			//for every zombie that dies, add onto the score, remove the zombie and add a magical box to the screen
 			if ((int)(Math.random()*3)==1){
-				allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY()));
+				allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY(),BH));
 			}
 			BH.score+=200+consecutiveKills*100;
 			ZombiesDead++;
@@ -1067,7 +1061,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (Devil zzh8829:toRemoveD){
 			BH.score+=200+consecutiveKills*100;
 			allDevils.remove(zzh8829);
-			allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY()));
+			allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY(),BH));
 			fullCountDown();
 			DevilsDead++;
 			consecutiveKills++;
@@ -1122,7 +1116,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (Zombie zzh8829:toRemoveZ){
 			//for every zombie that dies, add onto the score, remove the zombie and add a magical box to the screen
 			if ((int)(Math.random()*3)==1){
-				allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY()));
+				allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY(),BH));
 			}
 			BH.score+=200+consecutiveKills*100;
 			ZombiesDead++;
@@ -1140,7 +1134,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (Devil zzh8829:toRemoveD){
 			BH.score+=200+consecutiveKills*100;
 			allDevils.remove(zzh8829);
-			allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY()));
+			allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY(),BH));
 			fullCountDown();
 			DevilsDead++;
 			consecutiveKills++;
@@ -1221,6 +1215,17 @@ public class GamePanel extends JPanel implements KeyListener{
 	public double dist(int x1, int y1,int x2,int y2){
 		return Math.pow(Math.pow(x1-x2, 2)+Math.pow(y1-y2, 2),0.5);
 	}
+	public void checkMagicalBox(){
+		ArrayList<MagicalBox> toRemove = new ArrayList<MagicalBox>();
+		for (MagicalBox b: allBoxes){
+			if (b.getCounter()==0){
+				toRemove.add(b);
+			}
+		}
+		for (MagicalBox b:toRemove){
+			allBoxes.remove(b);
+		}
+	}
 	public void paintComponent(Graphics g){
 		Font Sfont = new Font("Calisto MT", Font.BOLD, 20);
 		g.setFont(Sfont);
@@ -1250,8 +1255,10 @@ public class GamePanel extends JPanel implements KeyListener{
 			g.drawRect(a.getX(),a.getY(),a.getsx(), a.getsy());
 		}
 		for (MagicalBox b : allBoxes){
+			b.countDown();
 			g.drawImage(boxSprite,b.getX(),b.getY(),this);
 		}
+		checkMagicalBox();
 		g.setColor(new Color (255,0,0));
 		g.drawImage(charSprites[BH.mc.getANGLE()/45][spriteCounter%3],BH.mc.getX(),BH.mc.getY(),this);
 		for (Zombie a : allZombies){
@@ -1287,10 +1294,6 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (Grenade grenade: explodedGrenade){
 			g.drawImage(grenadeExploded, grenade.getX()-grenadeExploded.getHeight(this)/2,grenade.getY()-grenadeExploded.getWidth(this)/2,this);
 			g.drawOval(grenade.getX()-25, grenade.getY()-25, 50, 50);
-		}
-		for (Explosion exp : allExplosions){
-			g.drawImage(barrelExplosion,exp.getX()-exp.getrange()/2,exp.getY()-exp.getrange()/2,this);
-			g.drawOval(exp.getX()-exp.getrange()/2,exp.getY()-exp.getrange()/2,100,100);
 		}
 		g.drawString(consecutiveKills+" "+consecutiveCountDown,100,600);
 		g.drawString(printUpgradeString, 300, 600);
