@@ -55,6 +55,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	private Image grenadeSprite = new ImageIcon("grenade.png").getImage();
 	private Image grenadeExploded = new ImageIcon("grenadeExplode.png").getImage();
 	//add this
+	
 	private int displayLevelCounter=0; //this is the counter used to display the "+-+-+-+ Level 2 +-+-+-+"
 	private int currentLevel=0;	
 	private int mapx=0, mapy=0, mapsx = 2000, mapsy = 2000, bx1 = 100, bx2 = 670, by1 = 100, by2 = 510;
@@ -155,6 +156,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		currentLevel=1;
 		BH.mc.loadMaxAmmo();
 		BH.mc.loadWeaponSpeed();
+		BH.mc.loadConsecutiveShoot();
 		BH.mc.setHealth(BH.mc.full_health);
 		ZombiesThisLevel=getZombiesThisLevel();
 		DevilsThisLevel=getDevilsThisLevel();
@@ -212,19 +214,19 @@ public class GamePanel extends JPanel implements KeyListener{
 			//if the user shoots, add a bullet into the arraylist keeping track of flying bullets
 			//BH.addBullet(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.getWeapon()));
 			if (BH.mc.getWeapon()==6){
-				int nx = (int) (BH.mc.getcx() + 37*Math.cos(Math.toRadians(BH.mc.getANGLE())));
-				int ny = (int) (BH.mc.getcy() + 37*Math.sin(Math.toRadians(BH.mc.getANGLE())));
+				int nx = (int) (BH.mc.getcx() + 30*Math.cos(Math.toRadians(BH.mc.getANGLE())));
+				int ny = (int) (BH.mc.getcy() + 30*Math.sin(Math.toRadians(BH.mc.getANGLE())));
 				allBarricades.add(new Barricade(nx-barricadesx/2,ny-barricadesy/2));
 			}
 			else if (BH.mc.getWeapon()==4){
-				int nx = (int) (BH.mc.getcx() + 60*Math.cos(Math.toRadians(BH.mc.getANGLE())));
-				int ny = (int) (BH.mc.getcy() + 60*Math.sin(Math.toRadians(BH.mc.getANGLE())));
+				int nx = (int) (BH.mc.getcx() + 30*Math.cos(Math.toRadians(BH.mc.getANGLE())));
+				int ny = (int) (BH.mc.getcy() + 55*Math.sin(Math.toRadians(BH.mc.getANGLE())));
 				allBarrels.add(new Barrel(nx - barrelsx/2, ny - barrelsy/2));
 			}
 			else if (BH.mc.getWeapon()==GRENADE){
 				//maybe change up the distance??
-				int nx = (int) (BH.mc.getcx() + 60*Math.cos(Math.toRadians(BH.mc.getANGLE())));
-				int ny = (int) (BH.mc.getcy() + 60*Math.sin(Math.toRadians(BH.mc.getANGLE())));
+				int nx = (int) (BH.mc.getcx() + 30*Math.cos(Math.toRadians(BH.mc.getANGLE())));
+				int ny = (int) (BH.mc.getcy() + 30*Math.sin(Math.toRadians(BH.mc.getANGLE())));
 				allGrenades.add(new Grenade(nx,ny,BH));
 			}
 			else if (BH.mc.getWeapon()==7){
@@ -1074,7 +1076,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		Font Sfont = new Font("Calisto MT", Font.BOLD, 20);
 		g.setFont(Sfont);
 		g.drawImage(background, -mapx, -mapy, this);
-		g.drawString(weaponNames[BH.mc.getWeapon()], BH.mc.getX()-5, BH.mc.getY()-10); //maybe do the string formatting with this later if we have time
+		g.drawString(weaponNames[BH.mc.getWeapon()]+" "+BH.mc.getAmmo(BH.mc.getWeapon()), BH.mc.getX()-5, BH.mc.getY()-10); //maybe do the string formatting with this later if we have time
 		//drawing the health bar
 		//figure out the colouring of the bar ugh
 		g.setColor(Color.green);
