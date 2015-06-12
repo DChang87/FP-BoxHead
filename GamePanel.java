@@ -17,12 +17,12 @@ import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-// FIX WEAPON DMG   (enemycollision
+
 // Paul Krishnamurthy is a noob
 
 
 public class GamePanel extends JPanel implements KeyListener{
-		private BoxHead BH;
+	private BoxHead BH;
 	private boolean[] keys; 
 	
 	//Audio
@@ -59,6 +59,8 @@ public class GamePanel extends JPanel implements KeyListener{
 	private int sentrysx = 20, sentrysy = 20;
 	private int screensx = 800, screensy = 640; //screensize
 	private int mapx=0, mapy=0, mapsx = 2000, mapsy = 2000; //the coordinates and size of the original map
+	private int bx1 = 100, bx2 = 670, by1 = 100, by2 = 510; //the map boundary on the screen before the map is shifted
+	private int shiftx = 0, shifty = 0; //The distance the map shifted
 	
 	
 	//all objects on the map at any given time
@@ -106,9 +108,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	private int ZombiesDead=0,DevilsDead=0; //the number of zombies dead at any point, accumulated for the current level
 	private int ZombiesThisLevel, DevilsThisLevel; //the number of zombies/devils remaining in the level (alive, does not have to be spawned)
 	private int currentLevel;	
-	private int bx1 = 100, bx2 = 670, by1 = 100, by2 = 510; //the map boundary on the screen before the map is shifted
 	private int spawnsp = 2000; //spawn speed
-	private int shiftx = 0, shifty = 0; //map shift
 	
 	public GamePanel(BoxHead bh){
 		BH=bh;
@@ -608,14 +608,14 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (Zombie z : allZombies){
 			if (z.getCollide(x,y)){
 				flag = true;
-				z.setHealth(z.getHealth() - 10);
+				z.setHealth(z.getHealth() - BH.mc.getdmg(BH.mc.getWeapon()));
 			}
 		}
 
 		for (Devil d : allDevils){
 			if (d.getCollide(x,y)){
 				flag = true;
-				d.setHealth(d.getHealth() - 10);
+				d.setHealth(d.getHealth() - BH.mc.getdmg(BH.mc.getWeapon()));
 			}
 		}
 
@@ -1289,7 +1289,6 @@ public class GamePanel extends JPanel implements KeyListener{
 		g.drawOval(BH.mc.getX(), BH.mc.getY(), 2, 2);
 		
 		for (Barricade bar : allBarricades){
-			//g.drawRect(bar.getX(), bar.getY()-10, 20, 20);
 			g.drawImage(barricadeSprite, bar.getX(), bar.getY(), this);
 		}
 		for (Barrel bar : allBarrels){
