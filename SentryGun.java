@@ -7,7 +7,7 @@ public class SentryGun {
 	// It will not only protect you from zombies
 	// but it will cost you a pretty penny
 	private double posX, posY;
-	private int range = 1000, dmg = 10, sx = 20, sy = 20, Health = 1000, rectsx = 37, rectsy = 43, ang = 0, ammo = 20;
+	private int range = 1000, dmg = 10, sx = 20, sy = 20, Health = 1000, rectsx = 34, rectsy = 47, ang = 0, ammo = 20;
 	SentryGun(int x, int y){
 		posX = x;
 		posY = y;
