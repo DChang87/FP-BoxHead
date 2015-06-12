@@ -32,18 +32,18 @@ public class GamePanel extends JPanel implements KeyListener{
 	private Image[][] charSprites = new Image[8][3];
 	private Image[][] zombieSprites = new Image[8][8];
 	private Image[][] devilSprites = new Image[8][8];
-	private Image boxSprite = new ImageIcon("box.png").getImage();
+	private Image boxSprite = new ImageIcon("sprites/box.png").getImage();
 	private Image[] fireballSprites = new Image[8];
 	private Image[] bulletSprites = new Image[8];
-	private Image grenadeSprite = new ImageIcon("grenade.png").getImage();
-	private Image grenadeExploded = new ImageIcon("grenadeExplode.png").getImage();
-	private Image barrelSprite = new ImageIcon("barrel.png").getImage();
-	private Image barrelExplosion = new ImageIcon("barrelExplosion.png").getImage();
-	private Image barricadeSprite = new ImageIcon("barricade.png").getImage();
+	private Image grenadeSprite = new ImageIcon("sprites/grenade.png").getImage();
+	private Image grenadeExploded = new ImageIcon("sprites/grenadeExplode.png").getImage();
+	private Image barrelSprite = new ImageIcon("sprites/barrel.png").getImage();
+	private Image barrelExplosion = new ImageIcon("sprites/barrelExplosion.png").getImage();
+	private Image barricadeSprite = new ImageIcon("sprites/barricade.png").getImage();
 	
 	//backgrounds
 	private BufferedImage mask_background;
-	private Image background = new ImageIcon("forestmap2.jpg").getImage();
+	private Image background = new ImageIcon("sprites/forestmap2.jpg").getImage();
 	
 	//constants for the weapons/health
 	private final int HEALTH=0,PISTOL=1,UZI=2,SHOTGUN=3,BARREL = 4,GRENADE= 5, BARRICADE=6,SENTRY=7; 
@@ -131,18 +131,18 @@ public class GamePanel extends JPanel implements KeyListener{
 	public void loadSprites(){
 		for (int i=0;i<8;i++){
 			for (int k=0;k<3;k++){
-				charSprites[i][k]=new ImageIcon("guy0"+i+k+".png").getImage();
+				charSprites[i][k]=new ImageIcon("sprites/guy0"+i+k+".png").getImage();
 			}
 		}
 		for (int i=0;i<8;i++){
 			for (int k=0;k<8;k++){
-				zombieSprites[i][k]=new ImageIcon("zombie"+i+k+".png").getImage();
-				devilSprites[i][k]=new ImageIcon("devil"+i+k+".png").getImage();
+				zombieSprites[i][k]=new ImageIcon("sprites/zombie"+i+k+".png").getImage();
+				devilSprites[i][k]=new ImageIcon("sprites/devil"+i+k+".png").getImage();
 			}
 		}
 		for (int i=0;i<8;i++){
-			bulletSprites[i]=new ImageIcon("pistol"+i+".png").getImage();
-			fireballSprites[i]=new ImageIcon("fireball"+i+".png").getImage();
+			bulletSprites[i]=new ImageIcon("sprites/pistol"+i+".png").getImage();
+			fireballSprites[i]=new ImageIcon("sprites/fireball"+i+".png").getImage();
 		}
 		
 	}
