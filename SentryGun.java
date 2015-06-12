@@ -1,4 +1,11 @@
 public class SentryGun {
+	// What would you take with you to a zombie apocalypse?
+	// a gun? a grenade? a Bomb?
+	// nono, introducing the brand new product
+	// SentryGun 2000, a.k.a. Man's best friend
+	// This product is sure to satisfy your needs
+	// It will not only protect you from zombies
+	// but it will cost you a pretty penny
 	private double posX, posY;
 	private int range = 1000, dmg = 10, sx = 20, sy = 20, Health = 1000, rectsx = 37, rectsy = 43, ang = 0, ammo = 20;
 	SentryGun(int x, int y){
@@ -47,6 +54,7 @@ public class SentryGun {
 	public int getdmg(){
 		return dmg;
 	}
+	// see if the sentrygun collides with a character at (x,y)
 	public boolean rectcollision(int x, int y){
 		if (posX > x + rectsx || posX + sx < x || posY > y + rectsy || posY + sy < y)
 			return false;
