@@ -23,6 +23,7 @@ public class GameOver extends JPanel implements MouseMotionListener, MouseListen
 	private int hsx=210,hsy=420,hsLength=60,hsWidth=360;
 	private Font font = new Font("Impact", Font.PLAIN, 70);
 	private Font LARGEfont = new Font("Impact", Font.PLAIN, 120);
+	private int oldScoretoBlit=0;
 	BoxHead BH;
 	public GameOver(BoxHead b){
 		//load the images for the start button
@@ -68,7 +69,9 @@ public class GameOver extends JPanel implements MouseMotionListener, MouseListen
     	g.drawString("GAME OVER", 130, 130);
     	g.setColor(Color.black);
     	g.setFont(font);
-    	
+    	if (oldScoretoBlit==0){
+    		oldScoretoBlit=BH.score;
+    	}
     	if (collide(rx,ry,rWidth,rLength)&&Down){
     		//g.drawImage(rdown,rx,ry,this);
     		g.setColor(Color.black);
@@ -77,6 +80,7 @@ public class GameOver extends JPanel implements MouseMotionListener, MouseListen
     		System.out.println("restart");
     		BH.game.restart();
     		BH.game.requestFocus();
+    		oldScoretoBlit=0;
     	}
     	else if (collide(rx,ry,rWidth,rLength)){
     		//g.drawImage(rhover,rx,ry,this);
@@ -112,6 +116,11 @@ public class GameOver extends JPanel implements MouseMotionListener, MouseListen
     		//g.drawRect(hsx,hsy,hsWidth,hsLength);
     	}
     	g.setColor(Color.black);
-    	g.drawString(BH.score+"", 375, 550);
+    	if(oldScoretoBlit==0){
+    		g.drawString("000",325,550);
+    	}
+    	else{
+    		g.drawString(oldScoretoBlit+"", 325, 550);
+    	}
     }
 }
