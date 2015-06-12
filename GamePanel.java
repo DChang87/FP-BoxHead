@@ -444,11 +444,12 @@ public class GamePanel extends JPanel implements KeyListener{
 		//this adds on to the consecutive kill
 		//this checks if it is time to upgrade (based on the number of consecutive kills and the next upgrade)
 		consecutiveKills++;
-		if (nextUpgrade==26)
-			return;
+		if (nextUpgrade==26){return;}
+			//make sure it doesn't get past 25 so index won't be out of bounds
 		if (consecutiveKills==BH.ug.allUpgradesNum[nextUpgrade]){
 			BH.ug.getUpgrade(BH.ug.allUpgradesNum[nextUpgrade++]);
 		}
+		
 	}
 	public void switchWeapon(){
 		//switches the weapon based on the number key pressed
@@ -608,7 +609,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	//LEVEL STUFF BEGIN
 	public void checkLevelOver(){
 		//TBH If you can beat level 1 you're already beast
-		if (ZombiesDead == getZombiesThisLevel() && DevilsDead == getDevilsThisLevel()){
+		if (ZombiesDead >= getZombiesThisLevel() && DevilsDead >= getDevilsThisLevel()){
 			//if the number of zombies/devils dead in the level is the same as the number of them that is supposed to exist in the level
 			//this level is over
 			levelUp();
@@ -617,7 +618,6 @@ public class GamePanel extends JPanel implements KeyListener{
 	public void levelUp(){
 		//preparing variables for a new level
 		BH.enemyGenerationTimer = new Timer(spawnsp-currentLevel*300, BH);
-		BH.enemyGenerationTimer.start();
 		currentLevel++;
 		ZombiesDead=0;
 		DevilsDead=0;
