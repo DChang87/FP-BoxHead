@@ -1001,7 +1001,7 @@ public class GamePanel extends JPanel implements KeyListener{
 				if (b1.getHealth() <= 0){
 					for (Barrel b2 : allBarrels){
 						int x1 = b1.getcx(), x2 = b2.getcx(), y1 = b1.getcy(), y2 = b2.getcy();
-						if ((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) <= b1.getrange()*b1.getrange()){
+						if (dist(x1,y1,x2,y2) <= b1.getrange()){
 							b2.setHealth(0);
 						}
 					}
@@ -1029,30 +1029,30 @@ public class GamePanel extends JPanel implements KeyListener{
 		
 		for (Zombie temp : allZombies){
 			int x2 = temp.getX(), y2 = temp.getY();
-			if ((x2-x)*(x2-x) + (y2-y)*(y2-y) <= exp.getrange()*exp.getrange()){
+			if (dist(x,y,x2,y2) <= exp.getrange()){
 				temp.setHealth(temp.getHealth() - exp.getdmg());
 			}
 		}
 		for (Devil temp : allDevils){
 			int x2 = temp.getX(), y2 = temp.getY();
-			if ((x2-x)*(x2-x) + (y2-y)*(y2-y) <= exp.getrange()*exp.getrange()){
+			if (dist(x,y,x2,y2) <= exp.getrange()){
 				temp.setHealth(temp.getHealth() - exp.getdmg());
 			}
 		}
 		for (Barricade b : allBarricades){
 			int x2 = b.getcx(), y2 = b.getcy();
-			if ((x2-x)*(x2-x) + (y2-y)*(y2-y) <= exp.getrange()*exp.getrange()){
+			if (dist(x,y,x2,y2) <= exp.getrange()){
 				b.setHealth(b.getHealth() - exp.getdmg());
 			}
 		}
 		for (SentryGun b : allSentries){
 			int x2 = b.getcx(), y2 = b.getcy();
-			if ((x2-x)*(x2-x) + (y2-y)*(y2-y) <= exp.getrange()*exp.getrange()){
+			if (dist(x,y,x2,y2) <= exp.getrange()){
 				b.setHealth(b.getHealth() - exp.getdmg());
 			}
 		}
-		int x2 = BH.mc.getX(), y2 = BH.mc.getY();;
-		if ((x2-x)*(x2-x) + (y2-y)*(y2-y) <= exp.getrange()*exp.getrange()){
+		int x2 = BH.mc.getX(), y2 = BH.mc.getY();
+		if (dist(x,y,x2,y2) <= exp.getrange()){
 			BH.mc.setHealth(BH.mc.getHealth() - exp.getdmg());
 		}
 		
@@ -1100,18 +1100,16 @@ public class GamePanel extends JPanel implements KeyListener{
 			int x = sentry.getcx(), y = sentry.getcy();
 			Zombie zClosest = new Zombie(0,0,0,BH.mc);
 			Devil dClosest = new Devil(0,0,0,BH.mc);
-			int zd = 1000000000, dd = 1000000000;
+			double zd = 1000000000, dd = 1000000000;
 			for (Zombie z : allZombies){
-				int mx = z.getcx() - x, my = z.getcy() - y;
-				if (mx*mx + my*my < zd){
-					zd = mx*mx+my*my;
+				if (dist(x,y,z.getcx(),z.getcy()) <= zd){
+					zd = dist(x,y,z.getcx(),z.getcy());
 					zClosest = z;
 				}
 			}
 			for (Devil d : allDevils){
-				int mx = d.getcx() - x, my = d.getcy() - y;
-				if (mx*mx + my*my < dd){
-					dd = mx*mx+my*my;
+				if (dist(x,y,d.getcx(),d.getcy()) <= dd){
+					dd = dist(x,y,d.getcx(),d.getcy());
 					dClosest = d;
 				}
 			}
