@@ -676,6 +676,11 @@ public class GamePanel extends JPanel implements KeyListener{
 			allZombies.get(i).addToCounter();
 		}
 	}
+	public void addDevilCounter(){
+		for (int i=0;i<allDevils.size();i++){
+			allDevils.get(i).addToCounter();
+		}
+	}
 	public void moveBullets(){
 		ArrayList<PosPair> toRemove = new ArrayList<PosPair>();
 		for (PosPair temp : activeBullets)
