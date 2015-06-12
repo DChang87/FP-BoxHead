@@ -17,7 +17,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-
+// FIX WEAPON DMG   (enemycollision
 // Paul Krishnamurthy is a noob
 
 
@@ -61,6 +61,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	private int displayLevelCounter=0; //this is the counter used to display the "+-+-+-+ Level 2 +-+-+-+"
 	private int currentLevel=0;	
 	private int mapx=0, mapy=0, mapsx = 2000, mapsy = 2000, bx1 = 100, bx2 = 670, by1 = 100, by2 = 510;
+	// position of map (-mapx,-mapy), size of map
 	private int screensx = 800, screensy = 640;
 	private boolean lastSpaceStat=false;
 	private int shiftx = 0, shifty = 0;
@@ -272,17 +273,16 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		return flag;
 	}
-	public void MCshoot(){
+	public void MCshoot(){ //Main character doing action
 		if (keys[KeyEvent.VK_SPACE]){
-			int mx = BH.mc.getcx(), my = BH.mc.getcy();
+			int mx = BH.mc.getcx(), my = BH.mc.getcy();//get center position
 			//if the user shoots, add a bullet into the arraylist keeping track of flying bullets
-			//BH.addBullet(new PosPair(BH.mc.getX(),BH.mc.getY(),BH.mc.getANGLE(),BH.getWeapon()));
 			if (BH.mc.getWeapon()==BARRICADE){
 				if (!lastSpaceStat){
 					int nx = (int) (mx + 45*Math.cos(Math.toRadians(BH.mc.getANGLE())));
 					int ny = (int) (my + 45*Math.sin(Math.toRadians(BH.mc.getANGLE())));
 					if(!objectPlacementCollision(nx-barricadesx/2,ny-barricadesy/2,barricadesx,barricadesy)){
-						allBarricades.add(new Barricade(nx-barricadesx/2,ny-barricadesy/2));
+						allBarricades.add(new Barricade(nx-barricadesx/2,ny-barricadesy/2));//If the place is empty
 						BH.mc.useAmmo(BARRICADE);
 					}		
 				}
@@ -292,13 +292,12 @@ public class GamePanel extends JPanel implements KeyListener{
 					int nx = (int) (mx + 30*Math.cos(Math.toRadians(BH.mc.getANGLE())));
 					int ny = (int) (my + 55*Math.sin(Math.toRadians(BH.mc.getANGLE())));
 					if(!objectPlacementCollision(nx-barrelsx/2,ny-barrelsy/2,barrelsx,barrelsy)){
-						allBarrels.add(new Barrel(nx - barrelsx/2, ny - barrelsy/2));
+						allBarrels.add(new Barrel(nx - barrelsx/2, ny - barrelsy/2));//If the place is empty
 						BH.mc.useAmmo(BARREL);
 					}	
 				}
 			}
 			else if (BH.mc.getWeapon()==GRENADE){
-				//maybe change up the distance??
 				if (!lastSpaceStat){
 					int nx = (int) (mx + 60*Math.cos(Math.toRadians(BH.mc.getANGLE())));
 					int ny = (int) (my + 60*Math.sin(Math.toRadians(BH.mc.getANGLE())));
@@ -311,8 +310,8 @@ public class GamePanel extends JPanel implements KeyListener{
 				if (!lastSpaceStat){
 					int nx = (int) (mx + 37*Math.cos(Math.toRadians(BH.mc.getANGLE())));
 					int ny = (int) (my + 37*Math.sin(Math.toRadians(BH.mc.getANGLE())));
-					if(!objectPlacementCollision(nx-sentrysx/2,ny-sentrysy/2,sentrysx,sentrysy)){
-						allSentries.add(new SentryGun(nx-sentrysx/2,ny-sentrysy/2));
+					if(!objectPlacementCollision(nx-sentrysx/2,ny-sentrysy/2,sentrysx,sentrysy)){//If the space is empty
+						allSentries.add(new SentryGun(nx-sentrysx/2,ny-sentrysy/2));//Man's best friend
 						BH.mc.useAmmo(SENTRY);
 					}
 				}
@@ -321,7 +320,6 @@ public class GamePanel extends JPanel implements KeyListener{
 				if ((BH.mc.getConsecutiveShoot(SHOTGUN) &&shootCountDown==0)|| lastSpaceStat==false){
 					//if it can shoot consecutively. if not, it cannot shoot consecutively and the last space stat must be false
 					if (BH.mc.getSGW()==0){
-					
 						activeBullets.add(new PosPair(mx,my,BH.mc.getANGLE(),BH.mc.getWeapon()));
 						activeBullets.add(new PosPair(mx,my,(BH.mc.getANGLE()+5)%360,BH.mc.getWeapon()));
 						activeBullets.add(new PosPair(mx,my,(BH.mc.getANGLE()-5+360)%360,BH.mc.getWeapon()));
@@ -344,6 +342,7 @@ public class GamePanel extends JPanel implements KeyListener{
 				}
 			}
 			else if (BH.mc.getWeapon()==1){
+				//If it can be shot consecutively otherwise last space stat must be false
 				if ((BH.mc.getConsecutiveShoot(PISTOL)&&shootCountDown==0)|| lastSpaceStat==false){
 					activeBullets.add(new PosPair(mx,my,BH.mc.getANGLE(),BH.mc.getWeapon()));
 					BH.mc.useAmmo(BH.mc.getWeapon());
@@ -381,75 +380,78 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void moveMC(){
-		int speed = BH.mc.getspeed();
-		//arent we moving the character around a section of the map
-		//so our boundary thing rn doesnt work LOL
-		//how do you do this HELP IDKKKK RIGHT NOW
-		//SHOOTING OF BULLETS IS ALSO WEIRD LOL
-		
+		int speed = BH.mc.getspeed();		
 		double nx=BH.mc.getX(), ny=BH.mc.getY();
-		
+		//new x position, 		new y position
 		
 		if (keys[KeyEvent.VK_LEFT] && keys[KeyEvent.VK_UP]){
 			BH.mc.setAngle(225);
 			nx = Math.max(BH.mc.getX()-speed/2*Math.sqrt(2),0);
 			ny = Math.max(BH.mc.getY()-speed/2*Math.sqrt(2),0);
+			//Doesn't go off screen
 			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_LEFT] && keys[KeyEvent.VK_DOWN]){
 			BH.mc.setAngle(135);
 			nx = Math.max(BH.mc.getX()-speed/2*Math.sqrt(2),0); 
 			ny = Math.min(BH.mc.getY()+speed/2*Math.sqrt(2),640);
+			//Doesn't go off screen
 			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_RIGHT] && keys[KeyEvent.VK_DOWN]){
 			BH.mc.setAngle(45);
 			nx = Math.min(BH.mc.getX()+speed/2*Math.sqrt(2),800); 
 			ny = Math.min(BH.mc.getY()+speed/2*Math.sqrt(2),640); 
+			//Doesn't go off screen
 			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_RIGHT] && keys[KeyEvent.VK_UP]){
 			BH.mc.setAngle(315);
 			nx = Math.min(BH.mc.getX()+speed/2*Math.sqrt(2),800); 
 			ny = Math.max(BH.mc.getY()-speed/2*Math.sqrt(2),0); 
+			//Doesn't go off screen
 			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_LEFT]){
-			//maybe set the direction lol
 			BH.mc.setAngle(180);
 			nx = Math.max(0, BH.mc.getX()-speed);
 			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_RIGHT]){
 			nx = Math.min(800-BH.mc.getWidth(), BH.mc.getX()+speed);
+			//Doesn't go off screen
 			BH.mc.setAngle(0);
 			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_UP]){
 			ny = Math.max(0, BH.mc.getY()-speed);
+			//Doesn't go off screen
 			BH.mc.setAngle(270);
 			spriteCounter++;
 		}
 		else if (keys[KeyEvent.VK_DOWN]){
 			ny = Math.min(640-BH.mc.getLength(),BH.mc.getY()+speed);
+			//Doesn't go off screen
 			BH.mc.setAngle(90);
 			spriteCounter++;
 		}
 		int inx = (int)nx, iny = (int)ny;
-		//there is something wrong with the pixels
+		//		If position is valid in the mask
 		if (validMove(inx,BH.mc.getY()) && numbercollisions(inx,BH.mc.getY()) <= 1){
 			BH.mc.setX(nx);
-		}
+		}//note : co-ordinates are stored as doubles, allows mini movements
 		if (validMove(BH.mc.getX(),iny) && numbercollisions(BH.mc.getX(),iny) <= 1){
 			BH.mc.setY(ny);
 		}
 	}	
 	
-	public void moveZombie(){
+	public void moveZombie(){//move zombie
 		for (int i=0; i< allZombies.size(); i++){
 			Zombie temp = allZombies.get(i);
 			double ManhatX = Math.abs(temp.getDX() - BH.mc.getDX()), ManhatY = Math.abs(temp.getDY() - BH.mc.getDY()), speed = temp.getspeed();
+			//manhatx, x difference								manhaty, y difference
 			double moveX = ManhatX/(ManhatX+ManhatY)*speed, moveY = ManhatY/(ManhatX+ManhatY)*speed,		nx, ny;
+			//amount the zombie will move
 			temp.setAngle(Math.toDegrees(3.14159265358+Math.atan2(temp.getDY() - BH.mc.getDY(),temp.getDX() - BH.mc.getDX())));
 			if (temp.getDX() <= BH.mc.getDX()){
 				nx = temp.getDX()+moveX;
@@ -463,25 +465,26 @@ public class GamePanel extends JPanel implements KeyListener{
 			else{
 				ny = temp.getDY()-moveY;
 			}
-			for (Barricade b : allBarricades){
+			for (Barricade b : allBarricades){//zombies destroy barricades
 				if (b.rectcollision((int)nx,(int)ny)){
 					b.setHealth(b.getHealth()-temp.getdmg());
 				}
 			}
-			for (SentryGun b : allSentries){
+			for (SentryGun b : allSentries){//also destroy sentryguns
 				if (b.rectcollision((int)nx,(int)ny)){
 					b.setHealth(b.getHealth()-temp.getdmg());
 				}
 			}
+			//If movement is valid
 			if (numbercollisions((int)nx, temp.getY()) <= 1 && validMove((int)nx,temp.getY())){
 				temp.setX(nx);
 			}
 			if (numbercollisions(temp.getX(), (int)ny) <= 1 && validMove(temp.getX(),(int)ny)){
 				temp.setY(ny);
-			}
+			}//note: co-ordinates are stored as doubles to allow micro movements
 		}
 	}
-	public void moveDevil(){
+	public void moveDevil(){//Refer to comments above :)
 		for (int i=0; i< allDevils.size(); i++){
 			Devil temp = allDevils.get(i);
 			double ManhatX = Math.abs(temp.getDX() - BH.mc.getDX()), ManhatY = Math.abs(temp.getDY() - BH.mc.getDY()), speed = temp.getspeed();
@@ -519,7 +522,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		
 	}
-	public int numbercollisions(int x, int y){
+	public int numbercollisions(int x, int y){//If pixel does not collide with rects
 		//collisions should max 1 (itself)
 		int ncollision = 0;
 		if (rectcollision(x,y,rectsx,rectsy,BH.mc.getX(),BH.mc.getY(),rectsx,rectsy)){
@@ -553,7 +556,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		return ncollision;
 	}
 	public boolean rectcollision(int x1, int y1,int rectsx1, int rectsy1, int x2, int y2,int rectsx2, int rectsy2){
-		if (x1+rectsx1 < x2 || x1 > x2 + rectsx2 || y1 + rectsy1 < y2 || y1 > y2 + rectsy2){
+		if (x1+rectsx1 < x2 || x1 > x2 + rectsx2 || y1 + rectsy1 < y2 || y1 > y2 + rectsy2){//proof by contracdiction
 			return false;
 		}
 		return true;
@@ -581,55 +584,25 @@ public class GamePanel extends JPanel implements KeyListener{
 	}
 	public boolean enemyCollision(int x, int y){
 		//this method is called to see if the character's bullets damage the enemies
-		ArrayList<Zombie> toRemoveZ = new ArrayList<Zombie>();
 		boolean flag = false;
 		for (Zombie z : allZombies){
 			if (z.getCollide(x,y)){
 				flag = true;
 				z.setHealth(z.getHealth() - 10);
 			}
-			if (z.getHealth() <= 0){
-				toRemoveZ.add(z);
-			}
 		}
 
-		for (Zombie zzh8829:toRemoveZ){
-			//for every zombie that dies, add onto the score, remove the zombie and add a magical box to the screen
-			if ((int)(Math.random()*3)==1){
-				allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY(),BH));
-			}
-			BH.score+=200+consecutiveKills*100;
-			ZombiesDead++;
-			allZombies.remove(zzh8829);
-			fullCountDown();
-			addConsecutive();
-
-			
-		}
-		ArrayList<Devil> toRemoveD = new ArrayList<Devil>();
 		for (Devil d : allDevils){
 			if (d.getCollide(x,y)){
 				flag = true;
 				d.setHealth(d.getHealth() - 10);
 			}
-			if (d.getHealth() <= 0){
-				toRemoveD.add(d);
-			}
 		}
-		for (Devil zzh8829:toRemoveD){
-			BH.score+=200+consecutiveKills*100;
-			allDevils.remove(zzh8829);
-			allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY(),BH));
-			fullCountDown();
-			DevilsDead++;
-			addConsecutive();
-			
-		}
+
 		return flag;
 	}
 	public void addConsecutive(){
 		consecutiveKills++;
-		System.out.println(consecutiveKills+" "+BH.ug.allUpgradesNum[nextUpgrade]);
 		if (consecutiveKills==BH.ug.allUpgradesNum[nextUpgrade]){
 			BH.ug.getUpgrade(BH.ug.allUpgradesNum[nextUpgrade++]);
 		}
@@ -642,16 +615,18 @@ public class GamePanel extends JPanel implements KeyListener{
 		ArrayList<PosPair> toRemove = new ArrayList<PosPair>();
 		for (PosPair temp : activeBullets){
 			if (enemyCollision(temp.getX(),temp.getY())){
-				//REMOVE THE ENEMIES
+				//REMOVE THE bullets
 				toRemove.add(temp);
 			}
 			else if (checkOutside(temp.getX(),temp.getY())){
 				toRemove.add(temp);
 			}
 			else if (!validMove(temp.getX(),temp.getY())){
+				//If it hits a wall
 				toRemove.add(temp);
 			}
 			for (Barrel bar : allBarrels){
+				//if it hits a barrel, an explosion occurs
 				int x = bar.getX(), y = bar.getY(), sx = bar.getsx(), sy = bar.getsy(), px = temp.getX(), py = temp.getY();
 				if (px >= x && px <= x + sx && py >= y && py <= y + sy){
 					bar.setHealth(0);
@@ -668,7 +643,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		//checks how far the bullet travels and if it needs to be removed
 		ArrayList<PosPair> toRemove = new ArrayList<PosPair>();
 		for (PosPair a: activeBullets){
-			if ((a.getX()-a.getorigX())*(a.getX()-a.getorigX()) + (a.getY()-a.getorigY())*(a.getY()-a.getorigY()) > weapondist[a.getTYPE()]*weapondist[a.getTYPE()]){
+			if (dist(a.getorigX(),a.getorigY(),a.getX(),a.getY()) > weapondist[a.getTYPE()]){
 				toRemove.add(a);	
 			}
 		}
@@ -707,8 +682,13 @@ public class GamePanel extends JPanel implements KeyListener{
 			activeBullets.remove(temp);
 		}
 	}
+	public boolean checkOutsideMap(int x, int y){
+		if (x >= 2000 || y >= 2000 || x < 0 || y < 0)
+			return true;
+		return false;
+	}
 	public void moveFireballs()
-	{
+	{//The OP devil weapon
 		ArrayList<PosPair> toRemove = new ArrayList<PosPair>();
 		for (PosPair temp : fireballs)
 		{
@@ -716,23 +696,23 @@ public class GamePanel extends JPanel implements KeyListener{
 			double xx = temp.getDX(), yy = temp.getDY();
 			temp.setPos(xx+20*Math.cos(ANG),yy+20*Math.sin(ANG));
 			if (checkFireballCollision(temp.getX(),temp.getY(),BH.mc.getX(),BH.mc.getY())){
-				//decrease health by 15 points per fireball
+				//checks if MC gets hit
 				BH.mc.setHealth(BH.mc.getHealth()-temp.getdmg());
 				toRemove.add(temp);
 			}
-			else if (checkOutside(temp.getX(),temp.getY())|| !validMove(temp.getX(),temp.getY())){
+			else if (checkOutsideMap(temp.getX(),temp.getY())|| !validMove(temp.getX(),temp.getY())){
 				toRemove.add(temp);
 			}
 			for (Barrel bar : allBarrels){
 				int x = bar.getX(), y = bar.getY(), sx = bar.getsx(), sy = bar.getsy(), px = temp.getX(), py = temp.getY();
-				if (px >= x && px <= x + sx && py >= y && py <= y + sy){
+				if (px >= x && px <= x + sx && py >= y && py <= y + sy){//barrels get blown up by one hit
 					bar.setHealth(0);
 					toRemove.add(temp);
 				}
 			}
 			for (Barricade bar : allBarricades){
 				int x = bar.getX(), y = bar.getY(), sx = bar.getsx(), sy = bar.getsy(), px = temp.getX(), py = temp.getY();
-				if (px >= x && px <= x + sx && py >= y && py <= y + sy){
+				if (px >= x && px <= x + sx && py >= y && py <= y + sy){//barricades get destroyed
 					bar.setHealth(0);
 					toRemove.add(temp);
 				}
@@ -742,7 +722,7 @@ public class GamePanel extends JPanel implements KeyListener{
 			fireballs.remove(pair);
 		}
 	}
-	public void checkMC(){
+	public void checkMC(){//Check if MC is getting beat up
 		for (Zombie a:allZombies)
 		{
 			if (a.collideMC())
@@ -795,7 +775,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void generateEnemy(){
-		if (ZombiesThisLevel>0){
+		if (ZombiesThisLevel>0){//generating enemies at specific locations (rects)
 			addZombie(-mapx,-mapy,0,490);
 			addZombie(-mapx,-mapy + 1040,0,520);
 			addZombie(-mapx+1999,-mapy+1700,0,170);
@@ -810,7 +790,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	
 	public void addZombie(int x, int y, int sx, int sy){
 		for (int i=0; i!=10; ++i){
-			int x1 = x + (int)(Math.random()*sx);
+			int x1 = x + (int)(Math.random()*sx);//random position in the rect
 			int y1 = y + (int)(Math.random()*sy);
 			if (numbercollisions(x1,y1) == 0){
 				ZombiesThisLevel--;
@@ -821,11 +801,11 @@ public class GamePanel extends JPanel implements KeyListener{
 	}
 	public void addDevil(int x, int y, int sx, int sy){
 		for (int i=0; i!=10; ++i){
-			x = x + (int)(Math.random()*sx);
-			y = y + (int)(Math.random()*sy);
-			if (numbercollisions(x,y) == 0){
+			int x1 = x + (int)(Math.random()*sx);//random position in the rect
+			int y1 = y + (int)(Math.random()*sy);
+			if (numbercollisions(x1,y1) == 0){
 				DevilsThisLevel--;
-				allDevils.add(new Devil(x,y,0,BH.mc));
+				allDevils.add(new Devil(x1,y1,0,BH.mc));
 				return;
 			}
 		}
@@ -857,25 +837,25 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void moveMap()
-	{
+	{//the shifting of the map
 		shiftx = shifty = 0;
 		int mcx = BH.mc.getX(), mcy = BH.mc.getY(); //character position
 		if (mcx < bx1 && mapx!=0){ //checks if beyond boundary and if need of shifiting
-			mapx = mapx - (bx1 - mcx);
+			mapx = mapx - (bx1 - mcx);//some sketchy math 
 			shiftx =  - (bx1 - mcx);
 			mcx = bx1;
 		}
-		else if (mcx > bx2 && mapx!=mapsx-screensx){
+		else if (mcx > bx2 && mapx!=mapsx-screensx){ // checks if in need of shift
 			mapx = mapx + (mcx - bx2);
 			shiftx = (mcx - bx2);
 			mcx = bx2;
 		}
-		if (mcy < by1 && mapy!=0){
+		if (mcy < by1 && mapy!=0){// checks if in need of shift
 			mapy = mapy - (by1 - mcy);
 			shifty =  - (by1 - mcy);
 			mcy = by1;
 		}
-		else if (mcy > by2 && mapy!=mapsy-screensy){
+		else if (mcy > by2 && mapy!=mapsy-screensy){// checks if in need of shift
 			mapy = mapy + (mcy - by2);
 			shifty = (mcy - by2);
 			mcy = by2;
@@ -886,7 +866,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		mapy = Math.max(0,Math.min(mapy,mapsy-screensy));
 	}
 	
-	public void updateposition(){
+	public void updateposition(){//after shifting, move all the objects as well
 		if (shiftx == 0 && shifty == 0){
 			return;
 		}
@@ -934,7 +914,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	
-	public boolean validMove(int x, int y){
+	public boolean validMove(int x, int y){//If the pixel is valid in the mask
 		if (mapx+x >=2000 || mapy+y >= 2000){
 			return false;
 		}
@@ -949,13 +929,13 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		return false;
 	}
-	public int getZombiesThisLevel(){
+	public int getZombiesThisLevel(){//# of zombies for the level
 		return (currentLevel+2)*20;
 	}
 	public int getDevilsThisLevel(){
 		return (currentLevel+2)*15;
 	}
-	public void checkLevelOver(){
+	public void checkLevelOver(){//TBH If you can beat level 1 you're already beast
 		if (ZombiesDead == getZombiesThisLevel() && DevilsDead == getDevilsThisLevel()){
 			//this level is over
 			levelUp();
@@ -977,7 +957,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		checkExplosions();
 		checkDead();
 	}
-	private void checkExplosions(){
+	private void checkExplosions(){//counts how long the explosions lasts
 		ArrayList<Explosion> toRemove = new ArrayList<Explosion>();
 		for (Explosion b : allExplosions){
 			b.incrementtime();
@@ -990,7 +970,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		
 	}
-	private void checkSentry(){
+	private void checkSentry(){//if sentry is dead or out of ammo
 		ArrayList<SentryGun> toRemove = new ArrayList<SentryGun>();
 		for (SentryGun b : allSentries){
 			if (b.getHealth() <= 0 || b.getammo() <= 0){
@@ -1002,7 +982,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	
-	private void checkBarricades(){
+	private void checkBarricades(){//if barricade has been destroyed
 		ArrayList<Barricade> toRemove = new ArrayList<Barricade>();
 		for (Barricade b : allBarricades){
 			if (b.getHealth() <= 0){
@@ -1017,7 +997,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	private void checkBarrels(){
 		ArrayList<Barrel> toRemove = new ArrayList<Barrel>();
 		for (int x=1; x!=4; ++x){
-			for (Barrel b1 : allBarrels){
+			for (Barrel b1 : allBarrels){//Chain explosion
 				if (b1.getHealth() <= 0){
 					for (Barrel b2 : allBarrels){
 						int x1 = b1.getcx(), x2 = b2.getcx(), y1 = b1.getcy(), y2 = b2.getcy();
@@ -1044,26 +1024,36 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void explosiondmg(Explosion exp){
+		//destroys everything in a radius
 		int x = exp.getX(), y = exp.getY();
 		
 		for (Zombie temp : allZombies){
 			int x2 = temp.getX(), y2 = temp.getY();
 			if ((x2-x)*(x2-x) + (y2-y)*(y2-y) <= exp.getrange()*exp.getrange()){
 				temp.setHealth(temp.getHealth() - exp.getdmg());
-				System.out.println("WTF");
 			}
 		}
 		for (Devil temp : allDevils){
 			int x2 = temp.getX(), y2 = temp.getY();
 			if ((x2-x)*(x2-x) + (y2-y)*(y2-y) <= exp.getrange()*exp.getrange()){
 				temp.setHealth(temp.getHealth() - exp.getdmg());
-				System.out.println("WTF");
+			}
+		}
+		for (Barricade b : allBarricades){
+			int x2 = b.getcx(), y2 = b.getcy();
+			if ((x2-x)*(x2-x) + (y2-y)*(y2-y) <= exp.getrange()*exp.getrange()){
+				b.setHealth(b.getHealth() - exp.getdmg());
+			}
+		}
+		for (SentryGun b : allSentries){
+			int x2 = b.getcx(), y2 = b.getcy();
+			if ((x2-x)*(x2-x) + (y2-y)*(y2-y) <= exp.getrange()*exp.getrange()){
+				b.setHealth(b.getHealth() - exp.getdmg());
 			}
 		}
 		int x2 = BH.mc.getX(), y2 = BH.mc.getY();;
 		if ((x2-x)*(x2-x) + (y2-y)*(y2-y) <= exp.getrange()*exp.getrange()){
 			BH.mc.setHealth(BH.mc.getHealth() - exp.getdmg());
-			System.out.println("WTF");
 		}
 		
 	}
@@ -1077,7 +1067,8 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 
 		for (Zombie zzh8829:toRemoveZ){
-			//for every zombie that dies, add onto the score, remove the zombie and add a magical box to the screen
+			//Every once in a while a magical unicorn drops by after a zombie dies
+			//And lays a magicalbox
 			if ((int)(Math.random()*3)==1){
 				allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY(),BH));
 			}
@@ -1085,8 +1076,7 @@ public class GamePanel extends JPanel implements KeyListener{
 			ZombiesDead++;
 			allZombies.remove(zzh8829);
 			fullCountDown();
-			consecutiveKills++;
-			
+			addConsecutive();
 		}
 		ArrayList<Devil> toRemoveD = new ArrayList<Devil>();
 		for (Devil d : allDevils){
@@ -1097,14 +1087,15 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (Devil zzh8829:toRemoveD){
 			BH.score+=200+consecutiveKills*100;
 			allDevils.remove(zzh8829);
+			//All Devils lay boxes
 			allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY(),BH));
 			fullCountDown();
 			DevilsDead++;
-			consecutiveKills++;
+			addConsecutive();
 			
 		}
 	}
-	public void shootSentry(){
+	public void shootSentry(){//Sentries shoot at closest enemy
 		for (SentryGun sentry : allSentries){
 			int x = sentry.getcx(), y = sentry.getcy();
 			Zombie zClosest = new Zombie(0,0,0,BH.mc);
@@ -1124,6 +1115,7 @@ public class GamePanel extends JPanel implements KeyListener{
 					dClosest = d;
 				}
 			}
+			//Whether the zombie or devil is closer and if it's in range
 			if (zd < dd && zd <= sentry.getrange()*sentry.getrange()){
 				int ang = (int)(Math.toDegrees(Math.PI+Math.atan2(y - zClosest.getcy(),x - zClosest.getDX())));
 				activeBullets.add(new PosPair(x,y,ang,1));
@@ -1136,45 +1128,6 @@ public class GamePanel extends JPanel implements KeyListener{
 				activateAudio(SENTRY);
 				sentry.setammo(sentry.getammo()-1);
 			}
-		}
-		
-		
-	}
-	public void removeDead(){
-		//this method is called to see if the character's bullets damage the enemies
-		ArrayList<Zombie> toRemoveZ = new ArrayList<Zombie>();
-		for (Zombie z : allZombies){
-			if (z.getHealth() <= 0){
-				toRemoveZ.add(z);
-			}
-		}
-
-		for (Zombie zzh8829:toRemoveZ){
-			//for every zombie that dies, add onto the score, remove the zombie and add a magical box to the screen
-			if ((int)(Math.random()*3)==1){
-				allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY(),BH));
-			}
-			BH.score+=200+consecutiveKills*100;
-			ZombiesDead++;
-			allZombies.remove(zzh8829);
-			fullCountDown();
-			consecutiveKills++;
-			
-		}
-		ArrayList<Devil> toRemoveD = new ArrayList<Devil>();
-		for (Devil d : allDevils){
-			if (d.getHealth() <= 0){
-				toRemoveD.add(d);
-			}
-		}
-		for (Devil zzh8829:toRemoveD){
-			BH.score+=200+consecutiveKills*100;
-			allDevils.remove(zzh8829);
-			allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY(),BH));
-			fullCountDown();
-			DevilsDead++;
-			consecutiveKills++;
-			
 		}
 	}
 	public void countdownGrenade(){
