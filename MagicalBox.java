@@ -50,7 +50,14 @@ class MagicalBox {
 		//n is passed in as the number of the weapon which accounts for pistol
 		//pistol is not accounted here so it must be taken away
 		BH.game.setBoxString(names[ITEM]);
-		return ITEM;
+		System.out.println(ITEM+1+"ITEM");
+		if (ITEM==0){
+			return ITEM;
+		}
+		else{
+			return ITEM+1;
+		}
+		
 	}
 	public int getX(){
 		return X;
