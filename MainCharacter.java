@@ -12,13 +12,13 @@ class MainCharacter {
 	//Ness was not capable of that and ended up becoming evil and a big bully to young children
 	//The Zombies and Devils depicted in the game are the children he bullied after
 	//Having experienced the effects of the apocalypse.
-	
+	//                                -Leo Feng
 	public final int full_health=1000;
 	private int health=full_health, ANGLE,sx = 37, sy = 43, sp=10;
 	
 	private int cweapon = 1;
 	public double posx, posy;
-	private final int NUMOFWEAPONS = 9;
+	private final int NUMOFWEAPONS = 8;
 	private final int PISTOL=1,UZI = 2,SHOTGUN =3, BARREL=4,GRENADE=5,BARRICADE=6, SENTRY=7; // weapon numbers
 
 	private int[] ORIGINALmaxAmmo = new int[NUMOFWEAPONS]; //this stores the original max ammo values
@@ -34,6 +34,7 @@ class MainCharacter {
 	//weapon damage
 	private int[] ORIGINALweapondmg = new int[NUMOFWEAPONS];
 	private int[] weapondmg = new int[NUMOFWEAPONS];
+	
 	//weapon distance
 	private int[] ORIGINALweapondist= new int[NUMOFWEAPONS];
 	private int[] weapondist = new int[NUMOFWEAPONS];
@@ -50,19 +51,7 @@ class MainCharacter {
 		loadORWeaponSpeed();//done
 		loadORdist();//done
 		loadORdmg(); //done
-		///loadCAmmo();
 		loadConsecutiveShoot();
-		//for (int i=0; i!=8; ++i)//temporary
-			//cweaponAmmo[i] = 100;
-		
-	}
-	//how wide the shotgun shot is
-	public int getSGW(){
-		return shotgunWide;
-	}
-	//Sets the width of shotgun
-	public void setSGW(int n){
-		shotgunWide = n;
 	}
 	/////////////DAMAGE//////////////////
 	public void loadORdmg(){
@@ -84,6 +73,7 @@ class MainCharacter {
 	public int getdmg(int type){
 		return weapondmg[type];
 	}
+	////////////////////////
 	
 	/////////////DISTANCE//////////////////
 	public void loadORdist(){
@@ -105,7 +95,7 @@ class MainCharacter {
 	public int getMaxDist(int a){
 		return weapondist[a];
 	}
-	
+	////////////////////////
 	
 	/////////////////SPEED/////////////////
 	public void loadORWeaponSpeed(){
@@ -125,7 +115,7 @@ class MainCharacter {
 	public void setWeaponSpeed(int weapon,int speed){
 		weaponsp[weapon]=speed;
 	}
-	
+	////////////////////////
 	
 	/////////MAX ammo//////////////
 	public void loadORMaxAmmo(){
@@ -143,34 +133,19 @@ class MainCharacter {
 			maxAmmo[i]=ORIGINALmaxAmmo[i];
 		}
 	}
-	public void setMaxAmmo(int weapon,int max){
-		maxAmmo[weapon]=max;
-	}
-	public int getMaxAmmo(int weapon){
-		return ORIGINALmaxAmmo[weapon];
-	}
+	public void setMaxAmmo(int weapon,int max){maxAmmo[weapon]=max;}
+	public int getMaxAmmo(int weapon){return ORIGINALmaxAmmo[weapon];}
+	////////////////////////
+	
 	//////////AMMO//////////
 	public void addAmmo(int n){
-		System.out.println(n+" "+getMaxAmmo(n)+"ADAMMO");
 		cweaponAmmo[n]=getMaxAmmo(n);
-		System.out.println(cweaponAmmo[n]+"CWEAPONAMMO");
 	}
-	public int getAmmo(int n){
-		return cweaponAmmo[n];
-	}
+	public int getAmmo(int n){return cweaponAmmo[n];}
 	public void useAmmo(int n){
 		cweaponAmmo[n]-=1;
 		if (cweaponAmmo[n]==0){
 			cweapon=1;
-		}
-	}
-	public void loadCAmmo(){
-		//why does this method even exist
-		//load current ammo
-		for (int i=0;i<NUMOFWEAPONS;i++){
-			cweaponAmmo[i]=10;
-			//all cweaponAmmo have default at 0
-			//pistol is unlimited
 		}
 	}
 	public void unloadCAmmo(){ //restart, no ammo :(
@@ -178,84 +153,53 @@ class MainCharacter {
 			cweaponAmmo[i]=0;
 		}
 	}
+	////////////////////////////////////////////
+	
 	/////////CONSECUTIVE SHOOT////////////
 	public void loadConsecutiveShoot(){
 		for (int i=0;i<NUMOFWEAPONS;i++){
 			consecutiveShoot[i]=false;
 		}
 	}
-	public void setConsecutiveShoot(int weapon){
-		consecutiveShoot[weapon]=true;
-	}
-	public boolean getConsecutiveShoot(int weapon){
-		return consecutiveShoot[weapon];
-	}
+	////////////////////////////////////////////
 	
-	public int getX(){
-		return (int)posx;
-	}
-	public int getY(){
-		return (int)posy;
-	}
-	public int getspeed(){
-		return sp;
-	}
-	public double getDX(){
-		return posx;
-	}
-	public double getDY(){
-		return posy;
-	}
-	public void setX(double x){
-		posx = x;
-	}
-	public void setY(double y){
-		posy = y;
-	}
-	public void setHealth(int h){
-		health=h;
-	}
-	public int getHealth(){
-		return health;
-	}
-	public int getLength(){
-		return sx;
-	}
-	public int getWidth(){
-		return sy;
-	}
-	public int getANGLE(){
-		return ANGLE;
-	}
-	public void setAngle(int ang){
-		ANGLE = ang;
-	}
-	public int getWeapon(){
-		return cweapon;
-	}
-	public void setWeapon(int w){
-		cweapon=w;
-	}
-	public int getsx(){
-		return sx;
-	}
-	public int getsy(){
-		return sy;
-	}
-	public int getcx(){
-		return (int)(posx + sx/2);
-	}
-	public int getcy(){
-		return (int)(posy + sy/2);
-	}
-	public double getcdx(){
-		return (posx + sx/2);
-	}
-	public double getcdy(){
-		return (posy + sy/2);
-	}
-	public int calculateHealth(){
-		return (int)(health*30/1000.0);
-	}
+	/////////////////getter/setters////////////////
+	//consecutive shoot
+	public void setConsecutiveShoot(int weapon){consecutiveShoot[weapon]=true;} //the weapon has been upgraded to shoot consecutively
+	public boolean getConsecutiveShoot(int weapon){return consecutiveShoot[weapon];}
+	//position of character (int)
+	public int getX(){return (int)posx;}
+	public int getY(){return (int)posy;}
+	//position of character (double)
+	public double getDX(){return posx;}
+	public double getDY(){return posy;}
+	public void setX(double x){posx = x;}
+	public void setY(double y){posy = y;}
+	//health
+	public void setHealth(int h){health=h;}
+	public int getHealth(){return health;}
+	//other properties of MC
+	public int getspeed(){return sp;}
+	public int getLength(){return sx;}
+	public int getWidth(){return sy;}
+	public int getANGLE(){return ANGLE;}
+	public void setAngle(int ang){ANGLE = ang;}
+	public int getWeapon(){return cweapon;}
+	public void setWeapon(int w){cweapon=w;}
+	//size of MC
+	public int getsx(){return sx;}
+	public int getsy(){return sy;}
+	//centre position of MC (int)
+	public int getcx(){return (int)(posx + sx/2);}
+	public int getcy(){return (int)(posy + sy/2);}
+	//centre position of MC (double)
+	public double getcdx(){return (posx + sx/2);}
+	public double getcdy(){return (posy + sy/2);}
+	//how wide the shotgun shot is
+	public int getSGW(){return shotgunWide;}
+	//Sets the width of shotgun
+	public void setSGW(int n){shotgunWide = n;}
 	
+	//calculate health for the health bar
+	public int calculateHealth(){return (int)(health*30/1000.0);}
 }
