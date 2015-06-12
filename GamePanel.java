@@ -980,8 +980,8 @@ public class GamePanel extends JPanel implements KeyListener{
 	private void checkExplosions(){
 		ArrayList<Explosion> toRemove = new ArrayList<Explosion>();
 		for (Explosion b : allExplosions){
-			b.incrementsprite();
-			if (b.getspritenum() >= 10){
+			b.incrementtime();
+			if (b.getctime() >= 10){
 				toRemove.add(b);
 			}
 		}
