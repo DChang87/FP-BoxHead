@@ -1,5 +1,8 @@
 public class Barricade {
-	final private int sx = 20, sy = 20, rectsx = 34, rectsy = 47;
+	//your typical everyday spiked wall that blocks zombies
+	//sadly they don't kill your enemies     :(
+	//Devil fireballs blow them up automatically for some reason
+	final private int sx = 20, sy = 20, rectsx = 34, rectsy = 47;//rects is for MC and enemies
 	private double posX, posY;
 	private int Health = 1000;
 	Barricade(int x, int y){
@@ -30,7 +33,7 @@ public class Barricade {
 	public void setHealth(int hp){
 		Health = hp;
 	}
-	public boolean rectcollision(int x, int y){
+	public boolean rectcollision(int x, int y){//collision with characters
 		if (posX > x + rectsx || posX + sx < x || posY > y + rectsy || posY + sy < y)
 			return false;
 		return true;
