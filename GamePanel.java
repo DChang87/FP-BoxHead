@@ -1233,16 +1233,16 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void paintComponent(Graphics g){
-		
 		g.drawImage(background, -mapx, -mapy, this);
 		
 		//drawing the health bar
-		//figure out the colouring of the bar ugh
 		g.setColor(Color.green);
 		g.fillRect(BH.mc.getX()-5,BH.mc.getY()-3,BH.mc.calculateHealth(),5); //filling of the bar
 		g.setColor(Color.black);
 		g.drawRect(BH.mc.getX()-5, BH.mc.getY()-3, 30, 5); //drawing the outline
-		
+
+		///////////////////////////////////drawing objects on the screen///////////////////////////////////////
+		g.drawImage(charSprites[BH.mc.getANGLE()/45][spriteCounter%3],BH.mc.getX(),BH.mc.getY(),this);		//draw character
 		for (PosPair pp : activeBullets){
 			g.drawImage(bulletSprites[pp.getANGLE()%360/45],pp.getX(),pp.getY(),this);
 		}
@@ -1259,21 +1259,12 @@ public class GamePanel extends JPanel implements KeyListener{
 			b.countDown();
 			g.drawImage(boxSprite,b.getX(),b.getY(),this);
 		}
-		checkMagicalBox();
-		g.setColor(new Color (255,0,0));
-		g.drawImage(charSprites[BH.mc.getANGLE()/45][spriteCounter%3],BH.mc.getX(),BH.mc.getY(),this);
 		for (Zombie a : allZombies){
 			g.drawImage(zombieSprites[(a.getAngle()+22)%360/45][a.returnSpriteCounter()%8], a.getX(),a.getY(),this);
 		}
 		for (Devil a : allDevils){
 			g.drawImage(devilSprites[(a.getAngle()+22)%360/45][a.returnSpriteCounter()%8], a.getX(),a.getY(),this);
 		}
-		for (MagicalBox box: allBoxes){
-			g.setColor(Color.BLUE);
-			g.drawRect(box.getX()-5, box.getY()-5, 10, 10);
-		}
-		g.drawOval(BH.mc.getX(), BH.mc.getY(), 2, 2);
-		
 		for (Barricade bar : allBarricades){
 			g.drawImage(barricadeSprite, bar.getX(), bar.getY(), this);
 		}
@@ -1281,39 +1272,62 @@ public class GamePanel extends JPanel implements KeyListener{
 			g.drawImage(barrelSprite,bar.getX(),bar.getY(),this);
 		}
 		for (SentryGun bar : allSentries){
-			g.drawRect(bar.getX(), bar.getY()-10, 20, 20);
-			g.drawRect(bar.getX()+5, bar.getY()-5, 10, 10);
+			g.setColor(Color.black);
+			g.fillRect(bar.getX(), bar.getY()-10, 20, 20);
+			g.setColor(Color.gray);
+			g.fillRect(bar.getX()+5, bar.getY()-5, 10, 10);
 		}
 		for (Grenade grenade: allGrenades){
 			g.drawImage(grenadeSprite,grenade.getX()-grenadeSprite.getHeight(this)/2, grenade.getY()-grenadeSprite.getWidth(this)/2, this);
 		}
 		for (Grenade grenade: explodedGrenade){
 			g.drawImage(grenadeExploded, grenade.getX()-grenadeExploded.getHeight(this)/2,grenade.getY()-grenadeExploded.getWidth(this)/2,this);
-			g.drawOval(grenade.getX()-25, grenade.getY()-25, 50, 50);
 		}
 		for (Explosion exp : allExplosions){		
-			g.drawImage(barrelExplosion,exp.getX()-exp.getrange()/2,exp.getY()-exp.getrange()/2,this);		
-			g.drawOval(exp.getX()-exp.getrange()/2,exp.getY()-exp.getrange()/2,100,100);		
+			g.drawImage(barrelExplosion,exp.getX()-exp.getrange()/2,exp.getY()-exp.getrange()/2,this);				
 		}
-		boxCount();
-		//Weapon name
+		///////////////////////////////////////////////////////////////////////////////////////////
+		
+		///////////////////////////drawing the strings on the screen//////////////////////////
 		g.setColor(Color.black);
 		g.setFont(SMALLfont);
-		g.drawString(weaponNames[BH.mc.getWeapon()]+" "+BH.mc.getAmmo(BH.mc.getWeapon()), BH.mc.getX()-5, BH.mc.getY()-10); //maybe do the string formatting with this later if we have time
+		///////drawing weapon name and ammo////////
+		if (BH.mc.getWeapon()==1){
+			//pistol is unlimited so no need to display ammo
+			g.drawString(weaponNames[BH.mc.getWeapon()], BH.mc.getX()-5, BH.mc.getY()-10); //maybe do the string formatting with this later if we have time
+		}
+		else{
+			g.drawString(weaponNames[BH.mc.getWeapon()]+" "+BH.mc.getAmmo(BH.mc.getWeapon()), BH.mc.getX()-5, BH.mc.getY()-10); //maybe do the string formatting with this later if we have time
+		}
+	
 		g.setFont(font);
+		//drawing the display for the item obtained through the box
 		g.drawString(boxString,100,500+boxCountDown);
+		
+		//drawing the string of the upgrade obtained by the character
 		g.drawString(printUpgradeString, 300, 500+UpgradeStringCountDown);
+		
+		//drawing the level display
 		if (displayLevelCounter>0){
 			displayLevelCounter--;
 			g.drawString("+-+-+-+ "+currentLevel+" +-+-+-+", 500, 500+displayLevelCounter/2);
 		}
-		//Drawing consecutive kills
+		
 		g.setFont(LARGEfont);
-		g.drawString(consecutiveKills+"",670,100);
+		//drawing the score
 		g.drawString(BH.score+"", 20, 100);
+		
+		//draw consecutive kills
+		//the color of the string changes based on how much time there is left until the next reduction of consecutive kill
+		//consecutive kill is reduced if the character doesn't continue to kill more enemies within a period of time
 		g.setColor(new Color(225-consecutiveCountDown,225-consecutiveCountDown,225-consecutiveCountDown));
 		g.drawString(consecutiveKills+"",670,100);
-		lastSpaceStat=keys[KeyEvent.VK_SPACE];
+		////////////////////////////////////////////////////////////////////////////////////
+		
+		lastSpaceStat=keys[KeyEvent.VK_SPACE];		//the status of space being pressed
+		
+		checkMagicalBox();		//check if it is time to remove the boxes
+		boxCount(); //changing the counter on the boxes to see how much time the box has before it disappears
 		
 	}
 }
