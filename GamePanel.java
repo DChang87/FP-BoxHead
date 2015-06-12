@@ -809,11 +809,11 @@ public class GamePanel extends JPanel implements KeyListener{
 	
 	public void addZombie(int x, int y, int sx, int sy){
 		for (int i=0; i!=10; ++i){
-			x = x + (int)(Math.random()*sx);
-			y = y + (int)(Math.random()*sy);
-			if (numbercollisions(x,y) == 0){
+			int x1 = x + (int)(Math.random()*sx);
+			int y1 = y + (int)(Math.random()*sy);
+			if (numbercollisions(x1,y1) == 0){
 				ZombiesThisLevel--;
-				allZombies.add(new Zombie(x,y,0,BH.mc));
+				allZombies.add(new Zombie(x1,y1,0,BH.mc));
 				return;
 			}
 		}
