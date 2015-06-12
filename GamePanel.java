@@ -1393,12 +1393,6 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (PosPair pp : fireballs){
 			g.drawImage(fireballSprites[pp.getANGLE()%360/45],pp.getX(),pp.getY(),this);
 		}
-		for (Zombie a : allZombies){
-			g.drawRect(a.getX(),a.getY(),a.getsx(), a.getsy());
-		}
-		for (Devil a : allDevils){
-			g.drawRect(a.getX(),a.getY(),a.getsx(), a.getsy());
-		}
 		for (MagicalBox b : allBoxes){
 			b.countDown();
 			g.drawImage(boxSprite,b.getX(),b.getY(),this);
