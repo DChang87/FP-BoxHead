@@ -1,18 +1,16 @@
 import java.util.*;
 class MainCharacter {
+	//The character you'll be playing as :)
+	//Don't ask why it's a child in a zombie apocalypse
+	//He's a very dangerous child
+	
 	public final int full_health=1000;
 	private int health=full_health, ANGLE,sx = 37, sy = 43, sp=10;
 	
 	private int cweapon = 1;
-	//cweapon:
-	/*
-	 * pistol = 1
-	 * uzi = 2
-	 * pistol = 3
-	 */
 	public double posx, posy;
 	private final int NUMOFWEAPONS = 9;
-	private final int PISTOL=1,UZI = 2,SHOTGUN =3, BARREL=4,GRENADE=5,BARRICADE=6, SENTRY=7;
+	private final int PISTOL=1,UZI = 2,SHOTGUN =3, BARREL=4,GRENADE=5,BARRICADE=6, SENTRY=7; // weapon numbers
 
 	private int[] ORIGINALmaxAmmo = new int[NUMOFWEAPONS]; //this stores the original max ammo values
 	private int[] maxAmmo = new int[NUMOFWEAPONS]; //this stores all the max ammo values but it changes as the character receives upgrades
@@ -27,11 +25,13 @@ class MainCharacter {
 	//weapon damage
 	private int[] ORIGINALweapondmg = new int[NUMOFWEAPONS];
 	private int[] weapondmg = new int[NUMOFWEAPONS];
-	
+	//weapon distance
 	private int[] ORIGINALweapondist= new int[NUMOFWEAPONS];
 	private int[] weapondist = new int[NUMOFWEAPONS];
+	
+	//shotgun width
 	private int shotgunWide = 0;
-			
+	//Upgrade, consecutive shots
 	private boolean[] consecutiveShoot = new boolean[NUMOFWEAPONS];
 	
 	public MainCharacter(int px, int py){
@@ -47,9 +47,11 @@ class MainCharacter {
 			//cweaponAmmo[i] = 100;
 		
 	}
+	//how wide the shotgun shot is
 	public int getSGW(){
 		return shotgunWide;
 	}
+	//Sets the width of shotgun
 	public void setSGW(int n){
 		shotgunWide = n;
 	}
@@ -159,7 +161,7 @@ class MainCharacter {
 			//pistol is unlimited
 		}
 	}
-	public void unloadCAmmo(){
+	public void unloadCAmmo(){ //restart, no ammo :(
 		for (int i=0;i<NUMOFWEAPONS;i++){
 			cweaponAmmo[i]=0;
 		}
