@@ -51,11 +51,14 @@ class MagicalBox {
 		//pistol is not accounted here so it must be taken away
 		BH.game.setBoxString(names[ITEM]);
 		System.out.println(ITEM+1+"ITEM");
+		//need to increase more health or character dies too early
 		if (ITEM==0){
 			return ITEM;
 		}
 		else{
-			return ITEM+1;
+			int [] rand = {ITEM,0,ITEM};
+			int n = (int)(Math.random()*3);
+			return rand[n];
 		}
 		
 	}
