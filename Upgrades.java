@@ -1,15 +1,17 @@
-class Upgrades {
-	public int[] allUpgradesNum = new int[26];
+public class Upgrades {
+	
 	private final int PISTOL = 1, UZI = 2, SHOTGUN = 3, BARREL = 4,
-			GRENADE = 5, BARRICADE = 6,SENTRY=7;
+			GRENADE = 5, BARRICADE = 6,SENTRY=7; //constants to store the position of the weapons in most arrays
 	BoxHead BH;
-	private String[] upgradeStrings = new String[26];
+	private String[] upgradeStrings = new String[26]; //names of all the upgrades
+	public int[] allUpgradesNum = new int[26]; //number of consecutive kills needed for each upgrade
 	public Upgrades(BoxHead b) {
 		BH = b;
 		addUpgrades();
 		addUpgradeNames();
 	}
 	public void addUpgrades() {
+		//adds the number of consecutive kills needed for each upgrade
 		allUpgradesNum[0] = 3; // pistol fast fire
 		allUpgradesNum[1] = 5; // new weapon UZI
 		allUpgradesNum[2] = 8; // pistol double damage
@@ -38,6 +40,7 @@ class Upgrades {
 		allUpgradesNum[25]=75;
 	}
 	public void addUpgradeNames(){
+		//adds the names of each upgrade
 		upgradeStrings[0] = "pistol fast fire";
 		upgradeStrings[1] = "new weapon UZI";
 		upgradeStrings[2] = "pistol double damage";
@@ -66,19 +69,22 @@ class Upgrades {
 		upgradeStrings[25]="new weapon sentry gun";
 	}
 	public String getUpgradeString(int n){
+		//get the name of the upgrade at n
 		return upgradeStrings[n];
 	}
 	public void getUpgrade(int n) {
-		BH.game.fullUpgradeCountDown();
-		System.out.println("n"+ n);
+		//get the upgrade permitted at n
+		BH.game.fullUpgradeCountDown(); //the counter to blit the upgradeString is set at max, ready for count down
+		//if a weapon is introduced, the ammo is added to the Max and the current weapon is set to that weapon
+		//if this is an upgrade on an existing weapon, modifications are made
+		//the UpgradeString in gamePanel is changed to the name of the current upgrade
 		if (n == 3) {
+			//pistol fast fire
 			BH.game.setUpgradeString("Pistol Fast Fire");
-			System.out.println("pistol fast fire");
 			BH.mc.setConsecutiveShoot(PISTOL);
 		} 
 		else if (n == 5) {
 			// new weapon UZI
-			System.out.println("UZI UZI");
 			BH.game.setUpgradeString("New Weapon: UZI");
 			BH.mc.addAmmo(UZI);
 			BH.magicalBoxAllowance=UZI;
@@ -91,7 +97,6 @@ class Upgrades {
 		} 
 		else if (n == 10) {
 			// new weapon shotgun
-			System.out.println("shotgun SHOTGUN");
 			BH.game.setUpgradeString("New Weapon: Shotgun");
 			BH.mc.addAmmo(SHOTGUN);
 			BH.mc.setWeapon(SHOTGUN);
