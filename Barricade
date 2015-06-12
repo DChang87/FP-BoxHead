@@ -15,6 +15,12 @@ public class Barricade {
 	public int getY(){
 		return (int)posY;
 	}
+	public int getcx(){
+		return (int)(posX + sx/2);
+	}
+	public int getcy(){
+		return (int)(posY + sy/2);
+	}
 	public void setX(double x){
 		posX = x;
 	}
