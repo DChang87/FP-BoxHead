@@ -1,9 +1,9 @@
 public class PosPair{
+	//The place where fireballs, bullets and very dangerous weapons are stored
     private final int ANGLE, Type, dmg = 15;
     private double X,Y, origX, origY;
-    private int[] typedist = new int[30];
-    
-    public PosPair(int x,int y,int deg,int type)
+    //				x, 		y,	degree bullet/fireball will travel
+    public PosPair(int x,int y,int deg,int type)//type is type of bullet or fireball
     {
         X=x;
         Y=y;
