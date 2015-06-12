@@ -14,7 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 public class HighScore extends JPanel implements KeyListener{
 	BoxHead BH;
-	private Image background = new ImageIcon("hsBackground.jpg").getImage();
+	private Image background = new ImageIcon("sprites/hsBackground.jpg").getImage();
 	private ArrayList<Integer> list= new ArrayList<Integer>();
 	private boolean[] keys;
 	private Font font = new Font("Impact", Font.PLAIN, 40);
