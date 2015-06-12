@@ -8,7 +8,7 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 public class SelectionMenu extends JPanel implements KeyListener{
-	private Image background = new ImageIcon("selectionBackground.jpg").getImage();
+	private Image background = new ImageIcon("sprites/selectionBackground.jpg").getImage();
 	BoxHead BH;
 	private boolean[] keys;
 	private Font font = new Font("Impact", Font.PLAIN, 35);
