@@ -173,6 +173,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	public void restart(){
 		spawnsp = 2000;
 		BH.enemyGenerationTimer = new Timer(spawnsp, BH);
+		BH.enemyGenerationTimer.start();
 		currentLevel=1;
 		shootCountDown=0;
 		mapx=0;
