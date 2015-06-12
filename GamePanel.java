@@ -125,7 +125,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		DevilsThisLevel = getDevilsThisLevel();
 		generateEnemy();
 	}
-
+	//SETUP STUFF BEGIN
 	public void loadMask(){
 		try{
 			File file= new File("mask_map3.jpg");
@@ -193,59 +193,6 @@ public class GamePanel extends JPanel implements KeyListener{
 		for (int i=3; i!=7; ++i)
 			weapondist[i] = 600;
 	}
-	public void restart(){
-		spawnsp = 2000;
-		BH.enemyGenerationTimer = new Timer(spawnsp, BH);
-		BH.enemyGenerationTimer.start();
-		BH.mc.unloadCAmmo();
-		printUpgradeString="";
-		consecutiveCountDown=0;
-		BH.mc.setWeapon(1);
-		BH.magicalBoxAllowance=1;
-		currentLevel=1;
-		shootCountDown=0;
-		mapx=0;
-		mapy=0;
-		BH.mc.loadMaxAmmo();
-		BH.mc.loadWeaponSpeed();
-		BH.mc.loadConsecutiveShoot();
-		BH.mc.setHealth(BH.mc.full_health);
-		ZombiesThisLevel=getZombiesThisLevel();
-		DevilsThisLevel=getDevilsThisLevel();
-		ZombiesDead=0;
-		DevilsDead=0;
-		allZombies.clear();
-		allDevils.clear();
-		allGrenades.clear();
-		explodedGrenade.clear();
-		fireballs.clear();
-		activeBullets.clear();
-		BH.score=0;
-		allBarricades.clear();
-		allBarrels.clear();
-		allExplosions.clear();
-		allSentries.clear();
-		allBoxes.clear();
-		BH.mc.setX(100);
-		BH.mc.setY(400);
-		keys[KeyEvent.VK_SPACE]=false;
-		keys[KeyEvent.VK_UP]=false;
-		keys[KeyEvent.VK_DOWN]=false;
-		keys[KeyEvent.VK_LEFT]=false;
-		keys[KeyEvent.VK_RIGHT]=false;
-		keys[KeyEvent.VK_1]=false;
-		keys[KeyEvent.VK_2]=false;
-		keys[KeyEvent.VK_3]=false;
-		keys[KeyEvent.VK_4]=false;
-		keys[KeyEvent.VK_5]=false;
-		keys[KeyEvent.VK_6]=false;
-		keys[KeyEvent.VK_7]=false;
-		keys[KeyEvent.VK_8]=false;
-		BH.mc.setSGW(0);
-		BH.mc.loadConsecutiveShoot();
-		consecutiveKills=0;
-		nextUpgrade=0;
-	}
 	public void keyTyped(KeyEvent e){
 		
 	}
@@ -260,38 +207,23 @@ public class GamePanel extends JPanel implements KeyListener{
     	requestFocus();
     	BH.start();
     }
-	public boolean checkFireballCollision(int fx,int fy,int mcx,int mcy){
-		//check if the fireball is on the character
-		return (fx+10>=mcx && fx+10 <=mcx+BH.mc.getWidth() && fy+10>=mcy && fy+10<=mcy+BH.mc.getLength());
+	public void activateAudio(int weapon){
+		audio[weapon].play();
 	}
-	public boolean objectPlacementCollision(int objx,int objy,int objsx,int objsy){
-		for (Zombie zombie: allZombies){
-			if (rectcollision(objx,objy,objsx,objsy,zombie.getX(),zombie.getY(),zombie.getsx(),zombie.getsy())){
-				return true;
-			}
-		}
-		for(Devil devil:allDevils){
-			if (rectcollision(objx,objy,objsx,objsy,devil.getX(),devil.getY(),devil.getsx(),devil.getsy())){
-				return true;
-			}
-		}
-		for(Barrel barrel:allBarrels){
-			if (rectcollision(objx,objy,objsx,objsy,barrel.getX(),barrel.getY(),barrel.getsx(),barrel.getsy())){
-				return true;
-			}
-		}
-		for (Barricade barricade: allBarricades){
-			if (rectcollision(objx,objy,objsx,objsy,barricade.getX(),barricade.getY(),barricade.getsx(),barricade.getsy())){
-				return true;
-			}
-		}
-		for (SentryGun sentry: allSentries){
-			if (rectcollision(objx,objy,objsx,objsy,sentry.getX(),sentry.getY(),sentrysx,sentrysy)){
-				return true;
-			}
-		}
-		return false;
+	public int getNextUpgrade(){
+		return nextUpgrade;
 	}
+	public void checkPause(){
+		//display another pause screen
+		if (keys[KeyEvent.VK_P]){
+			BH.state=BH.PAUSE;
+			//setFocusable(false);
+    		BH.sm.requestFocus();
+    		keys[KeyEvent.VK_P]=false;
+		}
+	}
+	//SETUP STUFF END
+	//MAIN CHARACTER BEGIN
 	public void moveMC(){
 		int speed = BH.mc.getspeed();		
 		double nx=BH.mc.getX(), ny=BH.mc.getY();
@@ -448,22 +380,469 @@ public class GamePanel extends JPanel implements KeyListener{
 			}
 		}
 	}
-	public void activateAudio(int weapon){
-		audio[weapon].play();
+	public void checkMC(){//Check if MC is getting beat up
+		for (Zombie a:allZombies){
+			if (a.collideMC()){
+				BH.mc.setHealth(Math.max(BH.mc.getHealth()-a.getdmg(),0));
+			}
+		}
+		for (Devil a:allDevils){
+			if (a.collideMC()){
+				BH.mc.setHealth(Math.max(BH.mc.getHealth()-a.getdmg(),0));
+			}
+		}
+		checkDeath();
 	}
-	public int getNextUpgrade(){
-		return nextUpgrade;
-	}
-	public void checkPause(){
-		//display another pause screen
-		if (keys[KeyEvent.VK_P]){
-			BH.state=BH.PAUSE;
-			//setFocusable(false);
-    		BH.sm.requestFocus();
-    		keys[KeyEvent.VK_P]=false;
+	public void fullCountDown(){consecutiveCountDown=225;}
+	public void CountDown(){
+		if (consecutiveCountDown>0){
+			consecutiveCountDown--;
+			if (consecutiveCountDown==0 && consecutiveKills>0){
+				consecutiveKills--;
+				if (consecutiveKills>0){
+					fullCountDown();
+				}
+			}
 		}
 	}
-	
+	public void addConsecutive(){
+		consecutiveKills++;
+		if (consecutiveKills==BH.ug.allUpgradesNum[nextUpgrade]){
+			BH.ug.getUpgrade(BH.ug.allUpgradesNum[nextUpgrade++]);
+		}
+	}
+	public void switchWeapon(){
+		if (keys[KeyEvent.VK_1]){
+			BH.mc.setWeapon(1);
+		}
+		else if (keys[KeyEvent.VK_2]){
+			if (BH.mc.getAmmo(2)>0){
+				BH.mc.setWeapon(2);
+			}
+		}
+		else if (keys[KeyEvent.VK_3]){
+			if (BH.mc.getAmmo(3)>0){
+				BH.mc.setWeapon(3);
+			}
+		}
+		else if (keys[KeyEvent.VK_4]){
+			if (BH.mc.getAmmo(4)>0){
+				BH.mc.setWeapon(4);
+			}
+		}
+		else if (keys[KeyEvent.VK_5]){
+			if (BH.mc.getAmmo(5)>0){
+				BH.mc.setWeapon(5);
+			}
+		}
+		else if (keys[KeyEvent.VK_6]){
+			if (BH.mc.getAmmo(6)>0){
+				BH.mc.setWeapon(6);
+			}
+		}
+		else if (keys[KeyEvent.VK_7]){
+			if (BH.mc.getAmmo(7)>0){
+				BH.mc.setWeapon(7);
+			}
+		}
+	}
+	//MAIN CHARACTER END
+	//GENERAL FUNCTIONS START
+	public double dist(int x1, int y1,int x2,int y2){
+		return Math.pow(Math.pow(x1-x2, 2)+Math.pow(y1-y2, 2),0.5);
+	}
+	public boolean validMove(int x, int y){//If the pixel is valid in the mask
+		if (mapx+x >=2000 || mapy+y >= 2000){
+			return false;
+		}
+		if (mapx+x>=0&& mapy+y>=0){
+			int clr=  mask_background.getRGB(mapx+x,mapy+y);
+			int  red   = (clr & 0x00ff0000) >> 16;
+			int  green = (clr & 0x0000ff00) >> 8;
+			int  blue  =  clr & 0x000000ff;
+			if (red == 255 && green == 255 && blue == 255){
+				return true;
+			}
+		}
+		return false;
+	}
+	public int numbercollisions(int x, int y){//If pixel does not collide with rects
+		//collisions should max 1 (itself)
+		int ncollision = 0;
+		if (rectcollision(x,y,rectsx,rectsy,BH.mc.getX(),BH.mc.getY(),rectsx,rectsy)){
+			ncollision++;
+		}
+		for (Zombie z : allZombies){
+			if (rectcollision(x,y,rectsx,rectsy,z.getX(),z.getY(),rectsx,rectsy)){
+				ncollision++;
+			}
+		}
+		for (Devil d : allDevils){
+			if (rectcollision(x,y,rectsx,rectsy,d.getX(),d.getY(),rectsx,rectsy)){
+				ncollision++;
+			}
+		}
+		for (Barricade b : allBarricades){
+			if (b.rectcollision(x,y)){
+				ncollision++;
+			}
+		}
+		for (SentryGun b : allSentries){
+			if (b.rectcollision(x,y)){
+				ncollision++;
+			}
+		}
+		for (Barrel b : allBarrels){
+			if (b.rectcollision(x,y)){
+				ncollision++;
+			}
+		}
+		return ncollision;
+	}
+	public boolean rectcollision(int x1, int y1,int rectsx1, int rectsy1, int x2, int y2,int rectsx2, int rectsy2){
+		if (x1+rectsx1 < x2 || x1 > x2 + rectsx2 || y1 + rectsy1 < y2 || y1 > y2 + rectsy2){//proof by contracdiction
+			return false;
+		}
+		return true;
+	}
+	public boolean circleRectangleCollision(int cx,int cy, int cr, int rx,int ry,int rl,int rw){
+		if(rx<=cx && cx<=rx+rw && ry<=cy && cy<=ry+rl){
+			return true;
+		}
+		else if (dist(rx,ry,cx,cy)<=cr){
+			return true;
+		}
+		else if (dist(rx,ry+rl,cx,cy)<=cr){
+			return true;
+		}
+		else if (dist(rx+rw,ry,cx,cy)<=cr){
+			return true;
+		}
+		else if (dist(rx+rw,ry+rl,cx,cy)<=cr){
+			return true;
+		}
+		return false;
+	}
+	public boolean checkFireballCollision(int fx,int fy,int mcx,int mcy){
+		//check if the fireball is on the character
+		return (fx+10>=mcx && fx+10 <=mcx+BH.mc.getWidth() && fy+10>=mcy && fy+10<=mcy+BH.mc.getLength());
+	}
+	public boolean objectPlacementCollision(int objx,int objy,int objsx,int objsy){
+		for (Zombie zombie: allZombies){
+			if (rectcollision(objx,objy,objsx,objsy,zombie.getX(),zombie.getY(),zombie.getsx(),zombie.getsy())){
+				return true;
+			}
+		}
+		for(Devil devil:allDevils){
+			if (rectcollision(objx,objy,objsx,objsy,devil.getX(),devil.getY(),devil.getsx(),devil.getsy())){
+				return true;
+			}
+		}
+		for(Barrel barrel:allBarrels){
+			if (rectcollision(objx,objy,objsx,objsy,barrel.getX(),barrel.getY(),barrel.getsx(),barrel.getsy())){
+				return true;
+			}
+		}
+		for (Barricade barricade: allBarricades){
+			if (rectcollision(objx,objy,objsx,objsy,barricade.getX(),barricade.getY(),barricade.getsx(),barricade.getsy())){
+				return true;
+			}
+		}
+		for (SentryGun sentry: allSentries){
+			if (rectcollision(objx,objy,objsx,objsy,sentry.getX(),sentry.getY(),sentrysx,sentrysy)){
+				return true;
+			}
+		}
+		return false;
+	}
+	//GENERAL FUNCTIONS END
+	//LEVEL STUFF BEGIN
+	public void checkLevelOver(){//TBH If you can beat level 1 you're already beast
+		if (ZombiesDead == getZombiesThisLevel() && DevilsDead == getDevilsThisLevel()){
+			//this level is over
+			levelUp();
+		}
+	}
+	public void levelUp(){
+		BH.enemyGenerationTimer = new Timer(spawnsp-currentLevel*300, BH);
+		currentLevel++;
+		ZombiesDead=0;
+		DevilsDead=0;
+		ZombiesThisLevel=getZombiesThisLevel();
+		DevilsThisLevel=getDevilsThisLevel();
+		displayLevelCounter=200;
+	}
+	public int getZombiesThisLevel(){//# of zombies for the level
+		return (currentLevel+2)*20;
+	}
+	public int getDevilsThisLevel(){
+		return (currentLevel+2)*15;
+	}
+	public void checkDeath(){
+		if(BH.mc.getHealth()<=0){
+			BH.state=BH.OVER;
+			BH.go.activateMouse();
+			//setFocusable(false);
+			BH.go.requestFocus();
+		}
+	}
+	public void restart(){
+		spawnsp = 2000;
+		BH.enemyGenerationTimer = new Timer(spawnsp, BH);
+		BH.enemyGenerationTimer.start();
+		BH.mc.unloadCAmmo();
+		printUpgradeString="";
+		consecutiveCountDown=0;
+		BH.mc.setWeapon(1);
+		BH.magicalBoxAllowance=1;
+		currentLevel=1;
+		shootCountDown=0;
+		mapx=0;
+		mapy=0;
+		BH.mc.loadMaxAmmo();
+		BH.mc.loadWeaponSpeed();
+		BH.mc.loadConsecutiveShoot();
+		BH.mc.setHealth(BH.mc.full_health);
+		//enemies reset
+		ZombiesThisLevel=getZombiesThisLevel();
+		DevilsThisLevel=getDevilsThisLevel();
+		BH.score=0;
+		ZombiesDead=0;
+		DevilsDead=0;
+		//ListArrays reset
+		allZombies.clear();
+		allDevils.clear();
+		allGrenades.clear();
+		explodedGrenade.clear();
+		fireballs.clear();
+		activeBullets.clear();
+		allBarricades.clear();
+		allBarrels.clear();
+		allExplosions.clear();
+		allSentries.clear();
+		allBoxes.clear();
+		//Mc position reset
+		BH.mc.setX(100);
+		BH.mc.setY(400);
+		//keys reset
+		keys[KeyEvent.VK_SPACE]=false;
+		keys[KeyEvent.VK_UP]=false;
+		keys[KeyEvent.VK_DOWN]=false;
+		keys[KeyEvent.VK_LEFT]=false;
+		keys[KeyEvent.VK_RIGHT]=false;
+		keys[KeyEvent.VK_1]=false;
+		keys[KeyEvent.VK_2]=false;
+		keys[KeyEvent.VK_3]=false;
+		keys[KeyEvent.VK_4]=false;
+		keys[KeyEvent.VK_5]=false;
+		keys[KeyEvent.VK_6]=false;
+		keys[KeyEvent.VK_7]=false;
+		keys[KeyEvent.VK_8]=false;
+		//shotgun reset
+		BH.mc.setSGW(0);
+		BH.mc.loadConsecutiveShoot();
+		consecutiveKills=0;
+		nextUpgrade=0;
+	}
+	//LEVEL STUFF END
+	//CHECKING OBJECTS START
+	public void checkObjects(){//General Check function
+		checkSentry();
+		checkBarricades();
+		checkBarrels();
+		checkExplosions();
+		checkDead();
+	}
+	private void checkExplosions(){//counts how long the explosions lasts
+		ArrayList<Explosion> toRemove = new ArrayList<Explosion>();
+		for (Explosion b : allExplosions){
+			b.incrementtime();
+			if (b.getctime() >= 10){
+				toRemove.add(b);
+			}
+		}
+		for (Explosion b : toRemove){
+			allExplosions.remove(b);
+		}
+		
+	}
+	public void checkDead(){
+		//this method is called to see if the character's bullets damage the enemies
+		ArrayList<Zombie> toRemoveZ = new ArrayList<Zombie>();
+		for (Zombie z : allZombies){
+			if (z.getHealth() <= 0){
+				toRemoveZ.add(z);
+			}
+		}
+
+		for (Zombie zzh8829:toRemoveZ){
+			//Every once in a while a magical unicorn drops by after a zombie dies
+			//And lays a magicalbox
+			if ((int)(Math.random()*3)==1){
+				allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY(),BH));
+			}
+			BH.score+=200+consecutiveKills*100;
+			ZombiesDead++;
+			allZombies.remove(zzh8829);
+			fullCountDown();
+			addConsecutive();
+		}
+		ArrayList<Devil> toRemoveD = new ArrayList<Devil>();
+		for (Devil d : allDevils){
+			if (d.getHealth() <= 0){
+				toRemoveD.add(d);
+			}
+		}
+		for (Devil zzh8829:toRemoveD){
+			BH.score+=200+consecutiveKills*100;
+			allDevils.remove(zzh8829);
+			//All Devils lay boxes
+			allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY(),BH));
+			fullCountDown();
+			DevilsDead++;
+			addConsecutive();
+			
+		}
+	}
+	private void checkBarricades(){//if barricade has been destroyed
+		ArrayList<Barricade> toRemove = new ArrayList<Barricade>();
+		for (Barricade b : allBarricades){
+			if (b.getHealth() <= 0){
+				toRemove.add(b);
+			}
+		}
+		for (Barricade b : toRemove){
+			allBarricades.remove(b);
+		}
+	}
+	//CHECKING OBJECTS END
+	//Checking position BEGIN
+	public boolean checkOutside(int x,int y){
+		return x<0||x>800||y<0||y>640;
+	}
+	public boolean checkOutsideMap(int x, int y){
+		if (x >= 2000 || y >= 2000 || x < 0 || y < 0)
+			return true;
+		return false;
+	}
+	//CHECK POSITION END
+	//BULLET AND FIREBALLS MOVING BEGIN
+	public void moveFireballs()
+	{//The OP devil weapon
+		ArrayList<PosPair> toRemove = new ArrayList<PosPair>();
+		for (PosPair temp : fireballs)
+		{
+			final double ANG = Math.toRadians(temp.getANGLE());
+			double xx = temp.getDX(), yy = temp.getDY();
+			temp.setPos(xx+20*Math.cos(ANG),yy+20*Math.sin(ANG));
+			if (checkFireballCollision(temp.getX(),temp.getY(),BH.mc.getX(),BH.mc.getY())){
+				//checks if MC gets hit
+				BH.mc.setHealth(BH.mc.getHealth()-temp.getdmg());
+				toRemove.add(temp);
+			}
+			else if (checkOutsideMap(temp.getX(),temp.getY())|| !validMove(temp.getX(),temp.getY())){
+				toRemove.add(temp);
+			}
+			for (Barrel bar : allBarrels){
+				int x = bar.getX(), y = bar.getY(), sx = bar.getsx(), sy = bar.getsy(), px = temp.getX(), py = temp.getY();
+				if (px >= x && px <= x + sx && py >= y && py <= y + sy){//barrels get blown up by one hit
+					bar.setHealth(0);
+					toRemove.add(temp);
+				}
+			}
+			for (Barricade bar : allBarricades){
+				int x = bar.getX(), y = bar.getY(), sx = bar.getsx(), sy = bar.getsy(), px = temp.getX(), py = temp.getY();
+				if (px >= x && px <= x + sx && py >= y && py <= y + sy){//barricades get destroyed
+					bar.setHealth(bar.getHealth()-temp.getdmg());
+					toRemove.add(temp);
+				}
+			}
+		}
+		for (PosPair pair:toRemove){
+			fireballs.remove(pair);
+		}
+	}
+	public void moveBullets(){
+		ArrayList<PosPair> toRemove = new ArrayList<PosPair>();
+		for (PosPair temp : activeBullets)
+		{
+			final double ANG = Math.toRadians(temp.getANGLE());
+			double xx = temp.getDX(), yy = temp.getDY();
+			final int sp =BH.mc.getAtWeaponSpeed(temp.getType());
+			double nx = xx+sp*Math.cos(ANG), ny = yy+sp*Math.sin(ANG);
+			if (validMove((int)nx,(int)ny)){
+				temp.setPos(nx,ny);
+			}
+			else{
+				toRemove.add(temp);
+			}
+		}
+		for (PosPair temp : toRemove){
+			activeBullets.remove(temp);
+		}
+	}
+	public void checkBulletCollision(){
+		//check if the bullets hit any enemies
+		ArrayList<PosPair> toRemove = new ArrayList<PosPair>();
+		for (PosPair temp : activeBullets){
+			if (enemyBulletCollision(temp.getX(),temp.getY())){
+				//REMOVE THE bullets
+				toRemove.add(temp);
+			}
+			else if (checkOutside(temp.getX(),temp.getY())){
+				toRemove.add(temp);
+			}
+			else if (!validMove(temp.getX(),temp.getY())){
+				//If it hits a wall
+				toRemove.add(temp);
+			}
+			for (Barrel bar : allBarrels){
+				//if it hits a barrel, an explosion occurs
+				int x = bar.getX(), y = bar.getY(), sx = bar.getsx(), sy = bar.getsy(), px = temp.getX(), py = temp.getY();
+				if (px >= x && px <= x + sx && py >= y && py <= y + sy){
+					bar.setHealth(0);
+					toRemove.add(temp);
+				}
+			}
+			
+		}
+		for (PosPair pair:toRemove){
+			activeBullets.remove(pair);
+		}
+	}
+	public boolean enemyBulletCollision(int x, int y){
+		//this method is called to see if the character's bullets damage the enemies
+		for (Zombie z : allZombies){
+			if (z.getCollide(x,y)){
+				z.setHealth(z.getHealth() - BH.mc.getdmg(BH.mc.getWeapon()));
+				return true;
+			}
+		}
+
+		for (Devil d : allDevils){
+			if (d.getCollide(x,y)){
+				d.setHealth(d.getHealth() - BH.mc.getdmg(BH.mc.getWeapon()));
+				return true;
+			}
+		}
+
+		return false;
+	}
+	public void checkBulletDistance(){
+		//checks how far the bullet travels and if it needs to be removed
+		ArrayList<PosPair> toRemove = new ArrayList<PosPair>();
+		for (PosPair a: activeBullets){
+			if (dist(a.getorigX(),a.getorigY(),a.getX(),a.getY()) > weapondist[a.getTYPE()]){
+				toRemove.add(a);	
+			}
+		}
+		for (PosPair pair:toRemove){
+			activeBullets.remove(pair);
+		}
+		
+	}
+	//BULLET AND FIREBALLS MOVING END
+	//ENEMY MOVEMENT BEGIN
 	public void moveZombie(){//move zombie
 		for (Zombie temp : allZombies){
 			double ManhatX = Math.abs(temp.getDX() - BH.mc.getDX()), ManhatY = Math.abs(temp.getDY() - BH.mc.getDY()), speed = temp.getspeed();
@@ -539,137 +918,8 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		
 	}
-	public int numbercollisions(int x, int y){//If pixel does not collide with rects
-		//collisions should max 1 (itself)
-		int ncollision = 0;
-		if (rectcollision(x,y,rectsx,rectsy,BH.mc.getX(),BH.mc.getY(),rectsx,rectsy)){
-			ncollision++;
-		}
-		for (Zombie z : allZombies){
-			if (rectcollision(x,y,rectsx,rectsy,z.getX(),z.getY(),rectsx,rectsy)){
-				ncollision++;
-			}
-		}
-		for (Devil d : allDevils){
-			if (rectcollision(x,y,rectsx,rectsy,d.getX(),d.getY(),rectsx,rectsy)){
-				ncollision++;
-			}
-		}
-		for (Barricade b : allBarricades){
-			if (b.rectcollision(x,y)){
-				ncollision++;
-			}
-		}
-		for (SentryGun b : allSentries){
-			if (b.rectcollision(x,y)){
-				ncollision++;
-			}
-		}
-		for (Barrel b : allBarrels){
-			if (b.rectcollision(x,y)){
-				ncollision++;
-			}
-		}
-		return ncollision;
-	}
-	public boolean rectcollision(int x1, int y1,int rectsx1, int rectsy1, int x2, int y2,int rectsx2, int rectsy2){
-		if (x1+rectsx1 < x2 || x1 > x2 + rectsx2 || y1 + rectsy1 < y2 || y1 > y2 + rectsy2){//proof by contracdiction
-			return false;
-		}
-		return true;
-	}
-	
-	public void fullCountDown(){consecutiveCountDown=225;}
-	public void CountDown(){
-		if (consecutiveCountDown>0){
-			consecutiveCountDown--;
-			if (consecutiveCountDown==0 && consecutiveKills>0){
-				consecutiveKills--;
-				if (consecutiveKills>0){
-					fullCountDown();
-				}
-			}
-		}
-	}
-	public void checkDeath(){
-		if(BH.mc.getHealth()<=0){
-			BH.state=BH.OVER;
-			BH.go.activateMouse();
-			//setFocusable(false);
-			BH.go.requestFocus();
-		}
-	}
-	public void addConsecutive(){
-		consecutiveKills++;
-		if (consecutiveKills==BH.ug.allUpgradesNum[nextUpgrade]){
-			BH.ug.getUpgrade(BH.ug.allUpgradesNum[nextUpgrade++]);
-		}
-	}
-	public boolean checkOutside(int x,int y){
-		return x<0||x>800||y<0||y>640;
-	}
-	public void checkBulletCollision(){
-		//check if the bullets hit any enemies
-		ArrayList<PosPair> toRemove = new ArrayList<PosPair>();
-		for (PosPair temp : activeBullets){
-			if (enemyBulletCollision(temp.getX(),temp.getY())){
-				//REMOVE THE bullets
-				toRemove.add(temp);
-			}
-			else if (checkOutside(temp.getX(),temp.getY())){
-				toRemove.add(temp);
-			}
-			else if (!validMove(temp.getX(),temp.getY())){
-				//If it hits a wall
-				toRemove.add(temp);
-			}
-			for (Barrel bar : allBarrels){
-				//if it hits a barrel, an explosion occurs
-				int x = bar.getX(), y = bar.getY(), sx = bar.getsx(), sy = bar.getsy(), px = temp.getX(), py = temp.getY();
-				if (px >= x && px <= x + sx && py >= y && py <= y + sy){
-					bar.setHealth(0);
-					toRemove.add(temp);
-				}
-			}
-			
-		}
-		for (PosPair pair:toRemove){
-			activeBullets.remove(pair);
-		}
-	}
-	public boolean enemyBulletCollision(int x, int y){
-		//this method is called to see if the character's bullets damage the enemies
-		boolean flag = false;
-		for (Zombie z : allZombies){
-			if (z.getCollide(x,y)){
-				z.setHealth(z.getHealth() - BH.mc.getdmg(BH.mc.getWeapon()));
-				return true;
-			}
-		}
-
-		for (Devil d : allDevils){
-			if (d.getCollide(x,y)){
-				d.setHealth(d.getHealth() - BH.mc.getdmg(BH.mc.getWeapon()));
-				return true;
-			}
-		}
-
-		return false;
-	}
-	public void checkBulletDistance(){
-		//checks how far the bullet travels and if it needs to be removed
-		ArrayList<PosPair> toRemove = new ArrayList<PosPair>();
-		for (PosPair a: activeBullets){
-			if (dist(a.getorigX(),a.getorigY(),a.getX(),a.getY()) > weapondist[a.getTYPE()]){
-				toRemove.add(a);	
-			}
-		}
-		for (PosPair pair:toRemove){
-			activeBullets.remove(pair);
-		}
-		
-	}
-	
+	//ENEMY MOVEMENT END
+	//ENEMY SPRITE INCREMENT BEGIN
 	public void addZombieCounter(){
 		for (Zombie z : allZombies){
 			z.addToCounter();
@@ -680,117 +930,8 @@ public class GamePanel extends JPanel implements KeyListener{
 			d.addToCounter();
 		}
 	}
-	public void moveBullets(){
-		ArrayList<PosPair> toRemove = new ArrayList<PosPair>();
-		for (PosPair temp : activeBullets)
-		{
-			final double ANG = Math.toRadians(temp.getANGLE());
-			double xx = temp.getDX(), yy = temp.getDY();
-			final int sp =BH.mc.getAtWeaponSpeed(temp.getType());
-			double nx = xx+sp*Math.cos(ANG), ny = yy+sp*Math.sin(ANG);
-			if (validMove((int)nx,(int)ny)){
-				temp.setPos(nx,ny);
-			}
-			else{
-				toRemove.add(temp);
-			}
-		}
-		for (PosPair temp : toRemove){
-			activeBullets.remove(temp);
-		}
-	}
-	public boolean checkOutsideMap(int x, int y){
-		if (x >= 2000 || y >= 2000 || x < 0 || y < 0)
-			return true;
-		return false;
-	}
-	public void moveFireballs()
-	{//The OP devil weapon
-		ArrayList<PosPair> toRemove = new ArrayList<PosPair>();
-		for (PosPair temp : fireballs)
-		{
-			final double ANG = Math.toRadians(temp.getANGLE());
-			double xx = temp.getDX(), yy = temp.getDY();
-			temp.setPos(xx+20*Math.cos(ANG),yy+20*Math.sin(ANG));
-			if (checkFireballCollision(temp.getX(),temp.getY(),BH.mc.getX(),BH.mc.getY())){
-				//checks if MC gets hit
-				BH.mc.setHealth(BH.mc.getHealth()-temp.getdmg());
-				toRemove.add(temp);
-			}
-			else if (checkOutsideMap(temp.getX(),temp.getY())|| !validMove(temp.getX(),temp.getY())){
-				toRemove.add(temp);
-			}
-			for (Barrel bar : allBarrels){
-				int x = bar.getX(), y = bar.getY(), sx = bar.getsx(), sy = bar.getsy(), px = temp.getX(), py = temp.getY();
-				if (px >= x && px <= x + sx && py >= y && py <= y + sy){//barrels get blown up by one hit
-					bar.setHealth(0);
-					toRemove.add(temp);
-				}
-			}
-			for (Barricade bar : allBarricades){
-				int x = bar.getX(), y = bar.getY(), sx = bar.getsx(), sy = bar.getsy(), px = temp.getX(), py = temp.getY();
-				if (px >= x && px <= x + sx && py >= y && py <= y + sy){//barricades get destroyed
-					bar.setHealth(0);
-					toRemove.add(temp);
-				}
-			}
-		}
-		for (PosPair pair:toRemove){
-			fireballs.remove(pair);
-		}
-	}
-	public void checkMC(){//Check if MC is getting beat up
-		for (Zombie a:allZombies)
-		{
-			if (a.collideMC())
-			{
-				BH.mc.setHealth(Math.max(BH.mc.getHealth()-a.getdmg(),0));
-			}
-		}
-		for (Devil a:allDevils)
-		{
-			if (a.collideMC())
-			{
-				BH.mc.setHealth(Math.max(BH.mc.getHealth()-a.getdmg(),0));
-			}
-		}
-		checkDeath();
-	}
-	public void switchWeapon(){
-		if (keys[KeyEvent.VK_1]){
-			BH.mc.setWeapon(1);
-		}
-		else if (keys[KeyEvent.VK_2]){
-			if (BH.mc.getAmmo(2)>0){
-				BH.mc.setWeapon(2);
-			}
-		}
-		else if (keys[KeyEvent.VK_3]){
-			if (BH.mc.getAmmo(3)>0){
-				BH.mc.setWeapon(3);
-			}
-		}
-		else if (keys[KeyEvent.VK_4]){
-			if (BH.mc.getAmmo(4)>0){
-				BH.mc.setWeapon(4);
-			}
-		}
-		else if (keys[KeyEvent.VK_5]){
-			if (BH.mc.getAmmo(5)>0){
-				BH.mc.setWeapon(5);
-			}
-		}
-		else if (keys[KeyEvent.VK_6]){
-			if (BH.mc.getAmmo(6)>0){
-				BH.mc.setWeapon(6);
-			}
-		}
-		else if (keys[KeyEvent.VK_7]){
-			if (BH.mc.getAmmo(7)>0){
-				BH.mc.setWeapon(7);
-			}
-		}
-	}
+	//ENEMY SPRITE INCREMENT END
+	//ENEMY GENERATION BEGIN
 	public void generateEnemy(){
 		if (ZombiesThisLevel>0){//generating enemies at specific locations (rects)
 			addZombie(-mapx,-mapy,0,490);
@@ -804,7 +945,6 @@ public class GamePanel extends JPanel implements KeyListener{
 			addDevil(-mapx,-mapy+1040,0,520);
 		}
 	}
-	
 	public void addZombie(int x, int y, int sx, int sy){
 		for (int i=0; i!=10; ++i){
 			int x1 = x + (int)(Math.random()*sx);//random position in the rect
@@ -827,30 +967,8 @@ public class GamePanel extends JPanel implements KeyListener{
 			}
 		}
 	}
-	
-	public void checkBoxCollision(){
-		ArrayList<MagicalBox> toRemove = new ArrayList<MagicalBox>();
-		for (MagicalBox box : allBoxes){
-			int x = box.getX(), y = box.getY(), mcx = BH.mc.getX(), mcy = BH.mc.getY();
-			if (x + box.getbsx() < mcx || x > mcx + BH.mc.getsx() || y + box.getbsy() < mcy || y > mcy + BH.mc.getsy()){
-				continue;
-			}
-			addItem(box.generateItem());
-			toRemove.add(box);
-		}
-		for (MagicalBox box:toRemove){
-			allBoxes.remove(box);
-		}
-		
-	}
-	public void addItem(int item){
-		if (item==HEALTH){
-			BH.mc.setHealth(Math.min(BH.mc.getHealth()+500,1000));
-		}
-		else{
-			BH.mc.addAmmo(item);
-		}
-	}
+	//ENEMY GENERATION END
+	//MAP MOVEMENT BEGIN
 	public void moveMap()
 	{//the shifting of the map
 		shiftx = shifty = 0;
@@ -880,7 +998,6 @@ public class GamePanel extends JPanel implements KeyListener{
 		mapx = Math.max(0,Math.min(mapx,mapsx-screensx));
 		mapy = Math.max(0,Math.min(mapy,mapsy-screensy));
 	}
-	
 	public void updateposition(){//after shifting, move all the objects as well
 		if (shiftx == 0 && shifty == 0){
 			return;
@@ -928,62 +1045,40 @@ public class GamePanel extends JPanel implements KeyListener{
 			b.setPos(b.getX()-shiftx, b.getY()-shifty);
 		}
 	}
-	
-	public boolean validMove(int x, int y){//If the pixel is valid in the mask
-		if (mapx+x >=2000 || mapy+y >= 2000){
-			return false;
-		}
-		if (mapx+x>=0&& mapy+y>=0){
-			int clr=  mask_background.getRGB(mapx+x,mapy+y);
-			int  red   = (clr & 0x00ff0000) >> 16;
-			int  green = (clr & 0x0000ff00) >> 8;
-			int  blue  =  clr & 0x000000ff;
-			if (red == 255 && green == 255 && blue == 255){
-				return true;
+	//MAP MOVEMENT END
+	//SENTRY STUFF BEGIN
+	public void shootSentry(){//Sentries shoot at closest enemy
+		for (SentryGun sentry : allSentries){
+			int x = sentry.getcx(), y = sentry.getcy();
+			Zombie zClosest = new Zombie(0,0,0,BH.mc);
+			Devil dClosest = new Devil(0,0,0,BH.mc);
+			double zd = 1000000000, dd = 1000000000;
+			for (Zombie z : allZombies){
+				if (dist(x,y,z.getcx(),z.getcy()) <= zd){
+					zd = dist(x,y,z.getcx(),z.getcy());
+					zClosest = z;
+				}
+			}
+			for (Devil d : allDevils){
+				if (dist(x,y,d.getcx(),d.getcy()) <= dd){
+					dd = dist(x,y,d.getcx(),d.getcy());
+					dClosest = d;
+				}
+			}
+			//Whether the zombie or devil is closer and if it's in range
+			if (zd < dd && zd <= sentry.getrange()*sentry.getrange()){
+				int ang = (int)(Math.toDegrees(Math.PI+Math.atan2(y - zClosest.getcy(),x - zClosest.getDX())));
+				activeBullets.add(new PosPair(x,y,ang,1));
+				activateAudio(SENTRY);
+				sentry.setammo(sentry.getammo()-1);
+			}
+			else if (dd <= sentry.getrange()*sentry.getrange()){
+				int ang = (int)(Math.toDegrees(Math.PI+Math.atan2(y - dClosest.getDY(),x - dClosest.getDX())));
+				activeBullets.add(new PosPair(x,y,ang,1));
+				activateAudio(SENTRY);
+				sentry.setammo(sentry.getammo()-1);
 			}
 		}
-		return false;
-	}
-	public int getZombiesThisLevel(){//# of zombies for the level
-		return (currentLevel+2)*20;
-	}
-	public int getDevilsThisLevel(){
-		return (currentLevel+2)*15;
-	}
-	public void checkLevelOver(){//TBH If you can beat level 1 you're already beast
-		if (ZombiesDead == getZombiesThisLevel() && DevilsDead == getDevilsThisLevel()){
-			//this level is over
-			levelUp();
-		}
-	}
-	public void levelUp(){
-		BH.enemyGenerationTimer = new Timer(spawnsp-currentLevel*300, BH);
-		currentLevel++;
-		ZombiesDead=0;
-		DevilsDead=0;
-		ZombiesThisLevel=getZombiesThisLevel();
-		DevilsThisLevel=getDevilsThisLevel();
-		displayLevelCounter=200;
-	}
-	public void checkObjects(){//General Check function
-		checkSentry();
-		checkBarricades();
-		checkBarrels();
-		checkExplosions();
-		checkDead();
-	}
-	private void checkExplosions(){//counts how long the explosions lasts
-		ArrayList<Explosion> toRemove = new ArrayList<Explosion>();
-		for (Explosion b : allExplosions){
-			b.incrementtime();
-			if (b.getctime() >= 10){
-				toRemove.add(b);
-			}
-		}
-		for (Explosion b : toRemove){
-			allExplosions.remove(b);
-		}
-		
 	}
 	private void checkSentry(){//if sentry is dead or out of ammo
 		ArrayList<SentryGun> toRemove = new ArrayList<SentryGun>();
@@ -996,19 +1091,8 @@ public class GamePanel extends JPanel implements KeyListener{
 			allSentries.remove(b);
 		}
 	}
-	
-	private void checkBarricades(){//if barricade has been destroyed
-		ArrayList<Barricade> toRemove = new ArrayList<Barricade>();
-		for (Barricade b : allBarricades){
-			if (b.getHealth() <= 0){
-				toRemove.add(b);
-			}
-		}
-		for (Barricade b : toRemove){
-			allBarricades.remove(b);
-		}
-	}
-
+	//SENTRY STUFF END
+	//BARREL STUFF BEGIN
 	private void checkBarrels(){
 		ArrayList<Barrel> toRemove = new ArrayList<Barrel>();
 		for (int x=1; x!=4; ++x){
@@ -1072,77 +1156,8 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		
 	}
-	public void checkDead(){
-		//this method is called to see if the character's bullets damage the enemies
-		ArrayList<Zombie> toRemoveZ = new ArrayList<Zombie>();
-		for (Zombie z : allZombies){
-			if (z.getHealth() <= 0){
-				toRemoveZ.add(z);
-			}
-		}
-
-		for (Zombie zzh8829:toRemoveZ){
-			//Every once in a while a magical unicorn drops by after a zombie dies
-			//And lays a magicalbox
-			if ((int)(Math.random()*3)==1){
-				allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY(),BH));
-			}
-			BH.score+=200+consecutiveKills*100;
-			ZombiesDead++;
-			allZombies.remove(zzh8829);
-			fullCountDown();
-			addConsecutive();
-		}
-		ArrayList<Devil> toRemoveD = new ArrayList<Devil>();
-		for (Devil d : allDevils){
-			if (d.getHealth() <= 0){
-				toRemoveD.add(d);
-			}
-		}
-		for (Devil zzh8829:toRemoveD){
-			BH.score+=200+consecutiveKills*100;
-			allDevils.remove(zzh8829);
-			//All Devils lay boxes
-			allBoxes.add(new MagicalBox(zzh8829.getX(),zzh8829.getY(),BH));
-			fullCountDown();
-			DevilsDead++;
-			addConsecutive();
-			
-		}
-	}
-	public void shootSentry(){//Sentries shoot at closest enemy
-		for (SentryGun sentry : allSentries){
-			int x = sentry.getcx(), y = sentry.getcy();
-			Zombie zClosest = new Zombie(0,0,0,BH.mc);
-			Devil dClosest = new Devil(0,0,0,BH.mc);
-			double zd = 1000000000, dd = 1000000000;
-			for (Zombie z : allZombies){
-				if (dist(x,y,z.getcx(),z.getcy()) <= zd){
-					zd = dist(x,y,z.getcx(),z.getcy());
-					zClosest = z;
-				}
-			}
-			for (Devil d : allDevils){
-				if (dist(x,y,d.getcx(),d.getcy()) <= dd){
-					dd = dist(x,y,d.getcx(),d.getcy());
-					dClosest = d;
-				}
-			}
-			//Whether the zombie or devil is closer and if it's in range
-			if (zd < dd && zd <= sentry.getrange()*sentry.getrange()){
-				int ang = (int)(Math.toDegrees(Math.PI+Math.atan2(y - zClosest.getcy(),x - zClosest.getDX())));
-				activeBullets.add(new PosPair(x,y,ang,1));
-				activateAudio(SENTRY);
-				sentry.setammo(sentry.getammo()-1);
-			}
-			else if (dd <= sentry.getrange()*sentry.getrange()){
-				int ang = (int)(Math.toDegrees(Math.PI+Math.atan2(y - dClosest.getDY(),x - dClosest.getDX())));
-				activeBullets.add(new PosPair(x,y,ang,1));
-				activateAudio(SENTRY);
-				sentry.setammo(sentry.getammo()-1);
-			}
-		}
-	}
+	//BARREL STUFF END
+	//GRENADE BEGIN
 	public void countdownGrenade(){
 		ArrayList<Grenade> toRemove = new ArrayList<Grenade>();
 		for (Grenade grenade: allGrenades){
@@ -1157,24 +1172,6 @@ public class GamePanel extends JPanel implements KeyListener{
 			explodedGrenade.add(grenade);
 			allGrenades.remove(grenade);
 		}
-	}
-	public boolean circleRectangleCollision(int cx,int cy, int cr, int rx,int ry,int rl,int rw){
-		if(rx<=cx && cx<=rx+rw && ry<=cy && cy<=ry+rl){
-			return true;
-		}
-		else if (dist(rx,ry,cx,cy)<=cr){
-			return true;
-		}
-		else if (dist(rx,ry+rl,cx,cy)<=cr){
-			return true;
-		}
-		else if (dist(rx+rw,ry,cx,cy)<=cr){
-			return true;
-		}
-		else if (dist(rx+rw,ry+rl,cx,cy)<=cr){
-			return true;
-		}
-		return false;
 	}
 	public void GrenadeExplode(Grenade grenade){
 		for (Devil devil: allDevils){
@@ -1210,9 +1207,8 @@ public class GamePanel extends JPanel implements KeyListener{
 			explodedGrenade.remove(grenade);
 		}
 	}
-	public double dist(int x1, int y1,int x2,int y2){
-		return Math.pow(Math.pow(x1-x2, 2)+Math.pow(y1-y2, 2),0.5);
-	}
+	//GRENADE END
+	//MAGICAL BOX STUFF BEGIN
 	public void checkMagicalBox(){
 		ArrayList<MagicalBox> toRemove = new ArrayList<MagicalBox>();
 		for (MagicalBox b: allBoxes){
@@ -1232,6 +1228,30 @@ public class GamePanel extends JPanel implements KeyListener{
 			boxString="";
 		}
 	}
+	public void checkBoxCollision(){
+		ArrayList<MagicalBox> toRemove = new ArrayList<MagicalBox>();
+		for (MagicalBox box : allBoxes){
+			int x = box.getX(), y = box.getY(), mcx = BH.mc.getX(), mcy = BH.mc.getY();
+			if (x + box.getbsx() < mcx || x > mcx + BH.mc.getsx() || y + box.getbsy() < mcy || y > mcy + BH.mc.getsy()){
+				continue;
+			}
+			addItem(box.generateItem());
+			toRemove.add(box);
+		}
+		for (MagicalBox box:toRemove){
+			allBoxes.remove(box);
+		}
+		
+	}
+	public void addItem(int item){
+		if (item==HEALTH){
+			BH.mc.setHealth(Math.min(BH.mc.getHealth()+500,1000));
+		}
+		else{
+			BH.mc.addAmmo(item);
+		}
+	}
+	//MAGICAL BOX STUFF END
 	public void paintComponent(Graphics g){
 		g.drawImage(background, -mapx, -mapy, this);
 		
