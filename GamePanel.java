@@ -845,6 +845,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	}
 	public void addItem(int item){
 		if (item==HEALTH){
+			System.out.println("HEALTH");
 			BH.mc.setHealth(Math.min(BH.mc.getHealth()+500,1000));
 		}
 		else{
@@ -1270,6 +1271,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		g.setFont(Sfont);
 		g.drawImage(background, -mapx, -mapy, this);
 		g.drawString(weaponNames[BH.mc.getWeapon()]+" "+BH.mc.getAmmo(BH.mc.getWeapon()), BH.mc.getX()-5, BH.mc.getY()-10); //maybe do the string formatting with this later if we have time
+		//System.out.println(BH.mc.getWeapon()+"WEAPON AMMO"+BH.mc.getAmmo(BH.mc.getWeapon()));
 		//drawing the health bar
 		//figure out the colouring of the bar ugh
 		g.setColor(Color.green);
