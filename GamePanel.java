@@ -196,6 +196,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		explodedGrenade.clear();
 		fireballs.clear();
 		activeBullets.clear();
+		BH.score=0;
 		allBarricades.clear();
 		allBarrels.clear();
 		allExplosions.clear();
@@ -1342,6 +1343,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		g.drawString(boxString,350,300);
 		boxCount();
+		g.drawString(BH.score+"", 300, 600);
 		g.drawString(consecutiveKills+" "+consecutiveCountDown,100,600);
 		g.drawString(printUpgradeString, 300, 600);
 		lastSpaceStat=keys[KeyEvent.VK_SPACE];
