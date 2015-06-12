@@ -1,7 +1,11 @@
 public class Explosion {
-	final private int sx = 100, sy = 100, rectsx = 34, rectsy = 47, dmg = 1000;
+	// a big BOOM
+	//massive damage, obliterating everything
+	//INCLUDING the player
+	//Be careful what you do with the barrels
+	final private int sx = 100, sy = 100, rectsx = 34, rectsy = 47, dmg = 1000, range = 100;
 	private double posX, posY;
-	private int spritenum = 0;
+	private int ctime = 0;//time the explosion pic lasts
 	Explosion(int x, int y){
 		posX = x;
 		posY = y;
@@ -27,10 +31,13 @@ public class Explosion {
 	public int getdmg(){
 		return dmg;
 	}
-	public void incrementsprite(){
-		spritenum++;
+	public void incrementtime(){
+		ctime++;
 	}
-	public int getspritenum(){
-		return spritenum;
+	public int getctime(){
+		return ctime;
+	}
+	public int getrange(){
+		return range;
 	}
 }
