@@ -86,7 +86,7 @@ public class GamePanel extends JPanel implements KeyListener{
 
 	private int spawnsp = 2000;
 	
-	
+	private Font font = new Font("Impact", Font.PLAIN, 20);
 	public GamePanel(BoxHead bh){
 		BH=bh;
 		keys = new boolean[65535];
@@ -176,6 +176,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		BH.enemyGenerationTimer.start();
 		BH.mc.unloadCAmmo();
 		printUpgradeString="";
+		consecutiveCountDown=0;
 		BH.mc.setWeapon(1);
 		BH.magicalBoxAllowance=1;
 		currentLevel=1;
@@ -1268,8 +1269,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void paintComponent(Graphics g){
-		Font Sfont = new Font("Calisto MT", Font.BOLD, 20);
-		g.setFont(Sfont);
+		g.setFont(font);
 		g.drawImage(background, -mapx, -mapy, this);
 		g.drawString(weaponNames[BH.mc.getWeapon()]+" "+BH.mc.getAmmo(BH.mc.getWeapon()), BH.mc.getX()-5, BH.mc.getY()-10); //maybe do the string formatting with this later if we have time
 		//System.out.println(BH.mc.getWeapon()+"WEAPON AMMO"+BH.mc.getAmmo(BH.mc.getWeapon()));
@@ -1282,12 +1282,12 @@ public class GamePanel extends JPanel implements KeyListener{
 		
 		for (PosPair pp : activeBullets){
 			//we need to get bulllet sprites
-			g.drawImage(bulletSprites[pp.getANGLE()/45],pp.getX(),pp.getY(),this);
+			g.drawImage(bulletSprites[pp.getANGLE()%360/45],pp.getX(),pp.getY(),this);
 			///g.drawImage(BH.bulletSprites.get(BH.activeBullets.get(i).getTYPE()),BH.activeBullets.get(i).getX(),BH.activeBullets.get(i).getY(),this);
 			//g.drawOval(pp.getX(), pp.getY(), 20, 20);
 		}
 		for (PosPair pp : fireballs){
-			g.drawImage(fireballSprites[pp.getANGLE()/45],pp.getX(),pp.getY(),this);
+			g.drawImage(fireballSprites[pp.getANGLE()%360/45],pp.getX(),pp.getY(),this);
 			//g.drawOval(pp.getX(), pp.getY(), 20, 20);
 		}
 		for (Zombie a : allZombies){
