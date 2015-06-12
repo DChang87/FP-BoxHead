@@ -86,8 +86,9 @@ public class GamePanel extends JPanel implements KeyListener{
 
 	private int spawnsp = 2000;
 	
-	private Font font = new Font("Impact", Font.PLAIN, 20);
+	private Font font = new Font("Impact", Font.PLAIN, 40);
 	private Font LARGEfont = new Font("Impact", Font.PLAIN, 100);
+	private Font SMALLfont = new Font("Impact",Font.PLAIN,15);
 	public GamePanel(BoxHead bh){
 		BH=bh;
 		keys = new boolean[65535];
@@ -162,7 +163,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	}
 	public void setBoxString(String n){
 		boxString=n;
-		boxCountDown=80;
+		boxCountDown=100;
 	}
 	public void updateweapon(){
 		//we keep track of how far the weapon can travel
@@ -809,11 +810,11 @@ public class GamePanel extends JPanel implements KeyListener{
 	
 	public void addZombie(int x, int y, int sx, int sy){
 		for (int i=0; i!=10; ++i){
-			int x1 = x + (int)(Math.random()*sx);
-			int y1 = y + (int)(Math.random()*sy);
-			if (numbercollisions(x1,y1) == 0){
+			x = x + (int)(Math.random()*sx);
+			y = y + (int)(Math.random()*sy);
+			if (numbercollisions(x,y) == 0){
 				ZombiesThisLevel--;
-				allZombies.add(new Zombie(x1,y1,0,BH.mc));
+				allZombies.add(new Zombie(x,y,0,BH.mc));
 				return;
 			}
 		}
@@ -967,7 +968,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		DevilsDead=0;
 		ZombiesThisLevel=getZombiesThisLevel();
 		DevilsThisLevel=getDevilsThisLevel();
-		displayLevelCounter=1000;
+		displayLevelCounter=200;
 	}
 	public void checkObjects(){
 		checkSentry();
@@ -1315,10 +1316,7 @@ public class GamePanel extends JPanel implements KeyListener{
 			g.drawRect(box.getX()-5, box.getY()-5, 10, 10);
 		}
 		g.drawOval(BH.mc.getX(), BH.mc.getY(), 2, 2);
-		if (displayLevelCounter>0){
-			displayLevelCounter--;
-			g.drawString("+-+-+-+ "+currentLevel+" +-+-+-+", 400, 600);
-		}
+		
 		for (Barricade bar : allBarricades){
 			//g.drawRect(bar.getX(), bar.getY()-10, 20, 20);
 			g.drawImage(barricadeSprite, bar.getX(), bar.getY(), this);
@@ -1343,17 +1341,25 @@ public class GamePanel extends JPanel implements KeyListener{
 			g.drawOval(exp.getX()-exp.getrange()/2,exp.getY()-exp.getrange()/2,100,100);		
 		}
 		boxCount();
-		g.setColor(new Color(225-consecutiveCountDown,225-consecutiveCountDown,225-consecutiveCountDown));
-		g.setFont(LARGEfont);
-		g.drawString(consecutiveKills+"",670,100);
-		g.setColor(Color.black);
-		g.setFont(font);
-		g.drawString(boxString,350,300);
-		g.drawString(weaponNames[BH.mc.getWeapon()]+" "+BH.mc.getAmmo(BH.mc.getWeapon()), BH.mc.getX()-5, BH.mc.getY()-10); //maybe do the string formatting with this later if we have time
-		g.drawString(BH.score+"", 300, 600);
-		//g.drawString(consecutiveKills+" "+consecutiveCountDown,100,600);
 		
-		g.drawString(printUpgradeString, 300, 600);
+		
+		g.setColor(Color.black);		
+		g.setFont(SMALLfont);
+		g.drawString(weaponNames[BH.mc.getWeapon()]+" "+BH.mc.getAmmo(BH.mc.getWeapon()), BH.mc.getX()-5, BH.mc.getY()-10); //maybe do the string formatting with this later if we have time
+		g.setFont(font);
+
+		g.drawString(boxString,100,500+boxCountDown);		
+		g.drawString(printUpgradeString, 300, 500+UpgradeStringCountDown);
+		if (displayLevelCounter>0){
+			displayLevelCounter--;
+			g.drawString("+-+-+-+ "+currentLevel+" +-+-+-+", 500, 500+displayLevelCounter/2);
+		}
+		g.setFont(LARGEfont);
+		g.drawString(BH.score+"", 20, 100);
+		g.setColor(new Color(225-consecutiveCountDown,225-consecutiveCountDown,225-consecutiveCountDown));
+		g.drawString(consecutiveKills+"",670,100);
+		
+		
 		lastSpaceStat=keys[KeyEvent.VK_SPACE];
 		
 	}
