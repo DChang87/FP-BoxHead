@@ -22,74 +22,94 @@ import javax.swing.Timer;
 
 
 public class GamePanel extends JPanel implements KeyListener{
-	private AudioClip[] audio = new AudioClip[8];
-	private BoxHead BH;
+		private BoxHead BH;
 	private boolean[] keys; 
-	private Image background = new ImageIcon("forestmap2.jpg").getImage();
-	private Image boxSprite = new ImageIcon("box.png").getImage();
-	private AudioClip barrelExplodeAudio = Applet.newAudioClip(getClass().getResource("barrelExplosionAudio.wav")); 
-	private BufferedImage mask_background;
 	
+	//Audio
+	private AudioClip barrelExplodeAudio = Applet.newAudioClip(getClass().getResource("barrelExplosionAudio.wav")); 
+	private AudioClip[] audio = new AudioClip[8];
+	private AudioClip explodeGrenade =Applet.newAudioClip(getClass().getResource("grenadeExplode.wav"));
+	
+	//sprites
 	private Image[][] charSprites = new Image[8][3];
 	private Image[][] zombieSprites = new Image[8][8];
 	private Image[][] devilSprites = new Image[8][8];
-	private int spriteCounter = 0;
-	private int[] weapondist = new int[30];
-	
-	private int rectsx = 34, rectsy = 47, barricadesx = 60, barricadesy = 48, barrelsx = 27, barrelsy = 43;
-	private int sentrysx = 20, sentrysy = 20;
-	final int HEALTH=0,PISTOL=1,UZI=2,SHOTGUN=3,BARREL = 4,GRENADE= 5, BARRICADE=6,SENTRY=7;
-	private ArrayList<Zombie> allZombies = new ArrayList<Zombie>(); //this stores all of the zombies that are currently in the game
-	private ArrayList<Devil> allDevils = new ArrayList<Devil>(); //this stores all of the devils that are currently running around in the game
-	public ArrayList<PosPair> fireballs = new ArrayList<PosPair>(); //this stores all of the fireballs that are currently in the game
-	//make an arraylist of active bullets that save the info about the bullet including the type of gun
+	private Image boxSprite = new ImageIcon("box.png").getImage();
 	private Image[] fireballSprites = new Image[8];
-	private ArrayList<PosPair> activeBullets = new ArrayList<PosPair>(); //private?
-	private ArrayList<MagicalBox> allBoxes = new ArrayList<MagicalBox>();
 	private Image[] bulletSprites = new Image[8];
-	private ArrayList<Barricade> allBarricades = new ArrayList<Barricade>();
-	private ArrayList<Barrel> allBarrels = new ArrayList<Barrel>();
-	private ArrayList<Explosion> allExplosions = new ArrayList<Explosion>();
-	private ArrayList<SentryGun> allSentries = new ArrayList<SentryGun>();
-	private int ZombiesThisLevel, DevilsThisLevel;
-	private String printUpgradeString="";
-	private int UpgradeStringCountDown=0;
 	private Image grenadeSprite = new ImageIcon("grenade.png").getImage();
 	private Image grenadeExploded = new ImageIcon("grenadeExplode.png").getImage();
-	//add this
-	private AudioClip explodeGrenade =Applet.newAudioClip(getClass().getResource("grenadeExplode.wav")); 
-	private int displayLevelCounter=0; //this is the counter used to display the "+-+-+-+ Level 2 +-+-+-+"
-	private int currentLevel=0;	
-	private int mapx=0, mapy=0, mapsx = 2000, mapsy = 2000, bx1 = 100, bx2 = 670, by1 = 100, by2 = 510;
-	// position of map (-mapx,-mapy), size of map
-	private int screensx = 800, screensy = 640;
-	private boolean lastSpaceStat=false;
-	private int shiftx = 0, shifty = 0;
-	//map shift
-	private int consecutiveKills=0;
-	private int consecutiveCountDown=0;
-	private int nextUpgrade=0;
+	private Image barrelSprite = new ImageIcon("barrel.png").getImage();
+	private Image barrelExplosion = new ImageIcon("barrelExplosion.png").getImage();
+	private Image barricadeSprite = new ImageIcon("barricade.png").getImage();
+	
+	//backgrounds
+	private BufferedImage mask_background;
+	private Image background = new ImageIcon("forestmap2.jpg").getImage();
+	
+	private int[] weapondist = new int[30];//should not exist
+	
+	//constants for the weapons/health
+	private final int HEALTH=0,PISTOL=1,UZI=2,SHOTGUN=3,BARREL = 4,GRENADE= 5, BARRICADE=6,SENTRY=7; 
+	
+	//sizes of different objects/screens
+	private int rectsx = 34, rectsy = 47; //size of all characters on screen (zombies/devils/MC)
+	private int barricadesx = 60, barricadesy = 48;
+	private int barrelsx = 27, barrelsy = 43;
+	private int sentrysx = 20, sentrysy = 20;
+	private int screensx = 800, screensy = 640; //screensize
+	private int mapx=0, mapy=0, mapsx = 2000, mapsy = 2000; //the coordinates and size of the original map
+	
+	
+	//all objects on the map at any given time
+	private ArrayList<Zombie> allZombies = new ArrayList<Zombie>();
+	private ArrayList<Devil> allDevils = new ArrayList<Devil>();
+	public ArrayList<PosPair> fireballs = new ArrayList<PosPair>(); //all fireballs in air
+	private ArrayList<PosPair> activeBullets = new ArrayList<PosPair>(); //all bullets in air 
+	private ArrayList<MagicalBox> allBoxes = new ArrayList<MagicalBox>();
+	private ArrayList<Barricade> allBarricades = new ArrayList<Barricade>();
+	private ArrayList<Barrel> allBarrels = new ArrayList<Barrel>();
+	private ArrayList<Explosion> allExplosions = new ArrayList<Explosion>(); //all explosions taking place at the time (to blit the sprites)
+	private ArrayList<SentryGun> allSentries = new ArrayList<SentryGun>();
 	private ArrayList<Grenade> allGrenades = new ArrayList<Grenade>();
 	private ArrayList<Grenade> explodedGrenade = new ArrayList<Grenade>();
-	private String[] weaponNames = new String[10];
-	private int ang1=90,ang2=180; //generation spot 1, generation spot 2
-	//private int gs1x=100,gs1y=100,gs2x=500,gs2y=500,ang1=0,ang2=270;
-	private Image barrelSprite = new ImageIcon("barrel.png").getImage();
-	private Image barricadeSprite = new ImageIcon("barricade.png").getImage();
-	private Image barrelExplosion = new ImageIcon("barrelExplosion.png").getImage();
-	///add
-	private int ZombiesDead=0,DevilsDead=0;
-	private String boxString = "";
-	private int boxCountDown=0;
-	//stop
-	private int shootCountDown=0;
-	private final int SOMENUMBER=20;
-
-	private int spawnsp = 2000;
 	
+	//consecutive kills + upgrades (consecutive kills lead to the upgrades)
+	private int consecutiveKills=0; //the number of consecutive kills at any point of time
+	private int consecutiveCountDown=0; //the counter in which after the countdown reaches 0, the consecutiveKills is reduced by 1
+	//and countdown at full again so it can continue to reduce consecutiveKills
+	private int nextUpgrade=0;//the position in the BH.ug.allUpgradesNum in which the next upgrade for the character will be
+	private String printUpgradeString=""; //the name of the upgrade to display
+	private int UpgradeStringCountDown=0; //countdown to display the string. when countdown is at 0, string is set at ""
+	
+	//box item name blitting
+	private String boxString = ""; //the string to blit when the character obtains a box
+	private int boxCountDown=0; //count down to blit the box
+	
+	//regulated shooting
+	private int shootCountDown=0; //countdown to shoot bullets to ensure that the bullets are not shot consecutively like a machine gun
+	//the character can only shoot when the countdown is at 0. once a bullet is shot, the counter is set back to full
+	private final int SOMENUMBER=15; //constant to refill shootCounDown
+	
+	//font loading
+	private Font SMALLfont = new Font("Impact",Font.PLAIN,15);
 	private Font font = new Font("Impact", Font.PLAIN, 40);
 	private Font LARGEfont = new Font("Impact", Font.PLAIN, 100);
-	private Font SMALLfont = new Font("Impact",Font.PLAIN,15);
+	
+	//counters
+	private int spriteCounter = 0; //sprite counter for the MC so movement of MC is blitted properly
+	private int displayLevelCounter=0; //this is the counter used to display the "+-+-+-+ Level 2 +-+-+-+"
+	
+	//other variables
+	private boolean lastSpaceStat=false; //the status of space being pressed in the gampanel before the current one
+	private String[] weaponNames = new String[8]; //stores the names of all the weapons
+	private int ZombiesDead=0,DevilsDead=0; //the number of zombies dead at any point, accumulated for the current level
+	private int ZombiesThisLevel, DevilsThisLevel; //the number of zombies/devils remaining in the level (alive, does not have to be spawned)
+	private int currentLevel;	
+	private int bx1 = 100, bx2 = 670, by1 = 100, by2 = 510; //the map boundary on the screen before the map is shifted
+	private int spawnsp = 2000; //spawn speed
+	private int shiftx = 0, shifty = 0; //map shift
+	
 	public GamePanel(BoxHead bh){
 		BH=bh;
 		keys = new boolean[65535];
