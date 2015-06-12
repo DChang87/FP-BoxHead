@@ -174,6 +174,8 @@ public class GamePanel extends JPanel implements KeyListener{
 		spawnsp = 2000;
 		BH.enemyGenerationTimer = new Timer(spawnsp, BH);
 		BH.enemyGenerationTimer.start();
+		BH.mc.unloadCAmmo();
+		printUpgradeString="";
 		currentLevel=1;
 		shootCountDown=0;
 		mapx=0;
@@ -669,7 +671,6 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 		
 	}
-	
 	
 	public void addZombieCounter(){
 		for (int i=0;i<allZombies.size();i++){
