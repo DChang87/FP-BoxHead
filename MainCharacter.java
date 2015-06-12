@@ -1,8 +1,17 @@
 import java.util.*;
 class MainCharacter {
 	//The character you'll be playing as :)
-	//Don't ask why it's a child in a zombie apocalypse
-	//He's a very dangerous child
+	//He's a very dangerous child and capable of things beyond belief
+	
+	//A young never aging young boy was raised in rural Japan
+	//Ness is courageous and the envy of many children
+	//He posseses strong psychic abilities
+	//In the past he was known for his abilities to use Slingshots as weapons
+	//but as time passed and technology improved, he found that guns were much more convenient
+	//Along with power comes great responsibility.
+	//Ness was not capable of that and ended up becoming evil and a big bully to young children
+	//The Zombies and Devils depicted in the game are the children he bullied after
+	//Having experienced the effects of the apocalypse.
 	
 	public final int full_health=1000;
 	private int health=full_health, ANGLE,sx = 37, sy = 43, sp=10;
