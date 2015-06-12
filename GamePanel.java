@@ -618,6 +618,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	public void levelUp(){
 		//preparing variables for a new level
 		BH.enemyGenerationTimer = new Timer(spawnsp-currentLevel*300, BH);
+		BH.enemyGenerationTimer.start();
 		currentLevel++;
 		ZombiesDead=0;
 		DevilsDead=0;
