@@ -1,6 +1,6 @@
 public class PosPair{
 	//The place where fireballs, bullets and very dangerous weapons are stored
-    private final int ANGLE, Type, dmg = 15;
+    private final int ANGLE, Type, dmg = 350;
     private double X,Y, origX, origY;
     //				x, 		y,	degree bullet/fireball will travel
     public PosPair(int x,int y,int deg,int type)//type is type of bullet or fireball
