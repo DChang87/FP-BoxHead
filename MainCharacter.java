@@ -81,6 +81,9 @@ class MainCharacter {
 	public void setDmg(int weapon,int dmg){
 		weapondmg[weapon]=dmg;
 	}
+	public int getdmg(int type){
+		return weapondmg[type];
+	}
 	
 	/////////////DISTANCE//////////////////
 	public void loadORdist(){
