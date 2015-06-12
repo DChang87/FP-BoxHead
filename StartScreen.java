@@ -10,7 +10,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 public class StartScreen extends JPanel implements MouseMotionListener, MouseListener{
 	private static int mouseX,mouseY;
-	private Image background = new ImageIcon("tempbackground.jpg").getImage();
+	private Image background = new ImageIcon("sprites/tempbackground.jpg").getImage();
 	private int bx=240,by=350,bLength=57,bWidth=338; //dimensions for the "START GAME" string
 	private boolean Down=false; //if the mouse is down
 	BoxHead BH;
