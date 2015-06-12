@@ -176,6 +176,8 @@ public class GamePanel extends JPanel implements KeyListener{
 		BH.enemyGenerationTimer.start();
 		BH.mc.unloadCAmmo();
 		printUpgradeString="";
+		BH.mc.setWeapon(1);
+		BH.magicalBoxAllowance=1;
 		currentLevel=1;
 		shootCountDown=0;
 		mapx=0;
