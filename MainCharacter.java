@@ -1,5 +1,4 @@
-import java.util.*;
-class MainCharacter {
+public class MainCharacter {
 	//The character you'll be playing as :)
 	//He's a very dangerous child and capable of things beyond belief
 	
