@@ -87,6 +87,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	private int spawnsp = 2000;
 	
 	private Font font = new Font("Impact", Font.PLAIN, 20);
+	private Font LARGEfont = new Font("Impact", Font.PLAIN, 100);
 	public GamePanel(BoxHead bh){
 		BH=bh;
 		keys = new boolean[65535];
@@ -557,7 +558,7 @@ public class GamePanel extends JPanel implements KeyListener{
 		return true;
 	}
 	
-	public void fullCountDown(){consecutiveCountDown=250;}
+	public void fullCountDown(){consecutiveCountDown=225;}
 	public void CountDown(){
 		if (consecutiveCountDown>0){
 			consecutiveCountDown--;
@@ -1269,9 +1270,9 @@ public class GamePanel extends JPanel implements KeyListener{
 		}
 	}
 	public void paintComponent(Graphics g){
-		g.setFont(font);
+		
 		g.drawImage(background, -mapx, -mapy, this);
-		g.drawString(weaponNames[BH.mc.getWeapon()]+" "+BH.mc.getAmmo(BH.mc.getWeapon()), BH.mc.getX()-5, BH.mc.getY()-10); //maybe do the string formatting with this later if we have time
+		
 		//System.out.println(BH.mc.getWeapon()+"WEAPON AMMO"+BH.mc.getAmmo(BH.mc.getWeapon()));
 		//drawing the health bar
 		//figure out the colouring of the bar ugh
@@ -1341,10 +1342,17 @@ public class GamePanel extends JPanel implements KeyListener{
 			g.drawImage(barrelExplosion,exp.getX()-exp.getrange()/2,exp.getY()-exp.getrange()/2,this);		
 			g.drawOval(exp.getX()-exp.getrange()/2,exp.getY()-exp.getrange()/2,100,100);		
 		}
-		g.drawString(boxString,350,300);
 		boxCount();
+		g.setColor(new Color(225-consecutiveCountDown,225-consecutiveCountDown,225-consecutiveCountDown));
+		g.setFont(LARGEfont);
+		g.drawString(consecutiveKills+"",670,100);
+		g.setColor(Color.black);
+		g.setFont(font);
+		g.drawString(boxString,350,300);
+		g.drawString(weaponNames[BH.mc.getWeapon()]+" "+BH.mc.getAmmo(BH.mc.getWeapon()), BH.mc.getX()-5, BH.mc.getY()-10); //maybe do the string formatting with this later if we have time
 		g.drawString(BH.score+"", 300, 600);
-		g.drawString(consecutiveKills+" "+consecutiveCountDown,100,600);
+		//g.drawString(consecutiveKills+" "+consecutiveCountDown,100,600);
+		
 		g.drawString(printUpgradeString, 300, 600);
 		lastSpaceStat=keys[KeyEvent.VK_SPACE];
 		
