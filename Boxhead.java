@@ -1,11 +1,12 @@
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.Timer;
+//a game in which
+//the character moves around in the game
+//and struggles to survive
+//with waves of attacks from zombies and devils
 public class BoxHead extends JFrame implements ActionListener{
 	Timer fireTimer,myTimer,spritesTimer,enemyGenerationTimer,SentryTimer;
 	public final int START=0,GAME = 1,PAUSE=2,OVER=3,HS=4; //different states/screens in the game
