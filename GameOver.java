@@ -10,7 +10,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 public class GameOver extends JPanel implements MouseMotionListener, MouseListener{
 	private static int mouseX,mouseY;
-	private Image background = new ImageIcon("gameOver.jpg").getImage();
+	private Image background = new ImageIcon("sprites/gameOver.jpg").getImage();
 	private boolean Down=false; //see if the mouse is down or not
 	private int rx=270,ry=350,rLength=60,rWidth=243; //dimentions of Restart text
 	private int hsx=210,hsy=420,hsLength=60,hsWidth=360; //dimentions of HighScore text
