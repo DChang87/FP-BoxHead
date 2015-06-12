@@ -1,8 +1,12 @@
 import java.util.*;
 class Devil {
+	//Zombies after they have gone through a drastic change
+	//The product of Frankenstein's research and Ness's cruelty
 	//I like to call it the red zombie
-	//shoots fireballs at the MC
+	//shoots fireballs at Ness
 	//fireballs do massive damage
+	
+	
 	private int Health = 100;
 	private int angle; //angle is the angle in which the character is facing
 	//-> is 0
