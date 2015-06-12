@@ -1,5 +1,6 @@
 public class Barricade {
-	//your typical everyday spiked wall that blocks zombies
+	//a barricade that stops the enemies from advancing and reaching the MC
+	//has a certain health span, once health is at 0, the barricade is destroyed
 	final private int sx = 20, sy = 20; //size of the barricade
 	final private int rectsx = 34, rectsy = 47;//rects is for MC and enemies size
 	private double posX, posY;
