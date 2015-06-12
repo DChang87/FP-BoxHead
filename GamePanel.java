@@ -444,6 +444,8 @@ public class GamePanel extends JPanel implements KeyListener{
 		//this adds on to the consecutive kill
 		//this checks if it is time to upgrade (based on the number of consecutive kills and the next upgrade)
 		consecutiveKills++;
+		if (nextUpgrade==26)
+			return;
 		if (consecutiveKills==BH.ug.allUpgradesNum[nextUpgrade]){
 			BH.ug.getUpgrade(BH.ug.allUpgradesNum[nextUpgrade++]);
 		}
@@ -615,6 +617,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	public void levelUp(){
 		//preparing variables for a new level
 		BH.enemyGenerationTimer = new Timer(spawnsp-currentLevel*300, BH);
+		BH.enemyGenerationTimer.start();
 		currentLevel++;
 		ZombiesDead=0;
 		DevilsDead=0;
