@@ -3,7 +3,6 @@ class MainCharacter {
 	public final int full_health=1000;
 	private int health=full_health, ANGLE,sx = 37, sy = 43, sp=10;
 	
-	private String name;
 	private int cweapon = 1;
 	//cweapon:
 	/*
@@ -35,8 +34,7 @@ class MainCharacter {
 			
 	private boolean[] consecutiveShoot = new boolean[NUMOFWEAPONS];
 	
-	public MainCharacter(String n, int px, int py){
-		name = n;
+	public MainCharacter(int px, int py){
 		posx = px;
 		posy = py;
 		loadORMaxAmmo();//done
@@ -141,6 +139,7 @@ class MainCharacter {
 	public void addAmmo(int n){
 		System.out.println(n+" "+getMaxAmmo(n)+"ADAMMO");
 		cweaponAmmo[n]=getMaxAmmo(n);
+		System.out.println(cweaponAmmo[n]+"CWEAPONAMMO");
 	}
 	public int getAmmo(int n){
 		return cweaponAmmo[n];
@@ -160,7 +159,11 @@ class MainCharacter {
 			//pistol is unlimited
 		}
 	}
-	
+	public void unloadCAmmo(){
+		for (int i=0;i<NUMOFWEAPONS;i++){
+			cweaponAmmo[i]=0;
+		}
+	}
 	/////////CONSECUTIVE SHOOT////////////
 	public void loadConsecutiveShoot(){
 		for (int i=0;i<NUMOFWEAPONS;i++){
@@ -200,12 +203,6 @@ class MainCharacter {
 	}
 	public int getHealth(){
 		return health;
-	}
-	public String getName(){
-		return name;
-	}
-	public void setName(String n){
-		name = n;
 	}
 	public int getLength(){
 		return sx;
