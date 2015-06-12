@@ -1,8 +1,18 @@
 import java.util.*;
 class Zombie {
+	// Since ancient times, human have seeked companionship
+	// but humans are weak, with short lifespans
+	// Introducing the human creation that will last forever
+	// The Zombie, created by Dr. Frankenstein
+	// It is guaranteed to satisfy your needs, or your money back guaranteed
+	// Come get one today for only $299.00 each month for the rest of your life
+	// If you get one today, Frankenstein has even offered to lower it to $199.00
+	// In exchange for your body for human experiments
+	
+	// P.S. The Zombie even gives free hugs! Don't be shy.
 	MainCharacter mc;
 	private int Health = 20;
-	private int sx = 34, sy = 47, sp = 4, dmg = 10;
+	private int sx = 34, sy = 47, sp = 2, dmg = 10;
 	private double posx, posy;
 	private int spriteCounter=0;
 	private int ANG;
@@ -39,12 +49,19 @@ class Zombie {
 	public double getDY(){
 		return posy;
 	}
+	public int getsx(){
+		return sx;
+	}
+	public int getsy(){
+		return sy;
+	}
 	public int getspeed(){
 		return sp;
 	}
 	public int getAngle(){
 		return ANG;
 	}
+	//Changing between sprites
 	public void addToCounter(){
 		spriteCounter++;
 	}
@@ -73,18 +90,10 @@ class Zombie {
 	}
 	public boolean collideMC(){
 		if (posx > mc.getX() + mc.getsx()+3 || posx + sx+3 < mc.getX() || posy > mc.getY()+mc.getsy()+3 || posy + sy+3 < mc.getY())
-			return false;
-		//System.out.println("AWRAF");
-		
+			return false;// a little extra space for safety before collision
 		return true;
 	}
-	public boolean getCollide(int x, int y){
+	public boolean getCollide(int x, int y){//if a point collides with the zombie
 		return (x >= posx && x <= posx+sx && y >= posy && y <= posy+sy);
-	}
-	public int getsx(){
-		return sx;
-	}
-	public int getsy(){
-		return sy;
 	}
 }
